@@ -1,0 +1,5 @@
+{
+	"name": "terrorlink-server",
+	"module": "index.ts",
+	"type": "module"
+}

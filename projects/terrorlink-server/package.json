@@ -1,0 +1,8 @@
+{
+	"name": "terrorlink",
+	"module": "index.ts",
+	"type": "module",
+	"dependencies": {
+		"elysia": "^1.2.15"
+	}
+}
