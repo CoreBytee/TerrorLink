@@ -1,6 +1,10 @@
 # NPM
 node_modules
 
+# .NET
+/projects/terrorlink-plugin/bin/
+/projects/terrorlink-plugin/obj/
+
 # Secrets
 .env
 
