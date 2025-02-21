@@ -3,3 +3,7 @@ node_modules
 
 # Secrets
 .env
+
+# Game
+game
+.dl

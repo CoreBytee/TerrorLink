@@ -1,15 +1,22 @@
 {
-	"name": "terrorlink",
-	"devDependencies": {
-		"@biomejs/biome": "1.9.4",
-		"@types/bun": "latest"
-	},
-	"peerDependencies": {
-		"typescript": "^5.0.0"
-	},
-	"workspaces": ["packages/*", "projects/*"],
-	"scripts": {
-		"dev:client": "bun run --watch ./projects/terrorlink",
-		"dev:server": "bun run --watch ./projects/terrorlink-server"
-	}
+    "name": "terrorlink",
+    "devDependencies": {
+        "@biomejs/biome": "1.9.4",
+        "@types/bun": "latest"
+    },
+    "peerDependencies": {
+        "typescript": "^5.0.0"
+    },
+    "workspaces": [
+        "packages/*",
+        "projects/*"
+    ],
+    "scripts": {
+        "install:steamcmd": "sh ./scripts/install-steamcmd.sh",
+        "install:counterstrike": "sh ./scripts/install-counterstrike.sh",
+        "install:cssharp": "sh ./scripts/install-cssharp.sh",
+        "dev:client": "bun run --watch ./projects/terrorlink",
+        "dev:server": "bun run --watch ./projects/terrorlink-server",
+        "dev:game": "./game/counterstrike/game/bin/win64/cs2.exe -dedicated +map de_dust2"
+    }
 }
