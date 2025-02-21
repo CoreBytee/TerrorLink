@@ -17,6 +17,7 @@
         "install:cssharp": "sh ./scripts/install-cssharp.sh",
         "dev:client": "bun run --watch ./projects/terrorlink",
         "dev:server": "bun run --watch ./projects/terrorlink-server",
-        "dev:game": "./game/counterstrike/game/bin/win64/cs2.exe -dedicated +map de_dust2"
+        "dev:game": "./game/counterstrike/game/bin/win64/cs2.exe -dedicated +map de_dust2",
+        "dev:plugin": "sh ./scripts/dev-plugin.sh"
     }
 }
