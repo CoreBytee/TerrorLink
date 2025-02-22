@@ -1,8 +1,10 @@
 {
-	"name": "terrorlink",
-	"module": "index.ts",
-	"type": "module",
-	"dependencies": {
-		"elysia": "^1.2.15"
-	}
+    "name": "terrorlink",
+    "module": "index.ts",
+    "type": "module",
+    "dependencies": {
+        "elysia": "^1.2.15",
+        "steam-signin": "^1.0.5"
+    },
+    "devDependencies": {}
 }
