@@ -2,10 +2,43 @@ class DiscordUser {
 	id: string;
 	displayName: string;
 	avatarUrl: string;
-	constructor(data: Record<string, string>) {
+	tokenType: string;
+	accessToken: string;
+	refreshToken: string;
+	expiresIn: number;
+	scopes: string[];
+
+	constructor(data: {
+		id: string;
+		displayName: string;
+		avatar: string;
+		tokenType: string;
+		accessToken: string;
+		refreshToken: string;
+		expiresIn: number;
+		scopes: string[];
+	}) {
 		this.id = data.id;
-		this.displayName = data.global_name;
+		this.displayName = data.displayName;
 		this.avatarUrl = `https://cdn.discordapp.com/avatars/${this.id}/${data.avatar}.png`;
+
+		this.tokenType = data.tokenType;
+		this.accessToken = data.accessToken;
+		this.refreshToken = data.refreshToken;
+		this.expiresIn = data.expiresIn;
+		this.scopes = data.scopes;
+	}
+
+	toJSON() {
+		return {
+			id: this.id,
+			displayName: this.displayName,
+			avatarUrl: this.avatarUrl,
+			tokenType: this.tokenType,
+			accessToken: this.accessToken,
+			refreshToken: this.refreshToken,
+			expiresIn: this.expiresIn,
+		};
 	}
 }
 
@@ -32,6 +65,7 @@ export default class DiscordAuthentication {
 			redirect_uri: this.redirectUrl,
 			response_type: "code",
 			scope: this.scopes.join(" "),
+			prompt: "none",
 		});
 
 		return `https://discord.com/api/oauth2/authorize?${query.toString()}`;
@@ -63,7 +97,16 @@ export default class DiscordAuthentication {
 		const token = await response.json();
 		const user = await this.getUserData(token.access_token);
 
-		return new DiscordUser(user);
+		return new DiscordUser({
+			id: user.id,
+			displayName: user.global_name,
+			avatar: user.avatar,
+			tokenType: token.token_type,
+			accessToken: token.access_token,
+			refreshToken: token.refresh_token,
+			expiresIn: token.expires_in,
+			scopes: token.scope.split(" "),
+		});
 	}
 
 	private async getUserData(token: string) {

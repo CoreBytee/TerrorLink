@@ -9,6 +9,14 @@ class SteamUser {
 		this.displayName = data.personaname;
 		this.avatarUrl = data.avatarfull;
 	}
+
+	toJSON() {
+		return {
+			id: this.id,
+			displayName: this.displayName,
+			avatarUrl: this.avatarUrl,
+		};
+	}
 }
 
 export default class SteamAuthentication {
