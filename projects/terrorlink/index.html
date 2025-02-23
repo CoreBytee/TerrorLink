@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+
+        <style>
+            html {
+                margin: 0;
+                padding: 0;
+                min-height: 100vh;
+            }
+
+            body {
+                height: 100vh;
+                background-color: #131313;
+                color: white;
+                font-family: Arial, Helvetica, sans-serif;
+                margin: 0;
+            }
+
+            body {
+                display: flex;
+                flex-direction: column;
+                /* justify-content: center; */
+                align-items: center;
+
+                padding-top: 20px;
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            /* * {
+                margin: 0;
+                padding: 0;
+            } */
+        </style>
+
+        <script>
+            function discord() {
+                fetch("/login/discord", { method: "POST" })
+            }
+
+            function steam() {
+                fetch("/login/steam", { method: "POST" })
+            }
+        </script>
+    </head>
+
+    <body>
+        <h1>TerrorLink</h1>
+        <button onclick="discord()">Discord</button>
+        <button onclick="steam()">Steam</button>
+    </body>
+
+</html>

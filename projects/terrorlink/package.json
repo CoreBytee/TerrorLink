@@ -1,5 +1,17 @@
 {
 	"name": "terrorlink-server",
 	"module": "index.ts",
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"elysia": "^1.2.21",
+		"fs-extra": "^11.3.0",
+		"get-port": "^7.1.0",
+		"jwt-simple": "^0.5.6",
+		"libui-node": "^0.2.1",
+		"open": "^10.1.0",
+		"webview-bun": "^2.3.0"
+	},
+	"devDependencies": {
+		"@types/fs-extra": "^11.0.4"
+	}
 }
