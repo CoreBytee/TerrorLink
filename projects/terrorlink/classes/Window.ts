@@ -1,5 +1,5 @@
 import { type Size, SizeHint } from "webview-bun";
-import WindowWorker from "./Worker" with { type: "file" };
+import WindowWorker from "../Worker" with { type: "file" };
 
 export class Window {
 	url: string;

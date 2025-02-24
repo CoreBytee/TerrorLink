@@ -5,7 +5,7 @@ import returnPage from "./return.html";
 import open from "open";
 import { readJsonSync, writeJSONSync } from "fs-extra";
 import jwt from "jwt-simple";
-import { Window } from "./Window";
+import { Window } from "./classes/Window";
 import { Client } from "@xhayper/discord-rpc";
 
 const BASE_URL =
