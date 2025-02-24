@@ -49,7 +49,6 @@ function storeToken(token: string) {
 	data[decodedToken.type] = token;
 	writeJSONSync("./terrorlink.data", data, { spaces: 2 });
 	connect();
-	window.reload();
 }
 
 function removeToken(type: string) {
