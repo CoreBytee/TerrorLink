@@ -1,5 +1,5 @@
 import { type Size, SizeHint } from "webview-bun";
-import WindowWorker from "../workers/worker" with { type: "file" };
+import cluster, { type Worker } from "node:cluster";
 
 export class Window {
 	url: string;
@@ -15,12 +15,17 @@ export class Window {
 	}
 
 	private load() {
-		this.worker = new Worker(WindowWorker);
-		this.worker.postMessage({ url: this.url, size: this.size });
+		this.worker = cluster.fork({
+			WEBVIEW_DATA: JSON.stringify({
+				url: this.url,
+				size: this.size,
+				title: "TerrorLink",
+			}),
+		});
 	}
 
 	close() {
-		this.worker?.terminate();
+		this.worker?.kill();
 	}
 
 	reload() {

@@ -7,6 +7,16 @@ import { readJsonSync, writeJSONSync } from "fs-extra";
 import jwt from "jwt-simple";
 import { Window } from "./classes/Window";
 import { Client } from "@xhayper/discord-rpc";
+if (env.WEBVIEW_DATA) {
+	const data = JSON.parse(env.WEBVIEW_DATA);
+	const webview = new Webview();
+	webview.title = data.title;
+	webview.size = data.size;
+
+	webview.navigate(data.url);
+	webview.run();
+	process.exit(0);
+}
 
 const BASE_URL =
 	(env.WEBSERVER_URL as string) || "https://terrorlink.corebyte.me";
