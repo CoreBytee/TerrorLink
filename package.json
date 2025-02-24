@@ -19,7 +19,7 @@
         "dev:server": "bun run --watch ./projects/terrorlink-server",
         "dev:game": "./game/counterstrike/game/bin/win64/cs2.exe -dedicated +map de_dust2",
         "dev:plugin": "sh ./scripts/dev-plugin.sh",
-        "build:client": "bun build --compile ./projects/terrorlink/index.ts ./projects/terrorlink/Worker.ts --windows-hide-console"
+        "build:client": "bun build --compile ./projects/terrorlink/index.ts"
     },
     "trustedDependencies": [
         "@biomejs/biome"
