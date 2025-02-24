@@ -8,6 +8,9 @@ import { readJsonSync, writeJSONSync } from "fs-extra";
 import jwt from "jwt-simple";
 import { Window } from "./classes/Window";
 import { Client } from "@xhayper/discord-rpc";
+import { Webview } from "webview-bun";
+import bytes from "bytes";
+
 if (env.WEBVIEW_DATA) {
 	const data = JSON.parse(env.WEBVIEW_DATA);
 	const webview = new Webview();
@@ -183,7 +186,7 @@ serve({
 				discordRPC: !!discordRPC,
 				websocket: !!websocket,
 				messageCount,
-				bytesCount,
+				bytesCount: bytes(bytesCount),
 			});
 		},
 	},
