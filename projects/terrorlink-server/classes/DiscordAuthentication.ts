@@ -5,7 +5,7 @@ class DiscordUser {
 	tokenType: string;
 	accessToken: string;
 	refreshToken: string;
-	expiresIn: number;
+	expiresAt: number;
 	scopes: string[];
 
 	constructor(data: {
@@ -25,7 +25,7 @@ class DiscordUser {
 		this.tokenType = data.tokenType;
 		this.accessToken = data.accessToken;
 		this.refreshToken = data.refreshToken;
-		this.expiresIn = data.expiresIn;
+		this.expiresAt = Date.now() + data.expiresIn * 1000;
 		this.scopes = data.scopes;
 	}
 
@@ -37,7 +37,7 @@ class DiscordUser {
 			tokenType: this.tokenType,
 			accessToken: this.accessToken,
 			refreshToken: this.refreshToken,
-			expiresIn: this.expiresIn,
+			expiresAt: this.expiresAt,
 		};
 	}
 }
