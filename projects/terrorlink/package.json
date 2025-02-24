@@ -3,6 +3,7 @@
 	"module": "index.ts",
 	"type": "module",
 	"dependencies": {
+		"@xhayper/discord-rpc": "^1.2.0",
 		"elysia": "^1.2.21",
 		"fs-extra": "^11.3.0",
 		"get-port": "^7.1.0",
