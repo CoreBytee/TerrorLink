@@ -23,5 +23,8 @@
     },
     "trustedDependencies": [
         "@biomejs/biome"
-    ]
+    ],
+    "patchedDependencies": {
+        "@xhayper/discord-rpc@1.2.0": "patches/@xhayper%2Fdiscord-rpc@1.2.0.patch"
+    }
 }
