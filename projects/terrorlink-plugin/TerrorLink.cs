@@ -70,11 +70,18 @@ public class TerrorLink : BasePlugin
         {
             var json = JsonSerializer.Serialize(eventData);
             var content = new StringContent(json, Encoding.UTF8, new MediaTypeHeaderValue("application/json"));
-            var response = await client.PostAsync("http://localhost:3000/api/gamestate", content);
-
-            if (!response.IsSuccessStatusCode)
+            try
             {
-                Logger.LogError("Failed to send event. Status code: {StatusCode}", response.StatusCode);
+                var response = await client.PostAsync("http://localhost:3000/api/gamestate", content);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Logger.LogError("Failed to send event. Status code: {StatusCode}", response.StatusCode);
+                }
+            }
+            catch (HttpRequestException e)
+            {
+                Logger.LogError("Failed to send event. Exception: {Message}", e.Message);
             }
         }
     }
