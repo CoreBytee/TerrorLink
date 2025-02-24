@@ -6,6 +6,7 @@ import open from "open";
 import { readJsonSync, writeJSONSync } from "fs-extra";
 import jwt from "jwt-simple";
 import { Window } from "./Classes/Window";
+import { Client } from "@xhayper/discord-rpc";
 
 const BASE_URL =
 	(env.WEBSERVER_URL as string) || "https://terrorlink.corebyte.me";
