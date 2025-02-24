@@ -50,6 +50,13 @@ function retrieveToken(type: string) {
 	return data[type] ?? false;
 }
 
+const websocket = new WebSocket(`${env.WEBSOCKET_URL}/api/socket`, {
+	headers: {
+		"x-discord-token": retrieveToken("discord"),
+		"x-steam-token": retrieveToken("steam"),
+	},
+} as unknown as string[]);
+
 serve({
 	development: true,
 	port: PORT,
