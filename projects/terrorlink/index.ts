@@ -12,7 +12,15 @@ const BASE_URL =
 const PORT = await getPort();
 
 console.log(`http://localhost:${PORT}`);
-const window = new Window(`http://localhost:${PORT}`);
+const rpc = new Client({
+	clientId: "1342884301196496998",
+	// transport: { type: "websocket" },
+});
+await rpc.connect();
+console.log(retrieveToken("discord"));
+await rpc.authenticate(decodeJWT(retrieveToken("discord")).accessToken);
+
+new Window(`http://localhost:${PORT}`);
 
 function decodeJWT(token: string) {
 	try {
