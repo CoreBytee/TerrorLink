@@ -19,6 +19,7 @@
                 color: white;
                 font-family: Arial, Helvetica, sans-serif;
                 margin: 0;
+                text-align: center;
             }
 
             body {
@@ -27,6 +28,7 @@
                 /* justify-content: center; */
                 align-items: center;
 
+                gap: 20px;
                 padding-top: 20px;
             }
 
@@ -62,26 +64,52 @@
             }
 
             async function update() {
+                requestAnimationFrame(update)
                 const state = await fetchState()
 
                 { // Discord State
                     const discordAccountState = document.getElementById("discord-account-state")
                     const discordAccountAvatar = document.getElementById("discord-account-avatar")
                     const discordAccountButton = document.getElementById("discord-account-button")
+
                     discordAccountState.innerText = state.discord ? state.discord.displayName : "Unknown"
+                    discordAccountState.style.color = state.discord ? "green" : "red"
+
                     discordAccountAvatar.src = state.discord ? state.discord.avatarUrl : ""
                     discordAccountAvatar.style.display = state.discord ? "inline" : "none"
+
                     discordAccountButton.innerText = state.discord ? "Disconnect" : "Connect"
                 }
 
-                {
+                { // Steam state
                     const steamAccountState = document.getElementById("steam-account-state")
                     const steamAccountAvatar = document.getElementById("steam-account-avatar")
                     const steamAccountButton = document.getElementById("steam-account-button")
+
                     steamAccountState.innerText = state.steam ? state.steam.displayName : "Unknown"
+                    steamAccountState.style.color = state.steam ? "green" : "red"
+
                     steamAccountAvatar.src = state.steam ? state.steam.avatarUrl : ""
                     steamAccountAvatar.style.display = state.steam ? "inline" : "none"
+
                     steamAccountButton.innerText = state.steam ? "Disconnect" : "Connect"
+                }
+
+                {
+                    const websocketConnectionState = document.getElementById("websocket-connection-state")
+                    websocketConnectionState.innerText = state.websocket ? "Connected" : "Disconnected"
+                    websocketConnectionState.style.color = state.websocket ? "green" : "red"
+                }
+
+                {
+                    const discordrpcConnectionState = document.getElementById("discordrpc-connection-state")
+                    discordrpcConnectionState.innerText = state.discordRPC ? "Connected" : "Disconnected"
+                    discordrpcConnectionState.style.color = state.discordRPC ? "green" : "red"
+                }
+
+                {
+                    document.getElementById("websocket-transferred-count").innerText = `Websocket Transferred Count: ${state.messageCount}`
+                    document.getElementById("websocket-transferred-bytes").innerText = `Websocket Transferred Bytes: ${state.bytesCount}`
                 }
             }
 
@@ -89,7 +117,7 @@
                 "DOMContentLoaded",
                 () => {
                     update()
-                    setInterval(update, 1000)
+                    // setInterval(update, 1000)
 
                     document.getElementById("discord-account-button").addEventListener("click", async () => {
                         state.discord ?
@@ -108,19 +136,32 @@
     </head>
 
     <body>
-        <h1 style="margin-bottom: 20px;">TerrorLink</h1>
-        <p>
-            Discord:
-            <img src="" alt="discord-avatar" id="discord-account-avatar" class="inline-avatar">
-            <span id="discord-account-state">Unknown</span> - <button class="link"
-                id="discord-account-button">Connect</button>
-        </p>
-        <p>
-            Steam:
-            <img src="" alt="steam-avatar" id="steam-account-avatar" class="inline-avatar">
-            <span id="steam-account-state">Unknown</span> - <button class="link"
-                id="steam-account-button">Connect</button>
-        </p>
+        <h1>TerrorLink</h1>
+
+        <div>
+            <p>
+                Discord:
+                <img src="" alt="discord-avatar" id="discord-account-avatar" class="inline-avatar">
+                <span id="discord-account-state">Unknown</span> - <button class="link"
+                    id="discord-account-button">Connect</button>
+            </p>
+            <p>
+                Steam:
+                <img src="" alt="steam-avatar" id="steam-account-avatar" class="inline-avatar">
+                <span id="steam-account-state">Unknown</span> - <button class="link"
+                    id="steam-account-button">Connect</button>
+            </p>
+        </div>
+
+        <div>
+            <p>Websocket: <span id="websocket-connection-state">Disconnected</span></p>
+            <p>DiscordRPC: <span id="discordrpc-connection-state">Disconnected</span></p>
+        </div>
+
+        <div>
+            <h4 id="websocket-transferred-count"></h4>
+            <h4 id="websocket-transferred-bytes"></h4>
+        </div>
     </body>
 
 </html>
