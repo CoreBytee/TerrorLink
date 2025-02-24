@@ -15,7 +15,11 @@ console.log(`http://localhost:${PORT}`);
 const window = new Window(`http://localhost:${PORT}`);
 
 function decodeJWT(token: string) {
-	return jwt.decode(token, "", true);
+	try {
+		return jwt.decode(token, "", true);
+	} catch (error) {
+		return false;
+	}
 }
 
 function storeToken(token: string) {
