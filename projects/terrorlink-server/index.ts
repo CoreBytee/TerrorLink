@@ -27,22 +27,6 @@ function encodeJWT(payload: Record<string, any>) {
 }
 
 new Elysia()
-	.get("/authenticate/steam", (context) => {
-		return context.redirect(steamAuthentication.getAuthorizationURL());
-	})
-	.get("/authenticate/steam/return", async (context) => {
-		const steamUser = await steamAuthentication.resolveUrl(context.request.url);
-		console.log(steamUser);
-		if (!steamUser) return;
-		const jwt = encodeJWT({
-			...steamUser?.toJSON(),
-			type: "steam",
-		});
-
-		return context.redirect(
-			`http://localhost:${context.cookie.port.value}/return?token=${jwt}`,
-		);
-	})
 	.get("/authenticate/discord", (context) => {
 		context.cookie.port.value = Number.parseInt(context.query.p).toString();
 		return context.redirect(discordAuthentication.getAuthorizationURL());
@@ -61,6 +45,25 @@ new Elysia()
 			`http://localhost:${context.cookie.port.value}/return?token=${jwt}`,
 		);
 	})
+
+	.get("/authenticate/steam", (context) => {
+		context.cookie.port.value = Number.parseInt(context.query.p).toString();
+		return context.redirect(steamAuthentication.getAuthorizationURL());
+	})
+	.get("/authenticate/steam/return", async (context) => {
+		const steamUser = await steamAuthentication.resolveUrl(context.request.url);
+		console.log(steamUser);
+		if (!steamUser) return;
+		const jwt = encodeJWT({
+			...steamUser?.toJSON(),
+			type: "steam",
+		});
+
+		return context.redirect(
+			`http://localhost:${context.cookie.port.value}/return?token=${jwt}`,
+		);
+	})
+
 	.get("/", (context) => {
 		return "Hello World!";
 	})

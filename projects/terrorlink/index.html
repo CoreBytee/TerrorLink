@@ -30,31 +30,97 @@
                 padding-top: 20px;
             }
 
+            button.link {
+                appearance: none;
+                background-color: transparent;
+                border: none;
+                color: rgb(59, 59, 255);
+                text-decoration: underline;
+                cursor: pointer;
+            }
+
+            .inline-avatar {
+                height: 15px;
+            }
+
             * {
                 box-sizing: border-box;
             }
 
-            /* * {
+            * {
                 margin: 0;
                 padding: 0;
-            } */
+            }
         </style>
 
         <script>
-            function discord() {
-                fetch("/login/discord", { method: "POST" })
+            let state = undefined
+            async function fetchState() {
+                const response = await fetch("/api/state")
+                state = await response.json()
+                return state
             }
 
-            function steam() {
-                fetch("/login/steam", { method: "POST" })
+            async function update() {
+                const state = await fetchState()
+
+                { // Discord State
+                    const discordAccountState = document.getElementById("discord-account-state")
+                    const discordAccountAvatar = document.getElementById("discord-account-avatar")
+                    const discordAccountButton = document.getElementById("discord-account-button")
+                    discordAccountState.innerText = state.discord ? state.discord.displayName : "Unknown"
+                    discordAccountAvatar.src = state.discord ? state.discord.avatarUrl : ""
+                    discordAccountAvatar.style.display = state.discord ? "inline" : "none"
+                    discordAccountButton.innerText = state.discord ? "Disconnect" : "Connect"
+                }
+
+                {
+                    const steamAccountState = document.getElementById("steam-account-state")
+                    const steamAccountAvatar = document.getElementById("steam-account-avatar")
+                    const steamAccountButton = document.getElementById("steam-account-button")
+                    steamAccountState.innerText = state.steam ? state.steam.displayName : "Unknown"
+                    steamAccountAvatar.src = state.steam ? state.steam.avatarUrl : ""
+                    steamAccountAvatar.style.display = state.steam ? "inline" : "none"
+                    steamAccountButton.innerText = state.steam ? "Disconnect" : "Connect"
+                }
             }
+
+            document.addEventListener(
+                "DOMContentLoaded",
+                () => {
+                    update()
+                    setInterval(update, 1000)
+
+                    document.getElementById("discord-account-button").addEventListener("click", async () => {
+                        state.discord ?
+                            await fetch("/api/logout/discord", { method: "POST" }) : await fetch("/api/login/discord", { method: "POST" })
+                        await update()
+                    })
+
+                    document.getElementById("steam-account-button").addEventListener("click", async () => {
+                        state.steam ?
+                            await fetch("/api/logout/steam", { method: "POST" }) : await fetch("/api/login/steam", { method: "POST" })
+                        await update()
+                    })
+                }
+            )
         </script>
     </head>
 
     <body>
-        <h1>TerrorLink</h1>
-        <button onclick="discord()">Discord</button>
-        <button onclick="steam()">Steam</button>
+        <h1 style="margin-bottom: 20px;">TerrorLink</h1>
+        <p>
+            Discord:
+            <img src="" alt="discord-avatar" id="discord-account-avatar" class="inline-avatar">
+            <span id="discord-account-state">Unknown</span> - <button class="link"
+                id="discord-account-button">Connect</button>
+        </p>
+        <p>
+            Steam:
+            <img src="" alt="steam-avatar" id="steam-account-avatar" class="inline-avatar">
+            <span id="steam-account-state">Unknown</span> - <button class="link"
+                id="steam-account-button">Connect</button>
+        </p>
     </body>
 
 </html>
