@@ -26,6 +26,14 @@ function encodeJWT(payload: Record<string, any>) {
 	return jwt.encode(payload, env.JWT_SECRET as string);
 }
 
+function decodeJWT(token: string) {
+	try {
+		return jwt.decode(token, env.JWT_SECRET as string);
+	} catch (error) {
+		return false;
+	}
+}
+
 new Elysia()
 	.get("/authenticate/discord", (context) => {
 		context.cookie.port.value = Number.parseInt(context.query.p).toString();
