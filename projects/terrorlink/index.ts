@@ -1,7 +1,8 @@
 import getPort from "get-port";
 import { env, serve } from "bun";
-import indexPage from "./index.html";
-import returnPage from "./return.html";
+import indexPage from "./pages/index.html" with { type: "file" };
+import returnPage from "./pages/return.html" with { type: "file" };
+import yippieGIF from "./pages/yippie.gif" with { type: "file" };
 import open from "open";
 import { readJsonSync, writeJSONSync } from "fs-extra";
 import jwt from "jwt-simple";
@@ -72,7 +73,9 @@ serve({
 	development: true,
 	port: PORT,
 	routes: {
-		"/": indexPage,
+		"/": () => {
+			return new Response(Bun.file(indexPage));
+		},
 
 		"/return": async (request) => {
 			const url = new URL(request.url);
@@ -80,7 +83,12 @@ serve({
 			if (token) storeToken(token);
 			return Response.redirect("/return/done");
 		},
-		"/return/done": returnPage,
+		"/return/done": () => {
+			return new Response(Bun.file(returnPage));
+		},
+		"/return/yippie.gif": () => {
+			return new Response(Bun.file(yippieGIF));
+		},
 
 		"/api/login/discord": {
 			async POST() {
