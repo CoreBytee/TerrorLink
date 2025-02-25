@@ -22,6 +22,10 @@ export class Window {
 				title: "TerrorLink",
 			}),
 		});
+
+		this.worker.on("exit", () => {
+			process.exit(0);
+		});
 	}
 
 	close() {
