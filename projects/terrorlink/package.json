@@ -3,13 +3,13 @@
     "module": "index.ts",
     "type": "module",
     "dependencies": {
-        "@xhayper/discord-rpc": "^1.2.0",
         "bytes": "^3.1.2",
         "elysia": "^1.2.21",
         "fs-extra": "^11.3.0",
         "get-port": "^7.1.0",
         "jwt-simple": "^0.5.6",
         "libui-node": "^0.2.1",
+        "node-web-audio-api": "^1.0.1",
         "open": "^10.1.0",
         "webview-bun": "^2.3.0"
     },

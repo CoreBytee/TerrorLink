@@ -1,7 +1,21 @@
-import { type Size, SizeHint } from "webview-bun";
+import { type Size, SizeHint, Webview } from "webview-bun";
 import cluster, { type Worker } from "node:cluster";
+import { env } from "bun";
 
 export class Window {
+	static check() {
+		if (!env.WEBVIEW_DATA) return;
+
+		const data = JSON.parse(env.WEBVIEW_DATA);
+		const webview = new Webview();
+		webview.title = data.title;
+		webview.size = data.size;
+
+		webview.navigate(data.url);
+		webview.run();
+		process.exit(0);
+	}
+
 	url: string;
 	size: Size;
 	private worker: Worker | undefined;

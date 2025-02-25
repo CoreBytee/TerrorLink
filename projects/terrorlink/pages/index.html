@@ -67,44 +67,26 @@
                 requestAnimationFrame(update)
                 const state = await fetchState()
 
-                { // Discord State
-                    const discordAccountState = document.getElementById("discord-account-state")
-                    const discordAccountAvatar = document.getElementById("discord-account-avatar")
-                    const discordAccountButton = document.getElementById("discord-account-button")
-
-                    discordAccountState.innerText = state.discord ? state.discord.displayName : "Unknown"
-                    discordAccountState.style.color = state.discord ? "green" : "red"
-
-                    discordAccountAvatar.src = state.discord ? state.discord.avatarUrl : ""
-                    discordAccountAvatar.style.display = state.discord ? "inline" : "none"
-
-                    discordAccountButton.innerText = state.discord ? "Disconnect" : "Connect"
-                }
-
                 { // Steam state
                     const steamAccountState = document.getElementById("steam-account-state")
                     const steamAccountAvatar = document.getElementById("steam-account-avatar")
                     const steamAccountButton = document.getElementById("steam-account-button")
 
-                    steamAccountState.innerText = state.steam ? state.steam.displayName : "Unknown"
-                    steamAccountState.style.color = state.steam ? "green" : "red"
+                    const steamAccount = state.steamAccount
 
-                    steamAccountAvatar.src = state.steam ? state.steam.avatarUrl : ""
-                    steamAccountAvatar.style.display = state.steam ? "inline" : "none"
+                    steamAccountState.innerText = steamAccount ? steamAccount.displayName : "Unknown"
+                    steamAccountState.style.color = steamAccount ? "green" : "red"
 
-                    steamAccountButton.innerText = state.steam ? "Disconnect" : "Connect"
+                    steamAccountAvatar.src = steamAccount ? steamAccount.avatarUrl : ""
+                    steamAccountAvatar.style.display = steamAccount ? "inline" : "none"
+
+                    steamAccountButton.innerText = steamAccount ? "Disconnect" : "Connect"
                 }
 
                 {
                     const websocketConnectionState = document.getElementById("websocket-connection-state")
                     websocketConnectionState.innerText = state.websocket ? "Connected" : "Disconnected"
                     websocketConnectionState.style.color = state.websocket ? "green" : "red"
-                }
-
-                {
-                    const discordrpcConnectionState = document.getElementById("discordrpc-connection-state")
-                    discordrpcConnectionState.innerText = state.discordRPC ? "Connected" : "Disconnected"
-                    discordrpcConnectionState.style.color = state.discordRPC ? "green" : "red"
                 }
 
                 {
@@ -118,18 +100,10 @@
                 "DOMContentLoaded",
                 () => {
                     update()
-                    // setInterval(update, 1000)
-
-                    document.getElementById("discord-account-button").addEventListener("click", async () => {
-                        state.discord ?
-                            await fetch("/api/logout/discord", { method: "POST" }) : await fetch("/api/login/discord", { method: "POST" })
-                        await update()
-                    })
 
                     document.getElementById("steam-account-button").addEventListener("click", async () => {
-                        state.steam ?
+                        state.steamAccount ?
                             await fetch("/api/logout/steam", { method: "POST" }) : await fetch("/api/login/steam", { method: "POST" })
-                        await update()
                     })
 
                     document.getElementById("volume-slider").addEventListener("input", async (event) => {
@@ -157,12 +131,6 @@
 
         <div>
             <p>
-                Discord:
-                <img src="" alt="discord-avatar" id="discord-account-avatar" class="inline-avatar">
-                <span id="discord-account-state">Unknown</span> - <button class="link"
-                    id="discord-account-button">Connect</button>
-            </p>
-            <p>
                 Steam:
                 <img src="" alt="steam-avatar" id="steam-account-avatar" class="inline-avatar">
                 <span id="steam-account-state">Unknown</span> - <button class="link"
@@ -172,7 +140,6 @@
 
         <div>
             <p>Websocket: <span id="websocket-connection-state">Disconnected</span></p>
-            <p>DiscordRPC: <span id="discordrpc-connection-state">Disconnected</span></p>
         </div>
 
         <div>

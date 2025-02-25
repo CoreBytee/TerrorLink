@@ -25,6 +25,7 @@
         "@biomejs/biome"
     ],
     "patchedDependencies": {
-        "@xhayper/discord-rpc@1.2.0": "patches/@xhayper%2Fdiscord-rpc@1.2.0.patch"
+        "@xhayper/discord-rpc@1.2.0": "patches/@xhayper%2Fdiscord-rpc@1.2.0.patch",
+        "node-web-audio-api@1.0.1": "patches/node-web-audio-api@1.0.1.patch"
     }
 }

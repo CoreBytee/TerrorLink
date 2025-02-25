@@ -1,0 +1,43 @@
+diff --git a/index.mjs b/index.mjs
+index 74549b99ca2cdd77d4dfbd325548be823a880950..2abb7052d4397ba86c061bc23146035a6940d824 100644
+--- a/index.mjs
++++ b/index.mjs
+@@ -20,10 +20,10 @@
+ // re-export index.cjs to support esm import syntax
+ // see https://github.com/nodejs/node/issues/40541#issuecomment-951609570
+ 
+-import {
+-  createRequire,
+-} from 'module';
+-const require = createRequire(import.meta.url);
++// import {
++//   createRequire,
++// } from 'module';
++// const require = createRequire(import.meta.url);
+ 
+ const nativeModule = require('./index.cjs');
+ export const {
+diff --git a/load-native.cjs b/load-native.cjs
+index 9e1842f684065cb92a09902c1f58b9a8109fc221..61c774901dd52bc0743df8d4c53e25f3c7fdfe15 100644
+--- a/load-native.cjs
++++ b/load-native.cjs
+@@ -81,13 +81,13 @@ switch (platform) {
+ }
+ 
+ // use local build if exists
+-if (fs.existsSync('node-web-audio-api.build-release.node')) {
+-  nativeBinding = require('./node-web-audio-api.build-release.node');
+-}
++// if (fs.existsSync('node-web-audio-api.build-release.node')) {
++//   nativeBinding = require('./node-web-audio-api.build-release.node');
++// }
+ 
+-if (fs.existsSync('node-web-audio-api.build-debug.node')) {
+-  nativeBinding = require('./node-web-audio-api.build-debug.node');
+-}
++// if (fs.existsSync('node-web-audio-api.build-debug.node')) {
++//   nativeBinding = require('./node-web-audio-api.build-debug.node');
++// }
+ 
+ if (!nativeBinding) {
+   if (loadError) {

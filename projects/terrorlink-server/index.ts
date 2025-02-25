@@ -1,6 +1,5 @@
 import { env } from "bun";
 import Elysia from "elysia";
-import DiscordAuthentication from "./classes/DiscordAuthentication";
 import SteamAuthentication from "./classes/SteamAuthentication";
 import jwt from "jwt-simple";
 import type { ElysiaWS } from "elysia/ws";
@@ -14,13 +13,6 @@ const steamAuthentication = new SteamAuthentication(
 	BASE_URL,
 	env.STEAM_TOKEN as string,
 	`${BASE_URL}/authenticate/steam/return`,
-);
-
-const discordAuthentication = new DiscordAuthentication(
-	env.DISCORD_CLIENT_ID as string,
-	env.DISCORD_CLIENT_SECRET as string,
-	`${BASE_URL}/authenticate/discord/return`,
-	["identify", "rpc", "rpc.voice.write", "rpc.voice.read"],
 );
 
 // biome-ignore lint/suspicious/noExplicitAny: <shut up>
@@ -95,25 +87,6 @@ new Elysia()
 	.onError((error) => console.error(error))
 	.get("/", (context) => {
 		return "Hello World!";
-	})
-
-	.get("/authenticate/discord", (context) => {
-		context.cookie.port.value = Number.parseInt(context.query.p).toString();
-		return context.redirect(discordAuthentication.getAuthorizationURL());
-	})
-	.get("/authenticate/discord/return", async (context) => {
-		const discordUser = await discordAuthentication.resolveUrl(
-			context.request.url,
-		);
-		if (!discordUser) return;
-		const jwt = encodeJWT({
-			...discordUser?.toJSON(),
-			type: "discord",
-		});
-
-		return context.redirect(
-			`http://localhost:${context.cookie.port.value}/return?token=${jwt}`,
-		);
 	})
 
 	.get("/authenticate/steam", (context) => {
