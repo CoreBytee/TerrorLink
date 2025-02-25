@@ -32,6 +32,8 @@ let discordRPC: Client | null;
 let websocket: WebSocket | null;
 let messageCount = 0; // Received message count
 let bytesCount = 0; // Received data count in bytes
+let ping = -1;
+let volume = 100;
 
 function decodeJWT(token: string) {
 	try {
@@ -119,6 +121,23 @@ async function connect() {
 		bytesCount += event.data.length;
 	});
 
+	websocket.addEventListener("message", async (event) => {
+		const data = JSON.parse(event.data);
+		ping = Date.now() - Date.parse(data.time);
+		if (data.type === "voice_settings") {
+			console.log(data);
+			await discordRPC?.user?.setVoiceSettings({
+				user_id: data.for,
+				volume: (data.volume / 100) * volume,
+				mute: false,
+				pan: {
+					left: data.left,
+					right: data.right,
+				},
+			});
+		}
+	});
+
 	console.log("Connected");
 }
 
@@ -180,6 +199,7 @@ serve({
 		"/api/state": async (request) => {
 			const discordToken = retrieveToken("discord");
 			const steamToken = retrieveToken("steam");
+
 			return Response.json({
 				discord: discordToken ? decodeJWT(discordToken) : false,
 				steam: steamToken ? decodeJWT(steamToken) : false,
@@ -187,7 +207,16 @@ serve({
 				websocket: !!websocket,
 				messageCount,
 				bytesCount: bytes(bytesCount),
+				ping,
 			});
+		},
+
+		"/api/volume": {
+			async POST(request) {
+				const data = await request.json();
+				volume = data.volume;
+				return new Response("");
+			},
 		},
 	},
 });

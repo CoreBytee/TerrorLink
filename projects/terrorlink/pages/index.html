@@ -110,6 +110,7 @@
                 {
                     document.getElementById("websocket-transferred-count").innerText = `WS Messages: ${state.messageCount}`
                     document.getElementById("websocket-transferred-bytes").innerText = `WS Bytes: ${state.bytesCount}`
+                    document.getElementById("websocket-ping").innerText = `WS Ping: ${state.ping} ms`
                 }
             }
 
@@ -129,6 +130,22 @@
                         state.steam ?
                             await fetch("/api/logout/steam", { method: "POST" }) : await fetch("/api/login/steam", { method: "POST" })
                         await update()
+                    })
+
+                    document.getElementById("volume-slider").addEventListener("input", async (event) => {
+                        const value = event.target.value
+                        document.querySelector("label[for=volume-slider]").innerText = `Volume: ${value}`
+                        await fetch("/api/volume", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                volume: value
+                            })
+                        })
+
+
                     })
                 }
             )
@@ -159,8 +176,14 @@
         </div>
 
         <div>
+            <label for="volume-slider">Volume: 100</label><br>
+            <input type="range" name="" id="volume-slider" min="0" max="100" value="100">
+        </div>
+
+        <div>
             <h4 id="websocket-transferred-count"></h4>
             <h4 id="websocket-transferred-bytes"></h4>
+            <h4 id="websocket-ping"></h4>
         </div>
     </body>
 
