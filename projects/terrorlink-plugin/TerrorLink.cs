@@ -33,7 +33,7 @@ public class TerrorLink : BasePlugin
                     round_phase = gamerules.GamePhase,
                     players = Utilities.GetPlayers().Select(player => new
                     {
-                        sid = player.SteamID,
+                        sid = player.SteamID.ToString(),
                         name = player.PlayerName,
                         health = player.PawnHealth,
                         armor = player.PawnArmor,
