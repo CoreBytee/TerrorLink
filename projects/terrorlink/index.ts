@@ -124,6 +124,7 @@ async function connect() {
 
 async function reconnect() {
 	await disconnect();
+	await Bun.sleep(1000);
 	await connect();
 }
 
