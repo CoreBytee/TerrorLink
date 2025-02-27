@@ -6,7 +6,7 @@ import yippieGIF from "./pages/yippie.gif" with { type: "file" };
 import open from "open";
 import { readJsonSync, writeJSONSync } from "fs-extra";
 import jwt from "jwt-simple";
-import { Window } from "./classes/Window";
+import Window from "window";
 import { Webview } from "webview-bun";
 import bytes from "bytes";
 import { TerrorLinkClient } from "./classes/TerrorLinkClient";

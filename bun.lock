@@ -11,7 +11,13 @@
         "typescript": "^5.7.3",
       },
     },
-    "projects/terrorlink": {
+    "packages/window": {
+      "name": "window",
+      "dependencies": {
+        "webview-bun": "^2.3.0",
+      },
+    },
+    "projects/terrorlink-client": {
       "name": "terrorlink-client",
       "dependencies": {
         "bytes": "^3.1.2",
@@ -22,7 +28,6 @@
         "libui-node": "^0.2.1",
         "node-web-audio-api": "^1.0.1",
         "open": "^10.1.0",
-        "webview-bun": "^2.3.0",
       },
       "devDependencies": {
         "@types/bytes": "^3.1.5",
@@ -365,7 +370,7 @@
 
     "terrorlink": ["terrorlink@workspace:projects/terrorlink-server"],
 
-    "terrorlink-client": ["terrorlink-client@workspace:projects/terrorlink"],
+    "terrorlink-client": ["terrorlink-client@workspace:projects/terrorlink-client"],
 
     "tough-cookie": ["tough-cookie@2.5.0", "", { "dependencies": { "psl": "^1.1.28", "punycode": "^2.1.1" } }, "sha512-nlLsUzgm1kfLXSXfRZMc1KLAugd4hqJHDTvc2hDIwS3mZAfMEuMbc03SujMF+GEcpaX/qboeycw6iO8JwVv2+g=="],
 
@@ -396,6 +401,8 @@
     "which": ["which@1.3.1", "", { "dependencies": { "isexe": "^2.0.0" }, "bin": { "which": "./bin/which" } }, "sha512-HxJdYWq1MTIQbJ3nw0cqssHoTNU267KlrDuGZ1WYlxDStUtKUhOaJmh112/TZmHxxUfuJqPXSOm7tDyas0OSIQ=="],
 
     "wide-align": ["wide-align@1.1.5", "", { "dependencies": { "string-width": "^1.0.2 || 2 || 3 || 4" } }, "sha512-eDMORYaPNZ4sQIuuYPDHdQvf4gyCF9rEEV/yPxGfwPkRodwEgiMUUXTx/dex+Me0wxx53S+NgUHaP7y3MGlDmg=="],
+
+    "window": ["window@workspace:packages/window"],
 
     "wrappy": ["wrappy@1.0.2", "", {}, "sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ=="],
 

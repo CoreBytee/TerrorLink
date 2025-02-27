@@ -1,5 +1,5 @@
 import { env, serve } from "bun";
-import { Window } from "./Window";
+import Window from "window";
 
 import indexPage from "../pages/index.html" with { type: "file" };
 import returnPage from "../pages/return.html" with { type: "file" };

@@ -2,7 +2,7 @@ import { type Size, SizeHint, Webview } from "webview-bun";
 import cluster, { type Worker } from "node:cluster";
 import { env } from "bun";
 
-export class Window {
+export default class Window {
 	static check() {
 		if (!env.WEBVIEW_DATA) return;
 

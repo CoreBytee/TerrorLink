@@ -1,0 +1,8 @@
+{
+    "name": "window",
+    "module": "index.ts",
+    "type": "module",
+    "dependencies": {
+        "webview-bun": "^2.3.0"
+    }
+}

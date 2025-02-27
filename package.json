@@ -15,7 +15,7 @@
         "install:steamcmd": "sh ./scripts/install-steamcmd.sh",
         "install:counterstrike": "sh ./scripts/install-counterstrike.sh",
         "install:cssharp": "sh ./scripts/install-cssharp.sh",
-        "dev:client": "bun run --watch ./projects/terrorlink",
+        "dev:client": "bun run --watch ./projects/terrorlink-client",
         "dev:server": "bun run --watch ./projects/terrorlink-server",
         "dev:game": "./game/counterstrike/game/bin/win64/cs2.exe -dedicated +map de_dust2 +sv_setsteamaccount $(bun --print process.env.CS2_SERVER_ACCOUNT)",
         "dev:plugin": "sh ./scripts/dev-plugin.sh",
@@ -25,7 +25,6 @@
         "@biomejs/biome"
     ],
     "patchedDependencies": {
-        "@xhayper/discord-rpc@1.2.0": "patches/@xhayper%2Fdiscord-rpc@1.2.0.patch",
         "node-web-audio-api@1.0.1": "patches/node-web-audio-api@1.0.1.patch"
     }
 }
