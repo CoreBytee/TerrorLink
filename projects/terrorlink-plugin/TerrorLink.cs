@@ -5,6 +5,8 @@ using System.Text;
 using System.Text.Json;
 using System.Net.Http.Headers;
 using CounterStrikeSharp.API;
+using CounterStrikeSharp.API.Modules.Cvars;
+using CounterStrikeSharp.API.Modules.Cvars.Validators;
 
 namespace TerrorLink;
 public class TerrorLink : BasePlugin
@@ -12,6 +14,8 @@ public class TerrorLink : BasePlugin
     public override string ModuleName => "Hello World Plugin";
 
     public override string ModuleVersion => "0.0.1";
+
+    public FakeConVar<string> APIToken = new("tl_apitoken", "Token to use when making api requests to the backend server", "unset");
 
     public override void Load(bool hotReload)
     {
@@ -70,6 +74,7 @@ public class TerrorLink : BasePlugin
         {
             var json = JsonSerializer.Serialize(eventData);
             var content = new StringContent(json, Encoding.UTF8, new MediaTypeHeaderValue("application/json"));
+            content.Headers.Add("x-token", APIToken.Value);
             try
             {
                 var response = await client.PostAsync("http://localhost:3000/api/gamestate", content);
