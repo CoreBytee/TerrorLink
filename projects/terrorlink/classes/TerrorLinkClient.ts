@@ -8,7 +8,7 @@ import { SteamAccount } from "./SteamAccount";
 import bytes from "bytes";
 import open from "open";
 
-export class TerrorLink {
+export class TerrorLinkClient {
 	remoteUrl: string;
 	port: number;
 	window: Window;

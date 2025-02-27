@@ -7,15 +7,14 @@ import open from "open";
 import { readJsonSync, writeJSONSync } from "fs-extra";
 import jwt from "jwt-simple";
 import { Window } from "./classes/Window";
-import { Client } from "@xhayper/discord-rpc";
 import { Webview } from "webview-bun";
 import bytes from "bytes";
-import { TerrorLink } from "./classes/TerrorLink";
+import { TerrorLinkClient } from "./classes/TerrorLinkClient";
 
 const port = await getPort();
 
 Window.check();
-new TerrorLink(port);
+new TerrorLinkClient(port);
 
 const BASE_URL =
 	(env.WEBSERVER_URL as string) || "https://terrorlink.corebyte.me";

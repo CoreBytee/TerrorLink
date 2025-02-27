@@ -1,5 +1,5 @@
 import { readJsonSync, writeJSONSync } from "fs-extra";
-import type { TerrorLink } from "./TerrorLink";
+import type { TerrorLinkClient } from "./TerrorLinkClient";
 import jwt from "jwt-simple";
 
 function decodeJWT(token: string | null) {
@@ -18,10 +18,10 @@ type SteamTokenData = {
 };
 
 export class SteamAccount {
-	terrorLink: TerrorLink;
+	terrorLink: TerrorLinkClient;
 	token: string | null;
 	data: SteamTokenData | null;
-	constructor(terrorLink: TerrorLink) {
+	constructor(terrorLink: TerrorLinkClient) {
 		this.terrorLink = terrorLink;
 		this.token =
 			readJsonSync("./terrorlink.data", { throws: false })?.steam ?? null;
