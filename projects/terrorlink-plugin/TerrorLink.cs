@@ -90,26 +90,4 @@ public class TerrorLink : BasePlugin
             }
         }
     }
-
-    [GameEventHandler]
-    public HookResult OnPlayerConnect(EventPlayerConnect @event, GameEventInfo info)
-    {
-        if (@event.Userid != null && @event.Userid.IsValid)
-        {
-            Logger.LogInformation("Player {Name} has connected!", @event.Userid.PlayerName);
-        }
-
-        return HookResult.Continue;
-    }
-
-    [GameEventHandler]
-    public HookResult OnPlayerDisconnect(EventPlayerDisconnect @event, GameEventInfo info)
-    {
-        if (@event.Userid != null && @event.Userid.IsValid)
-        {
-            Logger.LogInformation("Player {Name} has disconnected!", @event.Userid.PlayerName);
-        }
-
-        return HookResult.Continue;
-    }
 }
