@@ -5,6 +5,7 @@ import NetworkClient from "./NetworkClient";
 import InternalWebserver from "./InternalWebserver";
 import { env } from "bun";
 import buildUrl from "../util/buildUrl";
+import Microphone from "./Microphone";
 
 export class TerrorLinkClient {
 	/**
@@ -19,6 +20,7 @@ export class TerrorLinkClient {
 
 	steamAccount: SteamAccount;
 	networking: NetworkClient;
+	microphone: Microphone;
 	internalWebserver: InternalWebserver;
 	window: Window;
 	constructor(port: number) {
@@ -38,6 +40,7 @@ export class TerrorLinkClient {
 
 		this.steamAccount = new SteamAccount(this);
 		this.networking = new NetworkClient(this);
+		this.microphone = new Microphone(this);
 		this.internalWebserver = new InternalWebserver(this, port);
 		this.window = new Window(this.internalWebserver.url);
 	}

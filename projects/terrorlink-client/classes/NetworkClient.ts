@@ -8,14 +8,20 @@ import {
 	type UDPMessage,
 	type WSMessage,
 } from "networking";
+import crypto from "node:crypto";
+import { AudioContext } from "node-web-audio-api";
 
 export default class NetworkClient extends EventEmitter {
 	terrorLink: TerrorLinkClient;
 	websocket: WebSocket | null = null;
 	udpsocket: udp.ConnectedSocket<"buffer"> | null = null;
+	encryptionKey: Buffer | undefined;
+	audioContext: AudioContext;
 	constructor(terrorLink: TerrorLinkClient) {
 		super();
 		this.terrorLink = terrorLink;
+
+		this.audioContext = new AudioContext({ latencyHint: "interactive" });
 
 		this.connect();
 	}
@@ -119,6 +125,8 @@ export default class NetworkClient extends EventEmitter {
 		);
 
 		console.log(readyMessage);
+
+		this.encryptionKey = Buffer.from(readyMessage.data.key);
 	}
 
 	async disconnect() {
@@ -135,10 +143,36 @@ export default class NetworkClient extends EventEmitter {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	private async handleWSMessage(type: WSMessageType, data: any) {}
 
-	private async handleUDPMessage(type: UDPMessageType, data: Buffer) {}
+	private async handleUDPMessage(type: UDPMessageType, data: Buffer) {
+		// console.log(data);
+		switch (type) {
+			case UDPMessageType.Voice: {
+				const decrypted = this.decryptData(data);
+
+				const audioBuffer = this.audioContext.createBuffer(
+					1,
+					decrypted.length / 4,
+					this.audioContext.sampleRate,
+				);
+				const channelData = audioBuffer.getChannelData(0);
+
+				const float32Array = new Float32Array(decrypted.buffer);
+				channelData.set(float32Array);
+
+				const bufferSource = this.audioContext.createBufferSource();
+				bufferSource.buffer = audioBuffer;
+				bufferSource.connect(this.audioContext.destination);
+				bufferSource.start();
+				break;
+			}
+
+			default:
+				break;
+		}
+	}
 
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	private async sendWSMessage(type: WSMessageType, data: any) {
+	async sendWSMessage(type: WSMessageType, data: any) {
 		if (!this.websocket) {
 			throw new Error("WebSocket not connected");
 		}
@@ -147,7 +181,7 @@ export default class NetworkClient extends EventEmitter {
 		this.websocket.send(message);
 	}
 
-	private async sendUDPMessage(type: UDPMessageType, data: Buffer) {
+	async sendUDPMessage(type: UDPMessageType, data: Buffer) {
 		if (!this.udpsocket) {
 			throw new Error("UDP socket not connected");
 		}
@@ -164,6 +198,35 @@ export default class NetworkClient extends EventEmitter {
 		// write data
 		data.copy(message, 9);
 
+		if (this.udpsocket.closed) return;
 		this.udpsocket.send(message);
+	}
+
+	encryptData(data: Buffer) {
+		if (!this.encryptionKey) {
+			throw new Error("Encryption key is not set");
+		}
+		const iv = crypto.randomBytes(16); // Initialization vector
+		const cipher = crypto.createCipheriv("aes-256-cbc", this.encryptionKey, iv);
+		const encrypted = Buffer.concat([cipher.update(data), cipher.final()]);
+		return encrypted;
+	}
+
+	decryptData(data: Buffer) {
+		if (!this.encryptionKey) {
+			throw new Error("Encryption key is not set");
+		}
+		const iv = data.subarray(0, 16);
+		const encrypted = data.subarray(16);
+		const decipher = crypto.createDecipheriv(
+			"aes-256-cbc",
+			this.encryptionKey,
+			iv,
+		);
+		const decrypted = Buffer.concat([
+			decipher.update(encrypted),
+			decipher.final(),
+		]);
+		return decrypted;
 	}
 }

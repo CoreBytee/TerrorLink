@@ -30,6 +30,12 @@ export enum UDPMessageType {
 	 * Contains the server's ip and port.
 	 */
 	Identity = 0x2,
+
+	/**
+	 * Sent by the client and server
+	 * Contains a voice packet
+	 */
+	Voice = 0x3,
 }
 
 export type WSMessage = {

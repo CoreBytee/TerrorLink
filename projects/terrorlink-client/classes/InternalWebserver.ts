@@ -52,6 +52,7 @@ export default class InternalWebserver {
 				},
 
 				"/api/state": async (request) => {
+					// console.log(await this.terrorLink.microphone.getFrequencyData());
 					return Response.json({
 						steamAccount: steamAccount.data,
 						websocket: {
@@ -59,6 +60,9 @@ export default class InternalWebserver {
 							ping: 0,
 							messageCount: 0,
 							bytesCount: bytes(0),
+						},
+						microphone: {
+							fequencyData: await this.terrorLink.microphone.getFrequencyData(),
 						},
 					});
 				},

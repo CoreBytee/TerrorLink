@@ -50,6 +50,16 @@ class Client extends EventEmitter {
 		this.ws.send({ type, data });
 	}
 
+	sendUDPMessage(type: UDPMessageType, data: Buffer) {
+		if (!this.address) return;
+		this.networking.sendUDPMessage(
+			type,
+			data,
+			this.address.address,
+			this.address.port,
+		);
+	}
+
 	handleWSMessage(message: WSMessage) {
 		const type = message.type;
 		const data = message.data;
@@ -57,7 +67,6 @@ class Client extends EventEmitter {
 		switch (type) {
 			case WSMessageType.Identity:
 				this.address = data;
-				console.log(this.address);
 
 				this.sendWSMessage(WSMessageType.Ready, {
 					key: this.encryptionKey.toJSON().data,
@@ -65,6 +74,17 @@ class Client extends EventEmitter {
 				break;
 			default:
 				console.warn("Unhandled WS message type", type);
+				break;
+		}
+	}
+
+	handleUDPMessage(type: UDPMessageType, data: Buffer) {
+		switch (type) {
+			case UDPMessageType.Voice:
+				this.sendUDPMessage(UDPMessageType.Voice, data);
+				break;
+			default:
+				console.warn("Unhandled UDP message type", type);
 				break;
 		}
 	}
@@ -201,18 +221,33 @@ export default class NetworkServer {
 		address: string,
 		port: number,
 	) {
-		if (type === UDPMessageType.Identify) {
-			const addressBuffer = Buffer.alloc(64);
-			addressBuffer.write(address, 0, "utf-8");
-			const portBuffer = Buffer.alloc(2);
-			portBuffer.writeUInt16BE(port, 0);
+		switch (type) {
+			case UDPMessageType.Identify: {
+				const addressBuffer = Buffer.alloc(64);
+				addressBuffer.write(address, 0, "utf-8");
+				const portBuffer = Buffer.alloc(2);
+				portBuffer.writeUInt16BE(port, 0);
 
-			this.sendUDPMessage(
-				UDPMessageType.Identity,
-				Buffer.from([...addressBuffer, ...portBuffer]),
-				address,
-				port,
-			);
+				this.sendUDPMessage(
+					UDPMessageType.Identity,
+					Buffer.from([...addressBuffer, ...portBuffer]),
+					address,
+					port,
+				);
+				break;
+			}
+
+			default: {
+				const client = Object.values(this.clients).find(
+					(client) =>
+						client.address?.address === address &&
+						client.address?.port === port,
+				);
+
+				if (!client) return;
+				client.handleUDPMessage(type, data);
+				break;
+			}
 		}
 	}
 
