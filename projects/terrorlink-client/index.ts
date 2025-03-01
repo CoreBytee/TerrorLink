@@ -16,9 +16,6 @@ const port = await getPort();
 Window.check();
 new TerrorLinkClient(port);
 
-const BASE_URL =
-	(env.WEBSERVER_URL as string) || "https://terrorlink.corebyte.me";
-
 // const window = new Window(`http://localhost:${PORT}`);
 // let discordRPC: Client | null;
 // let websocket: WebSocket | null;

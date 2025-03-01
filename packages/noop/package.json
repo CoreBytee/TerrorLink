@@ -1,0 +1,5 @@
+{
+    "name": "noop",
+    "module": "index.ts",
+    "type": "module"
+}

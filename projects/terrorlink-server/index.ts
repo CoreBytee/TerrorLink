@@ -7,8 +7,7 @@ import type { GameStateBody } from "./types/GameStateBody";
 import TerrorLinkServer from "./classes/TerrorLinkServer";
 
 console.log("Hello via Bun!");
-const BASE_URL = env.WEBSERVER_URL as string;
-const port = Number.parseInt(env.WEBSERVER_PORT as string);
+const port = Number.parseInt(env.NETWORK_PORT as string);
 
 new TerrorLinkServer(port);
 

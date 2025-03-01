@@ -1,72 +1,44 @@
-import { env, serve } from "bun";
 import Window from "window";
 
-import indexPage from "../pages/index.html" with { type: "file" };
-import returnPage from "../pages/return.html" with { type: "file" };
-import yippieGIF from "../pages/yippie.gif" with { type: "file" };
 import { SteamAccount } from "./SteamAccount";
-import bytes from "bytes";
-import open from "open";
+import NetworkClient from "./NetworkClient";
+import InternalWebserver from "./InternalWebserver";
+import { env } from "bun";
+import buildUrl from "../util/buildUrl";
 
 export class TerrorLinkClient {
-	remoteUrl: string;
-	port: number;
-	window: Window;
+	/**
+	 * The URL of the HTTP server.
+	 */
+	httpUrl: string;
+
+	/**
+	 * The URL of the Websocket server.
+	 */
+	wsUrl: string;
+
 	steamAccount: SteamAccount;
+	networking: NetworkClient;
+	internalWebserver: InternalWebserver;
+	window: Window;
 	constructor(port: number) {
-		console.log(`http://localhost:${port}`);
-		this.remoteUrl =
-			(env.WEBSERVER_URL as string) || "https://terrorlink.corebyte.me";
-		this.port = port;
-		this.window = new Window(`http://localhost:${this.port}`);
+		this.httpUrl = buildUrl(
+			"http",
+			env.NETWORK_PORT as number | undefined,
+			env.NETWORK_SSL === "true",
+			env.NETWORK_HOST as string | undefined,
+		);
+
+		this.wsUrl = buildUrl(
+			"ws",
+			env.NETWORK_PORT as number | undefined,
+			env.NETWORK_SSL === "true",
+			env.NETWORK_HOST as string | undefined,
+		);
+
 		this.steamAccount = new SteamAccount(this);
-
-		serve({
-			development: true,
-			port: this.port,
-			routes: {
-				"/": () => {
-					return new Response(Bun.file(indexPage));
-				},
-
-				"/return": async (request) => {
-					const url = new URL(request.url);
-					const token = url.searchParams.get("token") ?? "";
-					this.steamAccount.setToken(token);
-					return Response.redirect("/return/done");
-				},
-				"/return/done": () => {
-					return new Response(Bun.file(returnPage));
-				},
-				"/return/yippie.gif": () => {
-					return new Response(Bun.file(yippieGIF));
-				},
-
-				"/api/login/steam": {
-					POST: async () => {
-						open(`${this.remoteUrl}/authenticate/steam?p=${this.port}`);
-						return new Response("");
-					},
-				},
-				"/api/logout/steam": {
-					POST: async () => {
-						this.steamAccount.removeToken();
-						return new Response("");
-					},
-				},
-
-				"/api/state": async (request) => {
-					return Response.json({
-						steamAccount: this.steamAccount.data,
-						websocket: {
-							isConnected: false,
-							ping: 0,
-							messageCount: 0,
-							bytesCount: bytes(0),
-						},
-					});
-				},
-			},
-		});
+		this.networking = new NetworkClient(this);
+		this.internalWebserver = new InternalWebserver(this, port);
+		this.window = new Window(this.internalWebserver.url);
 	}
 }
