@@ -165,7 +165,10 @@ export default class NetworkServer {
 				open: (client) => {
 					const steamToken = client.data.headers["x-steam-token"] as string;
 					const steamData = decodeJWT(steamToken);
-					if (!steamData) return client.close();
+					if (!steamData) {
+						console.warn("Unauthenticated client tried to connect");
+						return client.close();
+					}
 					this.clientConnected(client, steamData);
 				},
 				message: (client, message) => {
