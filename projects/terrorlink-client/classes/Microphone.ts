@@ -13,7 +13,7 @@ export default class Microphone {
 
 		this.audioContext = new AudioContext({ latencyHint: "interactive" });
 		this.audioAnalyser = this.audioContext.createAnalyser();
-		this.audioAnalyser.fftSize = 512;
+		this.audioAnalyser.fftSize = 32;
 		this.audioAnalyser.minDecibels = -90;
 		this.audioAnalyser.smoothingTimeConstant = 0.8;
 
@@ -46,7 +46,7 @@ export default class Microphone {
 
 	async getFrequencyData() {
 		this.audioAnalyser.getByteFrequencyData(this.frequencyData);
-		return this.frequencyData;
+		return Array.from(this.frequencyData.values());
 	}
 
 	get isMuted() {

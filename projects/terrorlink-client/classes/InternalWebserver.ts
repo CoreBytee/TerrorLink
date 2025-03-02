@@ -62,7 +62,8 @@ export default class InternalWebserver {
 							bytesCount: bytes(0),
 						},
 						microphone: {
-							fequencyData: await this.terrorLink.microphone.getFrequencyData(),
+							frequencyData:
+								await this.terrorLink.microphone.getFrequencyData(),
 						},
 					});
 				},

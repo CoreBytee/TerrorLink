@@ -53,6 +53,22 @@
                 margin: 0;
                 padding: 0;
             }
+
+            .voice-state {
+                display: flex;
+                flex-direction: row;
+                gap: 10px;
+
+                height: 80px;
+                width: 80%;
+
+                canvas {
+                    background-color: #161616;
+                    height: 100%;
+                    width: 100%;
+                    border-radius: 20px;
+                }
+            }
         </style>
 
         <script>
@@ -83,16 +99,38 @@
                     steamAccountButton.innerText = steamAccount ? "Disconnect" : "Connect"
                 }
 
-                {
+                { // Websocket state
                     const websocketConnectionState = document.getElementById("websocket-connection-state")
                     websocketConnectionState.innerText = state.websocket ? "Connected" : "Disconnected"
                     websocketConnectionState.style.color = state.websocket ? "green" : "red"
                 }
 
-                {
+                { // Websocket stats
                     document.getElementById("websocket-transferred-count").innerText = `WS Messages: ${state.messageCount}`
                     document.getElementById("websocket-transferred-bytes").innerText = `WS Bytes: ${state.bytesCount}`
                     document.getElementById("websocket-ping").innerText = `WS Ping: ${state.ping} ms`
+                }
+
+                { // Frequency graph
+                    const canvas = document.querySelector("canvas")
+                    const context = canvas.getContext("2d")
+                    const data = state.microphone.frequencyData
+
+                    const width = canvas.width = canvas.clientWidth
+                    const height = canvas.height = canvas.clientHeight
+
+                    const barWidth = width / data.length
+                    const barHeight = height / 255
+
+                    context.clearRect(0, 0, width, height)
+                    context.fillStyle = "white"
+
+                    data.forEach((value, i) => {
+                        const x = i * barWidth
+                        const y = height - value * barHeight
+
+                        context.fillRect(x, y, barWidth, height - y)
+                    })
                 }
             }
 
@@ -125,8 +163,6 @@
     </head>
 
     <body>
-        <h1>TerrorLink</h1>
-
         <div>
             <p>
                 Steam:
@@ -151,7 +187,12 @@
             <h4 id="websocket-ping"></h4>
         </div>
 
-        <canvas></canvas>
+        <div class="voice-state">
+            <!-- <button>Mute</button>
+            <button>Deafen</button> -->
+            <canvas></canvas>
+        </div>
+
     </body>
 
 </html>

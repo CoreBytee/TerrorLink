@@ -11,7 +11,8 @@ import { Webview } from "webview-bun";
 import bytes from "bytes";
 import { TerrorLinkClient } from "./classes/TerrorLinkClient";
 
-const port = await getPort();
+const port =
+	Number.parseInt(env.INTERNAL_WEBSERVER_PORT as string) ?? (await getPort());
 
 Window.check();
 new TerrorLinkClient(port);
