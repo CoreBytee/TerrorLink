@@ -21,11 +21,13 @@ export default class Microphone {
 		this.processor.addEventListener("audioprocess", ({ inputBuffer }) => {
 			const channelData = inputBuffer.getChannelData(0);
 			const buffer = Buffer.from(channelData.buffer);
-			const encrypted = this.terrorLink.networking.encryptData(buffer);
-			this.terrorLink.networking.sendUDPMessage(
-				UDPMessageType.Voice,
-				encrypted,
-			);
+			try {
+				const encrypted = this.terrorLink.networking.encryptData(buffer);
+				this.terrorLink.networking.sendUDPMessage(
+					UDPMessageType.Voice,
+					encrypted,
+				);
+			} catch (error) {}
 		});
 
 		this.frequencyData = new Uint8Array(this.audioAnalyser.frequencyBinCount);
