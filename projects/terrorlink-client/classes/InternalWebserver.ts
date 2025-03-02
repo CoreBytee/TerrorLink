@@ -5,6 +5,7 @@ import indexPage from "../pages/index.html" with { type: "file" };
 import returnPage from "../pages/return.html" with { type: "file" };
 import yippieGIF from "../pages/yippie.gif" with { type: "file" };
 import bytes from "bytes";
+import open from "open";
 
 export default class InternalWebserver {
 	terrorLink: TerrorLinkClient;
@@ -40,7 +41,9 @@ export default class InternalWebserver {
 
 				"/api/login/steam": {
 					POST: async () => {
-						open(`${this.remoteUrl}/authenticate/steam?p=${this.port}`);
+						open(
+							`${this.terrorLink.httpUrl}/authenticate/steam?p=${this.port}`,
+						);
 						return new Response("");
 					},
 				},
