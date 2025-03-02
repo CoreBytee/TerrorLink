@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Document</title>
 
+        <!-- Default style fixes -->
         <style>
             html {
                 margin: 0;
@@ -15,43 +16,42 @@
 
             body {
                 height: 100vh;
-                background-color: #131313;
-                color: white;
-                font-family: Arial, Helvetica, sans-serif;
                 margin: 0;
-                text-align: center;
-            }
-
-            body {
-                display: flex;
-                flex-direction: column;
-                /* justify-content: center; */
-                align-items: center;
-
-                gap: 20px;
-                padding-top: 20px;
-            }
-
-            button.link {
-                appearance: none;
-                background-color: transparent;
-                border: none;
-                color: rgb(59, 59, 255);
-                text-decoration: underline;
-                cursor: pointer;
-            }
-
-            .inline-avatar {
-                height: 15px;
+                font-family: Arial, Helvetica, sans-serif;
             }
 
             * {
                 box-sizing: border-box;
-            }
-
-            * {
                 margin: 0;
                 padding: 0;
+            }
+        </style>
+
+        <!-- Custom Styles -->
+        <style>
+            body {
+
+                background-color: #131313;
+                color: white;
+            }
+
+            button {
+                appearance: none;
+                border: none;
+                padding: 5px;
+                border-radius: 5px;
+                background-color: #202020;
+                color: white;
+                cursor: pointer;
+
+                &:hover {
+                    background-color: #303030;
+                }
+            }
+
+            .inline-avatar {
+                height: 1rem;
+                width: 1rem;
             }
 
             .voice-state {
@@ -71,6 +71,59 @@
             }
         </style>
 
+        <!-- Screen Styles -->
+        <style>
+            [screen] {
+                height: 100%;
+                width: 100%;
+            }
+
+            [screen="loading"],
+            [screen="login"] {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+
+                gap: 20px;
+            }
+
+            [screen="main"] {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+
+                gap: 20px;
+            }
+        </style>
+
+        <!-- Screens -->
+        <script>
+            let currentScreen
+            function setScreen(id) {
+                if (id === getScreen()) return;
+
+                const otherScreens = document.querySelectorAll(`div[screen]:not(div[screen=${id}])`);
+                const screen = document.querySelector(`div[screen=${id}]`);
+
+                console.log(otherScreens, screen)
+
+                otherScreens.forEach(screen => screen.style.display = "none");
+                screen.style.display = "";
+                currentScreen = id;
+                console.log(currentScreen)
+            }
+
+            function getScreen() {
+                return currentScreen;
+            }
+
+            document.addEventListener("DOMContentLoaded", () => {
+                setScreen("loading")
+            })
+        </script>
+
         <script>
             let state = undefined
             async function fetchState() {
@@ -83,32 +136,21 @@
                 requestAnimationFrame(update)
                 const state = await fetchState()
 
+                { // Set correct screen
+                    state.account.steam ? setScreen("main") : setScreen("login")
+                }
+
                 { // Steam state
                     const steamAccountState = document.getElementById("steam-account-state")
                     const steamAccountAvatar = document.getElementById("steam-account-avatar")
-                    const steamAccountButton = document.getElementById("steam-account-button")
 
-                    const steamAccount = state.steamAccount
+                    const steamAccount = state.account.steam
 
                     steamAccountState.innerText = steamAccount ? steamAccount.displayName : "Unknown"
                     steamAccountState.style.color = steamAccount ? "green" : "red"
 
                     steamAccountAvatar.src = steamAccount ? steamAccount.avatarUrl : ""
                     steamAccountAvatar.style.display = steamAccount ? "inline" : "none"
-
-                    steamAccountButton.innerText = steamAccount ? "Disconnect" : "Connect"
-                }
-
-                { // Websocket state
-                    const websocketConnectionState = document.getElementById("websocket-connection-state")
-                    websocketConnectionState.innerText = state.websocket ? "Connected" : "Disconnected"
-                    websocketConnectionState.style.color = state.websocket ? "green" : "red"
-                }
-
-                { // Websocket stats
-                    document.getElementById("websocket-transferred-count").innerText = `WS Messages: ${state.messageCount}`
-                    document.getElementById("websocket-transferred-bytes").innerText = `WS Bytes: ${state.bytesCount}`
-                    document.getElementById("websocket-ping").innerText = `WS Ping: ${state.ping} ms`
                 }
 
                 { // Frequency graph
@@ -139,23 +181,12 @@
                 () => {
                     update()
 
-                    document.getElementById("steam-account-button").addEventListener("click", async () => {
-                        state.steamAccount ?
-                            await fetch("/api/logout/steam", { method: "POST" }) : await fetch("/api/login/steam", { method: "POST" })
+                    document.getElementById("steam-login-button").addEventListener("click", async () => {
+                        await fetch("/api/login/steam", { method: "POST" })
                     })
 
-                    document.getElementById("volume-slider").addEventListener("input", async (event) => {
-                        const value = event.target.value
-                        document.querySelector("label[for=volume-slider]").innerText = `Volume: ${value}`
-                        await fetch("/api/volume", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify({
-                                volume: value
-                            })
-                        })
+                    document.getElementById("steam-logout-button").addEventListener("click", async () => {
+                        await fetch("/api/logout/steam", { method: "POST" })
                     })
                 }
             )
@@ -163,34 +194,28 @@
     </head>
 
     <body>
-        <div>
-            <p>
-                Steam:
-                <img src="" alt="steam-avatar" id="steam-account-avatar" class="inline-avatar">
-                <span id="steam-account-state">Unknown</span> - <button class="link"
-                    id="steam-account-button">Connect</button>
-            </p>
+        <div screen="loading">
+            <h1>Loading</h1>
         </div>
-
-        <div>
-            <p>Websocket: <span id="websocket-connection-state">Disconnected</span></p>
+        <div screen="login">
+            <h1>Login required</h1>
+            <p>Logging in with steam is required</p>
+            <button id="steam-login-button" style="font-size: 20px;">Login</button>
         </div>
+        <div screen="main">
+            <div>
+                <p>
+                    <img src="" alt="steam-avatar" id="steam-account-avatar" class="inline-avatar">
+                    <span id="steam-account-state">Unknown</span> - <button class="link"
+                        id="steam-logout-button">Logout</button>
+                </p>
+            </div>
 
-        <div>
-            <label for="volume-slider">Volume: 100</label><br>
-            <input type="range" name="" id="volume-slider" min="0" max="100" value="100">
-        </div>
-
-        <div>
-            <h4 id="websocket-transferred-count"></h4>
-            <h4 id="websocket-transferred-bytes"></h4>
-            <h4 id="websocket-ping"></h4>
-        </div>
-
-        <div class="voice-state">
-            <!-- <button>Mute</button>
-            <button>Deafen</button> -->
-            <canvas></canvas>
+            <div class="voice-state">
+                <!-- <button>Mute</button>
+                    <button>Deafen</button> -->
+                <canvas></canvas>
+            </div>
         </div>
 
     </body>
