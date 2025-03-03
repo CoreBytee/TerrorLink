@@ -149,20 +149,20 @@ export default class NetworkClient extends EventEmitter {
 			case UDPMessageType.Voice: {
 				const decrypted = this.decryptData(data);
 
-				const audioBuffer = this.audioContext.createBuffer(
-					1,
-					decrypted.length / 4,
-					this.audioContext.sampleRate,
-				);
-				const channelData = audioBuffer.getChannelData(0);
+				// const audioBuffer = this.audioContext.createBuffer(
+				// 	1,
+				// 	decrypted.length / 4,
+				// 	this.audioContext.sampleRate,
+				// );
+				// const channelData = audioBuffer.getChannelData(0);
 
-				const float32Array = new Float32Array(decrypted.buffer);
-				channelData.set(float32Array);
+				// const float32Array = new Float32Array(decrypted.buffer);
+				// channelData.set(float32Array);
 
-				const bufferSource = this.audioContext.createBufferSource();
-				bufferSource.buffer = audioBuffer;
-				bufferSource.connect(this.audioContext.destination);
-				bufferSource.start();
+				// const bufferSource = this.audioContext.createBufferSource();
+				// bufferSource.buffer = audioBuffer;
+				// bufferSource.connect(this.audioContext.destination);
+				// bufferSource.start();
 				break;
 			}
 
