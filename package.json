@@ -19,7 +19,7 @@
         "dev:server": "bun run --watch ./projects/terrorlink-server",
         "dev:game": "./game/counterstrike/game/bin/win64/cs2.exe -dedicated +map de_dust2 +sv_setsteamaccount $(bun --print process.env.CS2_SERVER_ACCOUNT) +tl_apitoken $(bun --print process.env.GAMESTATE_TOKEN)",
         "dev:plugin": "sh ./scripts/dev-plugin.sh",
-        "build:client": "bun build --compile ./projects/terrorlink-client/index.ts"
+        "build:client": "bun build --compile ./projects/terrorlink-client/index.ts --outfile ./terrorlink.exe"
     },
     "trustedDependencies": [
         "@biomejs/biome"
