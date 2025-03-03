@@ -1,8 +1,0 @@
-{
-    "name": "hide-console",
-    "module": "index.ts",
-    "type": "module",
-    "dependencies": {
-        "node-hide-console-window": "^2.2.0"
-    }
-}

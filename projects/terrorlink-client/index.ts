@@ -2,9 +2,6 @@ import { env } from "bun";
 import getPort from "get-port";
 import Window from "window";
 import { TerrorLinkClient } from "./classes/TerrorLinkClient";
-import { hideConsoleWindow, showConsoleWindow } from "hide-console";
-
-hideConsoleWindow();
 
 try {
 	const port =
@@ -13,7 +10,6 @@ try {
 	Window.check();
 	new TerrorLinkClient(port);
 } catch (error) {
-	showConsoleWindow();
 	console.error(error);
 	while (true) {
 		Bun.sleepSync(1000);
