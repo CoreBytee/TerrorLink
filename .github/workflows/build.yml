@@ -13,10 +13,6 @@ jobs:
         uses: oven-sh/setup-bun@v2
       - name: Install dependencies
         run: bun install
-      - name: pwd
-        run: pwd
-      - name: ls 
-        run: ls
       - name: Run build script
         run: bun run build:client
       - name: Upload a Build Artifact
