@@ -1,21 +1,24 @@
+import { env } from "bun";
 import getPort from "get-port";
-import { env, serve } from "bun";
-import indexPage from "./pages/index.html" with { type: "file" };
-import returnPage from "./pages/return.html" with { type: "file" };
-import yippieGIF from "./pages/yippie.gif" with { type: "file" };
-import open from "open";
-import { readJsonSync, writeJSONSync } from "fs-extra";
-import jwt from "jwt-simple";
 import Window from "window";
-import { Webview } from "webview-bun";
-import bytes from "bytes";
 import { TerrorLinkClient } from "./classes/TerrorLinkClient";
+import { hideConsoleWindow, showConsoleWindow } from "hide-console";
 
-const port =
-	Number.parseInt(env.INTERNAL_WEBSERVER_PORT as string) ?? (await getPort());
+hideConsoleWindow();
 
-Window.check();
-new TerrorLinkClient(port);
+try {
+	const port =
+		Number.parseInt(env.INTERNAL_WEBSERVER_PORT as string) ?? (await getPort());
+
+	Window.check();
+	new TerrorLinkClient(port);
+} catch (error) {
+	showConsoleWindow();
+	console.error(error);
+	while (true) {
+		Bun.sleepSync(1000);
+	}
+}
 
 // const window = new Window(`http://localhost:${PORT}`);
 // let discordRPC: Client | null;

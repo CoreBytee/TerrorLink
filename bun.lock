@@ -11,6 +11,12 @@
         "typescript": "^5.7.3",
       },
     },
+    "packages/hide-console": {
+      "name": "hide-console",
+      "dependencies": {
+        "node-hide-console-window": "^2.2.0",
+      },
+    },
     "packages/networking": {
       "name": "networking",
       "dependencies": {
@@ -35,7 +41,6 @@
         "get-port": "^7.1.0",
         "jwt-simple": "^0.5.6",
         "libui-node": "^0.2.1",
-        "node-hide-console-window": "^2.2.0",
         "node-web-audio-api": "^1.0.1",
         "open": "^10.1.0",
         "p-event": "^6.0.1",
@@ -220,6 +225,8 @@
     "har-validator": ["har-validator@5.1.5", "", { "dependencies": { "ajv": "^6.12.3", "har-schema": "^2.0.0" } }, "sha512-nmT2T0lljbxdQZfspsno9hgrG3Uir6Ks5afism62poxqBM6sDnMEuPmzTq8XN0OEwqKLLdh1jQI3qyE66Nzb3w=="],
 
     "has-unicode": ["has-unicode@2.0.1", "", {}, "sha512-8Rf9Y83NBReMnx0gFzA8JImQACstCYWUplepDa9xprwwtmgEZUF0h/i5xSA625zB/I37EtrswSST6OXxwaaIJQ=="],
+
+    "hide-console": ["hide-console@workspace:packages/hide-console"],
 
     "home-path": ["home-path@1.0.7", "", {}, "sha512-tM1pVa+u3ZqQwIkXcWfhUlY3HWS3TsnKsfi2OHHvnhkX52s9etyktPyy1rQotkr0euWimChDq+QkQuDe8ngUlQ=="],
 
