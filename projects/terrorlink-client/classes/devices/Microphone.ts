@@ -1,5 +1,5 @@
 import { AudioContext, mediaDevices } from "node-web-audio-api";
-import type { TerrorLinkClient } from "./TerrorLinkClient";
+import type { TerrorLinkClient } from "../TerrorLinkClient";
 import { UDPMessageType } from "networking";
 
 export default class Microphone {
@@ -34,6 +34,7 @@ export default class Microphone {
 
 		this.loadMicrophone();
 	}
+
 	async loadMicrophone() {
 		await this.audioContext.resume();
 		const mediaStream = await mediaDevices.getUserMedia({
