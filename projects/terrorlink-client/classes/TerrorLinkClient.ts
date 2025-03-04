@@ -5,7 +5,7 @@ import NetworkClient from "./NetworkClient";
 import InternalWebserver from "./InternalWebserver";
 import { env } from "bun";
 import buildUrl from "../util/buildUrl";
-import Microphone from "./Microphone";
+import Microphone from "./devices/Microphone";
 
 export class TerrorLinkClient {
 	/**
