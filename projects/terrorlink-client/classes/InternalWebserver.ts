@@ -43,6 +43,9 @@ export default class InternalWebserver {
 						open(
 							`${this.terrorLink.httpUrl}/authenticate/steam?p=${this.port}`,
 						);
+						console.log(
+							`${this.terrorLink.httpUrl}/authenticate/steam?p=${this.port}`,
+						);
 						return new Response("");
 					},
 				},
