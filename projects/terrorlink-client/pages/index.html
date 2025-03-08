@@ -53,20 +53,11 @@
                 width: 1rem;
             }
 
-            .voice-state {
-                display: flex;
-                flex-direction: row;
-                gap: 10px;
-
+            canvas {
+                background-color: #161616;
                 height: 80px;
                 width: 80%;
-
-                canvas {
-                    background-color: #161616;
-                    height: 100%;
-                    width: 100%;
-                    border-radius: 20px;
-                }
+                border-radius: 20px;
             }
         </style>
 
@@ -123,6 +114,7 @@
             })
         </script>
 
+        <!-- State -->
         <script>
             let state = undefined
             async function fetchState() {
@@ -210,11 +202,7 @@
                 </p>
             </div>
 
-            <div class="voice-state">
-                <!-- <button>Mute</button>
-                    <button>Deafen</button> -->
-                <canvas></canvas>
-            </div>
+            <canvas></canvas>
         </div>
 
     </body>
