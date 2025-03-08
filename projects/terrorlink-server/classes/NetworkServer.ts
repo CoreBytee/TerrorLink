@@ -104,7 +104,6 @@ export default class NetworkServer {
 		this.port = port;
 
 		this.httpUrl = `http${env.NETWORK_SSL === "true" ? "s" : ""}://${env.NETWORK_HOST}:${env.NETWORK_PORT}`;
-		this.wsUrl = `ws${env.NETWORK_SSL === "true" ? "s" : ""}://${env.NETWORK_HOST}:${env.NETWORK_PORT}`;
 
 		this.clients = {};
 
