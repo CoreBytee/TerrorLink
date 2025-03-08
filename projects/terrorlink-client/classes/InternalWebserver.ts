@@ -4,7 +4,6 @@ import type { TerrorLinkClient } from "./TerrorLinkClient";
 import indexPage from "../pages/index.html" with { type: "file" };
 import returnPage from "../pages/return.html" with { type: "file" };
 import yippieGIF from "../pages/yippie.gif" with { type: "file" };
-import bytes from "bytes";
 import open from "open";
 
 export default class InternalWebserver {
@@ -55,7 +54,6 @@ export default class InternalWebserver {
 				},
 
 				"/api/state": async (request) => {
-					// console.log(await this.terrorLink.microphone.getFrequencyData());
 					return Response.json({
 						account: {
 							steam: steamAccount.data,
