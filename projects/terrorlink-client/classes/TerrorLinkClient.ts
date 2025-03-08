@@ -27,14 +27,14 @@ export class TerrorLinkClient {
 		this.httpUrl = buildUrl(
 			"http",
 			env.NETWORK_PORT as number | undefined,
-			env.NETWORK_SSL === "true",
+			env.NETWORK_SSL === "true" || env.NETWORK_SSL === "1",
 			env.NETWORK_HOST as string | undefined,
 		);
 
 		this.wsUrl = buildUrl(
 			"ws",
 			env.NETWORK_PORT as number | undefined,
-			env.NETWORK_SSL === "true",
+			env.NETWORK_SSL === "true" || env.NETWORK_SSL === "1",
 			env.NETWORK_HOST as string | undefined,
 		);
 
