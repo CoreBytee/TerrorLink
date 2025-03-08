@@ -82,7 +82,12 @@ class Client extends EventEmitter {
 	handleUDPMessage(type: UDPMessageType, data: Buffer) {
 		switch (type) {
 			case UDPMessageType.Voice:
-				this.sendUDPMessage(UDPMessageType.Voice, data);
+				// this.sendUDPMessage(UDPMessageType.Voice, data);
+				for (const clientId in this.networking.clients) {
+					const client = this.networking.clients[clientId];
+					if (client === this) continue;
+					client.sendUDPMessage(UDPMessageType.Voice, data);
+				}
 				break;
 			default:
 				console.warn("Unhandled UDP message type", type);
