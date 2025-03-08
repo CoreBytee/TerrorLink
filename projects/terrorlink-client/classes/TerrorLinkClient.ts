@@ -6,6 +6,7 @@ import InternalWebserver from "./InternalWebserver";
 import { env } from "bun";
 import buildUrl from "build-url";
 import Microphone from "./devices/Microphone";
+import { Speaker } from "./devices/Speaker";
 
 export class TerrorLinkClient {
 	/**
@@ -23,6 +24,7 @@ export class TerrorLinkClient {
 	microphone: Microphone;
 	internalWebserver: InternalWebserver;
 	window: Window;
+	speaker: Speaker;
 	constructor(port: number) {
 		this.httpUrl = buildUrl(
 			"http",
