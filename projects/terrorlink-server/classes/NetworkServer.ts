@@ -81,18 +81,49 @@ class Client extends EventEmitter {
 
 	handleUDPMessage(type: UDPMessageType, data: Buffer) {
 		switch (type) {
-			case UDPMessageType.Voice:
+			case UDPMessageType.Voice: {
+				const decrypted = this.decryptData(data);
 				// this.sendUDPMessage(UDPMessageType.Voice, data);
 				for (const clientId in this.networking.clients) {
 					const client = this.networking.clients[clientId];
 					if (client === this) continue;
-					client.sendUDPMessage(UDPMessageType.Voice, data);
+					const encrypted = client.encryptData(decrypted);
+					client.sendUDPMessage(UDPMessageType.Voice, encrypted);
 				}
 				break;
+			}
 			default:
 				console.warn("Unhandled UDP message type", type);
 				break;
 		}
+	}
+
+	encryptData(data: Buffer) {
+		if (!this.encryptionKey) {
+			throw new Error("Encryption key is not set");
+		}
+		const iv = crypto.randomBytes(16); // Initialization vector
+		const cipher = crypto.createCipheriv("aes-256-cbc", this.encryptionKey, iv);
+		const encrypted = Buffer.concat([cipher.update(data), cipher.final()]);
+		return encrypted;
+	}
+
+	decryptData(data: Buffer) {
+		if (!this.encryptionKey) {
+			throw new Error("Encryption key is not set");
+		}
+		const iv = data.subarray(0, 16);
+		const encrypted = data.subarray(16);
+		const decipher = crypto.createDecipheriv(
+			"aes-256-cbc",
+			this.encryptionKey,
+			iv,
+		);
+		const decrypted = Buffer.concat([
+			decipher.update(encrypted),
+			decipher.final(),
+		]);
+		return decrypted;
 	}
 }
 
