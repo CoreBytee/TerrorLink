@@ -3,7 +3,9 @@ export default function buildUrl(
 	port?: number,
 	secure = true,
 	host = "terrorlink.corebyte.me",
+	proxy = false,
 ) {
+	if (proxy) return `${protocol}://${host}`;
 	if (port === undefined) secure = true;
 	if ((port === 443 || port === undefined) && secure) {
 		return `${protocol}s://${host}`;

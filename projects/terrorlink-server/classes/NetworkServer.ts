@@ -9,6 +9,7 @@ import type TerrorLinkServer from "./TerrorLinkServer";
 import { UDPMessageType, WSMessageType, type WSMessage } from "networking";
 import { noop } from "noop";
 import crypto from "node:crypto";
+import buildUrl from "build-url";
 
 // biome-ignore lint/suspicious/noExplicitAny: <shut up>
 function encodeJWT(payload: Record<string, any>) {
@@ -94,7 +95,6 @@ export default class NetworkServer {
 	terrorLink: TerrorLinkServer;
 	port: number;
 	httpUrl: string;
-	wsUrl: string;
 	clients: { [key: string]: Client };
 	steamAuthentication: SteamAuthentication;
 	app: Elysia | undefined;
@@ -103,7 +103,13 @@ export default class NetworkServer {
 		this.terrorLink = terrorLink;
 		this.port = port;
 
-		this.httpUrl = `http${env.NETWORK_SSL === "true" ? "s" : ""}://${env.NETWORK_HOST}:${env.NETWORK_PORT}`;
+		this.httpUrl = buildUrl(
+			"http",
+			this.port,
+			env.NETWORK_SSL === "true" || env.NETWORK_SSL === "1",
+			env.NETWORK_HOST,
+			env.NETWORK_PROXY === "true" || env.NETWORK_PROXY === "1",
+		);
 
 		this.clients = {};
 
