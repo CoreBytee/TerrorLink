@@ -67,6 +67,39 @@ export default class InternalWebserver {
 						},
 					});
 				},
+
+				"/api/devices": {
+					GET: async () => {
+						return Response.json({
+							microphones: await this.terrorLink.microphone.listDevices(),
+							speakers: await this.terrorLink.speaker.listDevices(),
+						});
+					},
+					POST: async (request) => {
+						const body = await request.json();
+						const type = body.type;
+						const deviceId = body.deviceId;
+						type === "microphone"
+							? await this.terrorLink.microphone.setDevice(deviceId)
+							: await this.terrorLink.speaker.setDevice(deviceId);
+
+						return new Response("", { status: 204 });
+					},
+				},
+
+				"/api/devices/microphone": {
+					GET: async () => {
+						return Response.json({
+							mute: await this.terrorLink.microphone.isMuted,
+						});
+					},
+					POST: async (request) => {
+						const state = await this.terrorLink.microphone.toggleMute();
+						return Response.json({
+							mute: state,
+						});
+					},
+				},
 			},
 		});
 	}

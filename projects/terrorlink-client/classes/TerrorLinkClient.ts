@@ -7,6 +7,7 @@ import { env } from "bun";
 import buildUrl from "build-url";
 import Microphone from "./devices/Microphone";
 import { Speaker } from "./devices/Speaker";
+import { UDPMessageType } from "networking";
 
 export class TerrorLinkClient {
 	/**
@@ -42,8 +43,16 @@ export class TerrorLinkClient {
 
 		this.steamAccount = new SteamAccount(this);
 		this.networking = new NetworkClient(this);
-		this.microphone = new Microphone(this);
+		this.microphone = new Microphone();
+		this.speaker = new Speaker();
 		this.internalWebserver = new InternalWebserver(this, port);
 		this.window = new Window(this.internalWebserver.url);
+
+		this.microphone.on("frame", (frame) => {
+			try {
+				const encrypted = this.networking.encryptData(frame);
+				this.networking.sendUDPMessage(UDPMessageType.Voice, encrypted);
+			} catch (error) {}
+		});
 	}
 }

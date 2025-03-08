@@ -208,6 +208,24 @@
                 }
             )
         </script>
+
+        <!-- Buttons -->
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const muteButton = document.querySelector("button#mute")
+                const deafenButton = document.querySelector("button#deafen")
+                const settingsButton = document.querySelector("button#settings")
+
+                muteButton.addEventListener("click", async () => {
+                    const response = await fetch("/api/devices/microphone", { method: "POST" })
+                    const body = await response.json()
+                    const state = body.mute
+                    state ?
+                        muteButton.classList.add("disabled") :
+                        muteButton.classList.remove("disabled")
+                })
+            })
+        </script>
     </head>
 
     <body>
@@ -231,9 +249,9 @@
             <canvas></canvas>
 
             <div class="buttons">
-                <button class="disabled" onclick="this.classList.toggle('disabled')">🎤</button>
-                <button class="disabled">🎧</button>
-                <button>⚙️</button>
+                <button id="mute">🎤</button>
+                <button id="deafen">🎧</button>
+                <button id="settings">⚙️</button>
             </div>
         </div>
 
