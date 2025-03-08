@@ -85,6 +85,27 @@
                 justify-content: center;
 
                 gap: 20px;
+
+                .buttons button {
+                    --button-size: 60px;
+                    font-size: calc(var(--button-size) / 2);
+                    height: var(--button-size);
+                    width: var(--button-size);
+                    aspect-ratio: 1;
+                    position: relative;
+                }
+
+                .buttons button.disabled::after {
+                    content: "";
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%) rotate(45deg);
+                    border-radius: 100px;
+                    width: calc(var(--button-size) / 8 * 6);
+                    height: 5px;
+                    background-color: red;
+                }
             }
         </style>
 
@@ -203,6 +224,12 @@
             </div>
 
             <canvas></canvas>
+
+            <div class="buttons">
+                <button class="disabled">🎤</button>
+                <button class="disabled">🎧</button>
+                <button>⚙️</button>
+            </div>
         </div>
 
     </body>
