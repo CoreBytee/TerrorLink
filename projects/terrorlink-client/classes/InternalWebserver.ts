@@ -15,7 +15,7 @@ export default class InternalWebserver {
 
 		const steamAccount = this.terrorLink.steamAccount;
 
-		console.log(`Internal webserver running on http://localhost:${this.port}`);
+		console.log(`Internal webserver running on ${this.url}`);
 
 		serve({
 			development: true,
