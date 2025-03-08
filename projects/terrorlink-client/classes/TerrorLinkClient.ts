@@ -4,7 +4,7 @@ import { SteamAccount } from "./SteamAccount";
 import NetworkClient from "./NetworkClient";
 import InternalWebserver from "./InternalWebserver";
 import { env } from "bun";
-import buildUrl from "../util/buildUrl";
+import buildUrl from "build-url";
 import Microphone from "./devices/Microphone";
 
 export class TerrorLinkClient {

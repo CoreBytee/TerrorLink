@@ -1,0 +1,8 @@
+{
+    "name": "build-url",
+    "module": "index.ts",
+    "type": "module",
+    "dependencies": {
+        "webview-bun": "^2.3.0"
+    }
+}
