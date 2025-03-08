@@ -5,7 +5,7 @@ import { TerrorLinkClient } from "./classes/TerrorLinkClient";
 
 try {
 	const port =
-		Number.parseInt(env.INTERNAL_WEBSERVER_PORT as string) ?? (await getPort());
+		Number.parseInt(env.INTERNAL_WEBSERVER_PORT as string) || (await getPort());
 
 	Window.check();
 	new TerrorLinkClient(port);
