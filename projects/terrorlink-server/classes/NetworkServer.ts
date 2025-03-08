@@ -133,7 +133,10 @@ export default class NetworkServer {
 	 */
 	private async loadElysia() {
 		this.app = new Elysia()
-			.onError((error) => console.error(error))
+			.onError((error) => {
+				if (error.code === "NOT_FOUND") return;
+				console.error(error);
+			})
 			.get("/", (context) => {
 				return "Hello World!";
 			})
