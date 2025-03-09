@@ -20,6 +20,7 @@ export default class InternalWebserver {
 		serve({
 			development: true,
 			port: this.port,
+			hostname: "localhost",
 			routes: {
 				"/": () => {
 					return new Response(Bun.file(indexPage));
