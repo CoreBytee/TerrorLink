@@ -7,12 +7,14 @@ export default class Window {
 		if (!env.WEBVIEW_DATA) return;
 
 		const data = JSON.parse(env.WEBVIEW_DATA);
+		console.log(data);
 		const webview = new Webview();
 		webview.title = data.title;
 		webview.size = data.size;
 
 		webview.navigate(data.url);
 		webview.run();
+		console.log("window closed");
 		process.exit(0);
 	}
 
@@ -29,6 +31,13 @@ export default class Window {
 	}
 
 	private load() {
+		console.log(cluster, cluster?.fork, {
+			WEBVIEW_DATA: JSON.stringify({
+				url: this.url,
+				size: this.size,
+				title: "TerrorLink",
+			}),
+		});
 		this.worker = cluster.fork({
 			WEBVIEW_DATA: JSON.stringify({
 				url: this.url,
@@ -38,6 +47,7 @@ export default class Window {
 		});
 
 		this.worker.on("exit", () => {
+			console.log("worker closed");
 			process.exit(0);
 		});
 	}
