@@ -19,6 +19,7 @@ export default class Microphone extends EventEmitter {
 		this.gainNode = this.audioContext.createGain();
 		this.processor = this.audioContext.createScriptProcessor(2048, 1, 1);
 		this.processor.addEventListener("audioprocess", ({ inputBuffer }) => {
+			if (this.isMuted) return;
 			const channelData = inputBuffer.getChannelData(0);
 			const buffer = Buffer.from(channelData.buffer);
 			this.emit("frame", buffer);
