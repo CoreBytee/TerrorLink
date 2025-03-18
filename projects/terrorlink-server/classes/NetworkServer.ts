@@ -104,7 +104,7 @@ class Client extends EventEmitter {
 		}
 		const iv = crypto.randomBytes(16); // Initialization vector
 		const cipher = crypto.createCipheriv("aes-256-cbc", this.encryptionKey, iv);
-		const encrypted = Buffer.concat([cipher.update(data), cipher.final()]);
+		const encrypted = Buffer.concat([iv, cipher.update(data), cipher.final()]); // Include IV
 		return encrypted;
 	}
 

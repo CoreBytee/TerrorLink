@@ -21,8 +21,14 @@ export default class Microphone extends EventEmitter {
 		this.processor.addEventListener("audioprocess", ({ inputBuffer }) => {
 			if (this.isMuted) return;
 			const channelData = inputBuffer.getChannelData(0);
-			const buffer = Buffer.from(channelData.buffer);
-			this.emit("frame", buffer);
+
+			// Apply a limiter to prevent clipping
+			const limitedData = channelData.map((sample) =>
+				Math.max(-0.9, Math.min(0.9, sample)),
+			);
+
+			const float32Array = new Float32Array(limitedData); // Ensure proper format
+			this.emit("frame", Buffer.from(float32Array.buffer));
 		});
 
 		this.frequencyData = new Uint8Array(this.audioAnalyser.frequencyBinCount);
