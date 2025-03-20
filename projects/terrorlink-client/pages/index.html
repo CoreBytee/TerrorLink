@@ -162,7 +162,8 @@
                 const state = await fetchState()
 
                 { // Set correct screen
-                    state.account.steam ? setScreen("main") : setScreen("login")
+                    if (getScreen() === "loading") state.account.steam ? setScreen("main") : setScreen("login")
+                    if (getScreen() === "login" && state.account.steam) setScreen("main")
                 }
 
                 { // Steam state
@@ -216,7 +217,7 @@
         <script>
             document.addEventListener("DOMContentLoaded", () => {
                 { // Login
-                    const loginButton = document.getElementById("button#steam-login-button")
+                    const loginButton = document.querySelector("button#steam-login-button")
 
                     loginButton.addEventListener("click", async () => {
                         await fetch("/api/login/steam", { method: "POST" })
@@ -238,7 +239,12 @@
                             muteButton.classList.remove("disabled")
                     })
 
+                    settingsButton.addEventListener("click", async () => {
+                        setScreen("settings")
+                    })
+
                     logoutButton.addEventListener("click", async () => {
+                        setScreen("login")
                         await fetch("/api/logout/steam", { method: "POST" })
                     })
                 }
@@ -276,7 +282,9 @@
 
             <p id="debug" class="debug">Loading debug information...</p>
         </div>
+        <div screen="settings">
 
+        </div>
     </body>
 
 </html>
