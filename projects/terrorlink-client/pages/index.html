@@ -131,12 +131,9 @@
                 const otherScreens = document.querySelectorAll(`div[screen]:not(div[screen=${id}])`);
                 const screen = document.querySelector(`div[screen=${id}]`);
 
-                console.log(otherScreens, screen)
-
                 otherScreens.forEach(screen => screen.style.display = "none");
                 screen.style.display = "";
                 currentScreen = id;
-                console.log(currentScreen)
             }
 
             function getScreen() {
