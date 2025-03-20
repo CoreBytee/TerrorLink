@@ -208,35 +208,42 @@
 
             document.addEventListener(
                 "DOMContentLoaded",
-                () => {
-                    update()
-
-                    document.getElementById("steam-login-button").addEventListener("click", async () => {
-                        await fetch("/api/login/steam", { method: "POST" })
-                    })
-
-                    document.getElementById("steam-logout-button").addEventListener("click", async () => {
-                        await fetch("/api/logout/steam", { method: "POST" })
-                    })
-                }
+                update
             )
         </script>
 
         <!-- Buttons -->
         <script>
             document.addEventListener("DOMContentLoaded", () => {
-                const muteButton = document.querySelector("button#mute")
-                const deafenButton = document.querySelector("button#deafen")
-                const settingsButton = document.querySelector("button#settings")
+                { // Login
+                    const loginButton = document.getElementById("button#steam-login-button")
 
-                muteButton.addEventListener("click", async () => {
-                    const response = await fetch("/api/devices/microphone", { method: "POST" })
-                    const body = await response.json()
-                    const state = body.mute
-                    state ?
-                        muteButton.classList.add("disabled") :
-                        muteButton.classList.remove("disabled")
-                })
+                    loginButton.addEventListener("click", async () => {
+                        await fetch("/api/login/steam", { method: "POST" })
+                    })
+                }
+
+                { // Main
+                    const muteButton = document.querySelector("button#mute")
+                    const deafenButton = document.querySelector("button#deafen")
+                    const settingsButton = document.querySelector("button#settings")
+                    const logoutButton = document.querySelector("button#steam-logout-button")
+
+                    muteButton.addEventListener("click", async () => {
+                        const response = await fetch("/api/devices/microphone", { method: "POST" })
+                        const body = await response.json()
+                        const state = body.mute
+                        state ?
+                            muteButton.classList.add("disabled") :
+                            muteButton.classList.remove("disabled")
+                    })
+
+                    logoutButton.addEventListener("click", async () => {
+                        await fetch("/api/logout/steam", { method: "POST" })
+                    })
+                }
+
+
             })
         </script>
     </head>
