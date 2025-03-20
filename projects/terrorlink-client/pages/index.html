@@ -111,6 +111,14 @@
                 .buttons button.disabled::after {
                     width: calc(var(--button-size) / 8 * 6);
                 }
+
+                .debug {
+                    font-size: 10px;
+                    color: #888;
+                    position: absolute;
+                    bottom: 3px;
+                    text-align: center;
+                }
             }
         </style>
 
@@ -191,6 +199,11 @@
                         context.fillRect(x, y, barWidth, height - y)
                     })
                 }
+
+                { // Debug information
+                    const debug = document.getElementById("debug")
+                    debug.innerText = state.debug
+                }
             }
 
             document.addEventListener(
@@ -253,6 +266,8 @@
                 <button id="deafen">🎧</button>
                 <button id="settings">⚙️</button>
             </div>
+
+            <p id="debug" class="debug">Loading debug information...</p>
         </div>
 
     </body>

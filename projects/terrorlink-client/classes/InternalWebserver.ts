@@ -66,6 +66,7 @@ export default class InternalWebserver {
 							frequencyData:
 								await this.terrorLink.microphone.getFrequencyData(),
 						},
+						debug: "",
 					});
 				},
 
