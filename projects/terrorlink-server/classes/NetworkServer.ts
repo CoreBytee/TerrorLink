@@ -4,7 +4,7 @@ import Elysia from "elysia";
 import type { ElysiaWS } from "elysia/ws";
 import jwt from "jwt-simple";
 import type { GameStateBody } from "../types/GameStateBody";
-import SteamAuthentication from "./SteamAuthentication";
+import SteamAuthentication from "./authentication/SteamAuthentication";
 import type TerrorLinkServer from "./TerrorLinkServer";
 import { UDPMessageType, WSMessageType, type WSMessage } from "networking";
 import { noop } from "noop";

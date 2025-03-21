@@ -1,6 +1,6 @@
 import { env } from "bun";
 import Elysia from "elysia";
-import SteamAuthentication from "./classes/SteamAuthentication";
+import SteamAuthentication from "./classes/authentication/SteamAuthentication";
 import jwt from "jwt-simple";
 import type { ElysiaWS } from "elysia/ws";
 import type { GameStateBody } from "./types/GameStateBody";
