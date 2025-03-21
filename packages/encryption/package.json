@@ -1,0 +1,6 @@
+{
+    "name": "encryption",
+    "module": "index.ts",
+    "type": "module",
+    "dependencies": {}
+}
