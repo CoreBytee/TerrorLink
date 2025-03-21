@@ -9,7 +9,7 @@
 			"internalConsoleOptions": "neverOpen",
 			"request": "launch",
 			"name": "Debug Client",
-			"program": "./projects/terrorlink",
+			"program": "./projects/terrorlink-client",
 			"cwd": "${workspaceFolder}",
 			"stopOnEntry": false,
 			"watchMode": true
