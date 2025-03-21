@@ -1,13 +1,12 @@
 import Window from "window";
 
 import { SteamAccount } from "./SteamAccount";
-import NetworkClient from "./NetworkClient";
 import InternalWebserver from "./InternalWebserver";
 import { env } from "bun";
 import buildUrl from "build-url";
 import Microphone from "./devices/Microphone";
 import { Speaker } from "./devices/Speaker";
-import { UDPMessageType } from "networking";
+import Networking from "./networking/Networking";
 
 export class TerrorLinkClient {
 	/**
@@ -21,7 +20,7 @@ export class TerrorLinkClient {
 	wsUrl: string;
 
 	steamAccount: SteamAccount;
-	networking: NetworkClient;
+	networking: Networking;
 	microphone: Microphone;
 	internalWebserver: InternalWebserver;
 	window: Window;
@@ -42,7 +41,7 @@ export class TerrorLinkClient {
 		);
 
 		this.steamAccount = new SteamAccount(this);
-		this.networking = new NetworkClient(this);
+		this.networking = new Networking(this);
 		this.microphone = new Microphone();
 		this.speaker = new Speaker();
 		this.internalWebserver = new InternalWebserver(this, port);
@@ -50,9 +49,17 @@ export class TerrorLinkClient {
 
 		this.microphone.on("frame", (frame) => {
 			try {
-				const encrypted = this.networking.encryptData(frame);
-				this.networking.sendUDPMessage(UDPMessageType.Voice, encrypted);
-			} catch (error) {}
+				if (!this.networking.connected) return;
+				this.networking.sendVoice(frame);
+			} catch (error) {
+				console.log(error);
+			}
 		});
+
+		this.networking.on("voice", (data) => {
+			this.speaker.play(data);
+		});
+
+		this.networking.connect();
 	}
 }

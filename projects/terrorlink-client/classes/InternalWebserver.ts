@@ -5,6 +5,7 @@ import indexPage from "../pages/index.html" with { type: "file" };
 import returnPage from "../pages/return.html" with { type: "file" };
 import yippieGIF from "../pages/yippie.gif" with { type: "file" };
 import open from "open";
+import bytes from "bytes";
 
 export default class InternalWebserver {
 	terrorLink: TerrorLinkClient;
@@ -58,6 +59,8 @@ export default class InternalWebserver {
 				},
 
 				"/api/state": async (request) => {
+					const ws = this.terrorLink.networking.webSocket;
+					const udp = this.terrorLink.networking.udpSocket;
 					return Response.json({
 						account: {
 							steam: steamAccount.data,
@@ -66,7 +69,7 @@ export default class InternalWebserver {
 							frequencyData:
 								await this.terrorLink.microphone.getFrequencyData(),
 						},
-						debug: "",
+						debug: `WS (S/R): ${ws.sentMessages}/${bytes(ws.sentBytes)} ${ws.receivedMessages}/${bytes(ws.receivedBytes)} UDP (S/R/D): ${udp.sentMessages}/${bytes(udp.sentBytes)} ${udp.receivedMessages}/${bytes(udp.receivedBytes)} ${udp.droppedMessages}/${bytes(udp.droppedBytes)}`,
 					});
 				},
 
