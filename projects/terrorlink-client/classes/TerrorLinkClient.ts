@@ -40,12 +40,24 @@ export class TerrorLinkClient {
 			env.NETWORK_HOST as string | undefined,
 		);
 
-		this.steamAccount = new SteamAccount(this);
+		this.steamAccount = new SteamAccount();
 		this.networking = new Networking(this);
 		this.microphone = new Microphone();
 		this.speaker = new Speaker();
 		this.internalWebserver = new InternalWebserver(this, port);
 		this.window = new Window(this.internalWebserver.url);
+
+		this.steamAccount.on("link", () => {
+			this.networking.connect();
+		});
+
+		this.steamAccount.on("unlink", () => {
+			this.networking.disconnect();
+		});
+
+		if (this.steamAccount.isLinked) {
+			this.networking.connect();
+		}
 
 		this.microphone.on("frame", (frame) => {
 			try {
@@ -59,7 +71,5 @@ export class TerrorLinkClient {
 		this.networking.on("voice", (data) => {
 			this.speaker.play(data);
 		});
-
-		this.networking.connect();
 	}
 }
