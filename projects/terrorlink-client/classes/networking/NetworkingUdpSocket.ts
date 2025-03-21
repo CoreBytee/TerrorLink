@@ -46,6 +46,7 @@ export default class NetworkingUdpSocket extends EventEmitter {
 	}
 
 	async disconnect() {
+		if (!this.udpsocket) return;
 		console.log("UDP: Disconnecting");
 		this.udpsocket?.close();
 		this.udpsocket = null;
