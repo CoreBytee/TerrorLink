@@ -45,9 +45,11 @@ export type WSMessage<Data = JSONValue> = {
 	data: Data;
 };
 
-export type UDPMessage = {
+export type UDPMessage<ServerSide = false> = {
 	type: UDPMessageType;
 	data: Buffer;
+	address?: ServerSide extends true ? string : never;
+	port?: ServerSide extends true ? number : never;
 };
 
 export function buildUDPMessage(type: UDPMessageType, data: Buffer) {

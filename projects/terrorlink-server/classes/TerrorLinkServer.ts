@@ -1,13 +1,15 @@
 import GameState from "./GameState";
-import NetworkServer from "./NetworkServer";
+import NetworkManager from "./networking/NetworkManager";
 
 export default class TerrorLinkServer {
-	port: number;
-	networking: NetworkServer;
+	networkManager: NetworkManager;
 	gameState: GameState;
 	constructor(port: number) {
-		this.port = port;
-		this.networking = new NetworkServer(this, this.port);
+		this.networkManager = new NetworkManager(port);
 		this.gameState = new GameState(this);
+
+		this.networkManager.on("gamestate_update", (data) => {
+			this.gameState.update(data);
+		});
 	}
 }
