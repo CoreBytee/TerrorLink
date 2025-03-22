@@ -13,13 +13,15 @@ export type GameStateData = {
 };
 
 export type GameStatePlayer = {
-	sid: number;
+	steam_id: string;
+	user_id: string;
 	name: string;
 	health: number;
 	armor: number;
 	is_bot: boolean;
 	is_alive: boolean;
 	is_walking: boolean;
+	spectate_target: string;
 	team: CSTeam;
 	velocity: {
 		x: number;
