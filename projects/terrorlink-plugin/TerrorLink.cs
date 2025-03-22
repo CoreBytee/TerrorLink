@@ -37,13 +37,15 @@ public class TerrorLink : BasePlugin
                     round_phase = gamerules.GamePhase,
                     players = Utilities.GetPlayers().Select(player => new
                     {
-                        sid = player.SteamID.ToString(),
+                        steam_id = player.SteamID.ToString(),
+                        user_id = player.UserId.ToString(),
                         name = player.PlayerName,
                         health = player.PawnHealth,
                         armor = player.PawnArmor,
                         is_bot = player.IsBot,
                         is_alive = player.PawnIsAlive,
                         is_walking = player.PlayerPawn?.Value?.IsWalking,
+                        spectate_target = this.GetObserverTarget(player)?.UserId.ToString(),
                         team = player.Team,
                         velocity = new
                         {
@@ -89,5 +91,14 @@ public class TerrorLink : BasePlugin
                 Logger.LogError("Failed to send event. Exception: {Message}", e.Message);
             }
         }
+    }
+
+    private CCSPlayerController? GetObserverTarget(CCSPlayerController player)
+    {
+        if (player.Health != 0 || player.ObserverPawn?.Value?.ObserverServices?.ObserverTarget == null || player.ControllingBot)
+            return null;
+
+        var players = Utilities.GetPlayers();
+        return players.FirstOrDefault(p => p.Pawn.SerialNum == player.ObserverPawn.Value.ObserverServices.ObserverTarget.SerialNum);
     }
 }
