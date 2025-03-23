@@ -53,7 +53,9 @@ export default class Networking extends EventEmitter {
 		this.udpSocket.on("message", ({ type, data }: UDPMessage) => {
 			if (type !== UDPMessageType.Voice) return;
 			const decrypted = this.encryption.decrypt(data);
-			this.emit("voice", decrypted);
+			const userId = decrypted.readUInt32LE(0);
+			const voiceData = decrypted.subarray(4);
+			this.emit("voice", { userId, data: voiceData });
 		});
 
 		this.webSocket.on(

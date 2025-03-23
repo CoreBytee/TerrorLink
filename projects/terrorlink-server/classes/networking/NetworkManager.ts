@@ -31,7 +31,6 @@ export default class NetworkManager extends EventEmitter {
 		});
 
 		this.webServer.on("client_message", async ({ client, message }) => {
-			console.log("Client message", message);
 			this.clients[client.id].handleWSMessage(message);
 		});
 
@@ -62,5 +61,13 @@ export default class NetworkManager extends EventEmitter {
 				client.handleUDPMessage({ type, data });
 			},
 		);
+	}
+
+	getClient(steamId: string) {
+		return this.listClients().find((client) => client.steamId === steamId);
+	}
+
+	listClients() {
+		return Object.values(this.clients);
 	}
 }

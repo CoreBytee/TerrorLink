@@ -1,6 +1,11 @@
 import type { ElysiaWS } from "elysia/ws";
 import type NetworkManager from "./NetworkManager";
-import { WSMessageType, type UDPMessage, type WSMessage } from "networking";
+import {
+	UDPMessageType,
+	WSMessageType,
+	type UDPMessage,
+	type WSMessage,
+} from "networking";
 import type { JSONValue } from "../../../terrorlink-client/types/JSONValue";
 import { env } from "bun";
 import Encryption from "../../../../packages/encryption";
@@ -44,7 +49,7 @@ export default class NetworkClient {
 		type,
 		data,
 	}: WSMessage<{ address: string; port: number }>) {
-		console.log(type, data);
+		// console.log(type, data);
 		switch (type) {
 			case WSMessageType.Identity:
 				this.address = data;
@@ -59,6 +64,25 @@ export default class NetworkClient {
 	}
 
 	async handleUDPMessage({ type, data }: UDPMessage) {
-		console.log(type, data);
+		// console.log(type, data);
+
+		switch (type) {
+			case UDPMessageType.Voice: {
+				const decrypted = this.encryption.decrypt(data);
+				this.networkManager.emit("voice", { client: this, data: decrypted });
+				break;
+			}
+
+			default:
+				break;
+		}
+	}
+
+	async dispatchVoice(userId: number, data: Buffer) {
+		const buffer = Buffer.alloc(4 + data.length);
+		buffer.writeUInt32LE(userId, 0);
+		data.copy(buffer, 4);
+		const encrypted = this.encryption.encrypt(buffer);
+		await this.sendUDPMessage(UDPMessageType.Voice, encrypted);
 	}
 }

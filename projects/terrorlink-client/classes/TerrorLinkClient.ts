@@ -7,6 +7,7 @@ import buildUrl from "build-url";
 import Microphone from "./devices/Microphone";
 import { Speaker } from "./devices/Speaker";
 import Networking from "./networking/Networking";
+import type { GameStateData } from "gamestate";
 
 export class TerrorLinkClient {
 	/**
@@ -68,8 +69,38 @@ export class TerrorLinkClient {
 			}
 		});
 
-		this.networking.on("voice", (data) => {
-			this.speaker.play(data);
+		this.networking.on("voice", async (voice) => {
+			const stringUserId = voice.userId.toString();
+			const channelExists = await this.speaker.existsChannel(stringUserId);
+			if (!channelExists) return;
+
+			this.speaker.play(voice.userId, voice.data);
+		});
+
+		this.networking.on("gamestate", (gamestate: GameStateData) => {
+			// console.log(gamestate);
+			const players = gamestate.players;
+
+			players.forEach((player) => {
+				this.speaker.createChannel(player.user_id);
+				const botPlayer = players.find((player) => player.is_bot)!;
+				this.speaker.setChannelPosition(
+					player.user_id,
+					botPlayer.position,
+					botPlayer.angle,
+				);
+			});
+
+			const thisPlayer = players.find(
+				(player) => player.steam_id === this.steamAccount.data?.id,
+			);
+
+			if (!thisPlayer) {
+				console.error("TerrorLinkClient: Player not found");
+				return;
+			}
+
+			this.speaker.setPosition(thisPlayer.position, thisPlayer.angle);
 		});
 	}
 }
