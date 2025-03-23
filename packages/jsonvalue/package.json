@@ -1,0 +1,6 @@
+{
+    "name": "jsonvalue",
+    "module": "index.ts",
+    "type": "module",
+    "dependencies": {}
+}
