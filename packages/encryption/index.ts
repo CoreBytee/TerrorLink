@@ -26,7 +26,7 @@ export default class Encryption {
 		const iv = crypto.randomBytes(16);
 		const cipher = crypto.createCipheriv("aes-256-cbc", this.getKey(), iv);
 		const encrypted = Buffer.concat([cipher.update(data), cipher.final()]);
-		return encrypted;
+		return Buffer.concat([iv, encrypted]);
 	}
 
 	decrypt(data: Buffer) {
