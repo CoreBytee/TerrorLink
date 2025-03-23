@@ -1,4 +1,4 @@
-import type { JSONValue } from "../../projects/terrorlink-client/types/JSONValue";
+import type { JSONValue } from "jsonvalue";
 
 export enum WSMessageType {
 	/**
