@@ -9,6 +9,7 @@ import {
 	type WSMessage,
 } from "networking";
 import Encryption from "../../../../packages/encryption";
+import type { GameStateData } from "gamestate";
 
 export default class Networking extends EventEmitter {
 	terrorLink: TerrorLinkClient;
@@ -54,6 +55,14 @@ export default class Networking extends EventEmitter {
 			const decrypted = this.encryption.decrypt(data);
 			this.emit("voice", decrypted);
 		});
+
+		this.webSocket.on(
+			"message",
+			async ({ type, data }: WSMessage<GameStateData>) => {
+				if (type !== WSMessageType.GameState) return;
+				this.emit("gamestate", data);
+			},
+		);
 	}
 
 	async connect() {

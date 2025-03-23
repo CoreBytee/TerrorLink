@@ -18,6 +18,11 @@ export enum WSMessageType {
 	 * Contains the encryption key for the udp messages.
 	 */
 	Ready = 0x3,
+
+	/**
+	 * Send by the server to send new player positions
+	 */
+	GameState = 0x4,
 }
 
 export enum UDPMessageType {

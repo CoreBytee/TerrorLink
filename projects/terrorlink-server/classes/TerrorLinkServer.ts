@@ -11,5 +11,17 @@ export default class TerrorLinkServer {
 		this.networkManager.on("gamestate_update", (data) => {
 			this.gameState.update(data);
 		});
+		this.gameState.on("update", (data: GameStateData) => {
+			const clients = this.networkManager.listClients();
+			const connectedClients = clients.filter((client) => {
+				return data.players.find(
+					(player) => player.steam_id === client.steamId,
+				);
+			});
+
+			connectedClients.forEach((client) => {
+				client.sendWSMessage(WSMessageType.GameState, data);
+			});
+		});
 	}
 }
