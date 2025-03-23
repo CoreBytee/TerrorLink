@@ -1,4 +1,4 @@
-import type { GameStateBody, GameStatePlayer } from "../types/GameStateBody";
+import type { GameStateBody, GameStatePlayer } from "gamestate";
 import { EventEmitter } from "node:events";
 import type TerrorLinkServer from "./TerrorLinkServer";
 

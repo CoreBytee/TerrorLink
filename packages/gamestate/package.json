@@ -1,0 +1,6 @@
+{
+    "name": "gamestate",
+    "module": "index.ts",
+    "type": "module",
+    "dependencies": {}
+}
