@@ -4,6 +4,7 @@ import { EventEmitter } from "node:events";
 export default class Microphone extends EventEmitter {
 	private audioContext: AudioContext;
 	private mediaStream?: MediaStream;
+	private source?: MediaStreamAudioSourceNode;
 	private audioAnalyser: AnalyserNode;
 	private processor: ScriptProcessorNode;
 	private gainNode: GainNode;
@@ -33,20 +34,17 @@ export default class Microphone extends EventEmitter {
 
 		this.frequencyData = new Uint8Array(this.audioAnalyser.frequencyBinCount);
 
-		this.load();
-	}
-
-	private async load() {
-		await this.audioContext.resume();
-		this.mediaStream = await mediaDevices.getUserMedia({
-			audio: true,
-		});
-
-		const source = this.audioContext.createMediaStreamSource(this.mediaStream);
-		source.connect(this.gainNode);
-		this.gainNode.connect(this.audioAnalyser);
-		this.audioAnalyser.connect(this.processor);
-		this.processor.connect(this.audioContext.destination);
+		if (!deviceId) {
+			this.listDevices().then((devices) => {
+				if (devices.length === 0) {
+					console.error("No audio input devices found");
+					return;
+				}
+				this.setDevice(devices[0].id);
+			});
+		} else {
+			this.setDevice(deviceId);
+		}
 	}
 
 	/**
@@ -80,19 +78,23 @@ export default class Microphone extends EventEmitter {
 	 */
 	async setDevice(deviceId: string) {
 		// Disconnect the old device
+		this.source?.disconnect();
 		this.processor.disconnect();
 		this.audioAnalyser.disconnect();
 
 		// Get the new media stream with the specified deviceId
 		this.mediaStream = await mediaDevices.getUserMedia({
-			audio: { deviceId: { exact: deviceId } },
+			audio: { deviceId: deviceId },
 		});
 
+		this.source = this.audioContext.createMediaStreamSource(this.mediaStream);
+
 		// Connect the new media stream
-		const source = this.audioContext.createMediaStreamSource(this.mediaStream);
-		source.connect(this.audioAnalyser);
+		this.source.connect(this.audioAnalyser);
 		this.audioAnalyser.connect(this.processor);
 		this.processor.connect(this.audioContext.destination);
+
+		this.emit("device_change", deviceId);
 	}
 
 	/**

@@ -51,7 +51,9 @@ export class TerrorLinkClient {
 			},
 		);
 		this.networking = new Networking(this);
-		this.microphone = new Microphone();
+		this.microphone = new Microphone(
+			this.datastore.get("microphone") as string,
+		);
 		this.speaker = new Speaker();
 		this.internalWebserver = new InternalWebserver(this, port);
 		this.window = new Window(this.internalWebserver.url);
@@ -75,6 +77,10 @@ export class TerrorLinkClient {
 			} catch (error) {
 				console.log(error);
 			}
+		});
+
+		this.microphone.on("device_change", (deviceId: number) => {
+			this.datastore.set("microphone", deviceId);
 		});
 
 		this.networking.on("voice", async (voice) => {

@@ -69,13 +69,26 @@
             }
 
             [screen="loading"],
-            [screen="login"] {
+            [screen="login"],
+            [screen="settings"] {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
 
                 gap: 20px;
+            }
+
+            [screen="settings"] {
+                gap: 8px;
+
+                select {
+                    border: none;
+                    border-radius: 5px;
+                    background-color: #202020;
+                    padding: 5px;
+                    color: white;
+                }
             }
 
             [screen="main"] {
@@ -237,6 +250,16 @@
                     })
 
                     settingsButton.addEventListener("click", async () => {
+                        const devicesResponse = await fetch("/api/devices")
+                        const devices = await devicesResponse.json()
+                        const microphoneSelect = document.getElementById("microphone-select")
+                        microphoneSelect.innerHTML = ""
+                        devices.microphones.forEach(device => {
+                            const option = document.createElement("option")
+                            option.value = device.id
+                            option.innerText = device.name
+                            microphoneSelect.appendChild(option)
+                        })
                         setScreen("settings")
                     })
 
@@ -246,7 +269,29 @@
                     })
                 }
 
+                { // Settings
+                    const microphoneSelect = document.getElementById("microphone-select")
+                    const backButton = document.getElementById("back")
 
+                    microphoneSelect.addEventListener("change", async () => {
+                        const value = microphoneSelect.value
+                        console.log(value)
+
+                        await fetch("/api/devices", {
+                            method: "POST",
+                            body: JSON.stringify({
+                                type: "microphone",
+                                deviceId: value
+                            })
+                        })
+                    })
+
+                    backButton.addEventListener("click", () => {
+                        setScreen("main")
+                    })
+
+
+                }
             })
         </script>
     </head>
@@ -280,7 +325,17 @@
             <p id="debug" class="debug">Loading debug information...</p>
         </div>
         <div screen="settings">
+            <label for="microphone-select">Input device</label>
+            <select id="microphone-select"></select>
 
+            <div style="height:10px"></div>
+
+            <label for="speaker-select">Output device</label>
+            <select id="speaker-select"></select>
+
+            <div style="height:10px"></div>
+
+            <button type="button" id="back">Back</button>
         </div>
     </body>
 

@@ -84,6 +84,9 @@ export default class InternalWebserver {
 						const body = await request.json();
 						const type = body.type;
 						const deviceId = body.deviceId;
+
+						console.log(`Setting ${type} device to ${deviceId}`);
+
 						type === "microphone"
 							? await this.terrorLink.microphone.setDevice(deviceId)
 							: await this.terrorLink.speaker.setDevice(deviceId);
