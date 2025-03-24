@@ -8,6 +8,7 @@ import Microphone from "./devices/Microphone";
 import { Speaker } from "./devices/Speaker";
 import Networking from "./networking/Networking";
 import type { GameStateData } from "gamestate";
+import Datastore from "./Datastore";
 
 export class TerrorLinkClient {
 	/**
@@ -20,6 +21,7 @@ export class TerrorLinkClient {
 	 */
 	wsUrl: string;
 
+	datastore: Datastore;
 	steamAccount: SteamAccount;
 	networking: Networking;
 	microphone: Microphone;
@@ -41,7 +43,13 @@ export class TerrorLinkClient {
 			env.NETWORK_HOST as string | undefined,
 		);
 
-		this.steamAccount = new SteamAccount();
+		this.datastore = new Datastore("terrorlink.data");
+		this.steamAccount = new SteamAccount(
+			this.datastore.get("steam_token") as string,
+			(token) => {
+				this.datastore.set("steam_token", token);
+			},
+		);
 		this.networking = new Networking(this);
 		this.microphone = new Microphone();
 		this.speaker = new Speaker();

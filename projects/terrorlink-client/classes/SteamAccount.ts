@@ -1,6 +1,5 @@
 import { EventEmitter } from "node:events";
 import { readJsonSync, writeJSONSync } from "fs-extra";
-import type { TerrorLinkClient } from "./TerrorLinkClient";
 import jwt from "jwt-simple";
 
 function decodeJWT(token: string | null) {
@@ -20,11 +19,12 @@ type SteamTokenData = {
 
 export class SteamAccount extends EventEmitter {
 	token: string | null;
+	onChange: (token: string | null) => void;
 	data: SteamTokenData | null;
-	constructor() {
+	constructor(token: string, onChange: (token: string | null) => void) {
 		super();
-		this.token =
-			readJsonSync("./terrorlink.data", { throws: false })?.steam ?? null;
+		this.token = token;
+		this.onChange = onChange;
 		this.data = decodeJWT(this.token);
 	}
 
@@ -36,18 +36,14 @@ export class SteamAccount extends EventEmitter {
 		this.token = token;
 		this.data = decodeJWT(token);
 		if (!this.data) return;
+		this.onChange(token);
 		this.emit("link");
-		const data = readJsonSync("./terrorlink.data", { throws: false }) ?? {};
-		data.steam = token;
-		writeJSONSync("./terrorlink.data", data, { spaces: 2 });
 	}
 
 	removeToken() {
 		this.token = null;
 		this.data = null;
 		this.emit("unlink");
-		const data = readJsonSync("./terrorlink.data", { throws: false }) ?? {};
-		data.steam = undefined;
-		writeJSONSync("./terrorlink.data", data, { spaces: 2 });
+		this.onChange(null);
 	}
 }
