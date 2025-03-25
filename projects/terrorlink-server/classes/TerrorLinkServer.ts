@@ -22,13 +22,17 @@ export default class TerrorLinkServer {
 				const gamePlayer = gamePlayers.find(
 					(player) => player.steam_id === client.steamId,
 				);
-				if (!gamePlayer) return;
 
-				gamePlayers.forEach((player) => {
-					const client = this.networkManager.getClient(player.steam_id);
-					if (!client) return;
-					client.dispatchVoice(Number.parseInt(gamePlayer.user_id), data);
+				this.networkManager.listClients().forEach((client) => {
+					client.dispatchVoice(12345, data);
 				});
+				// if (!gamePlayer) return;
+
+				// gamePlayers.forEach((player) => {
+				// 	const client = this.networkManager.getClient(player.steam_id);
+				// 	if (!client) return;
+				// 	client.dispatchVoice(Number.parseInt(gamePlayer.user_id), data);
+				// });
 			},
 		);
 

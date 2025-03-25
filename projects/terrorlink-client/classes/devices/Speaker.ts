@@ -37,12 +37,12 @@ export class Speaker extends EventEmitter {
 
 		channel.pannerNode.panningModel = "HRTF";
 		channel.pannerNode.distanceModel = "inverse"; // "inverse" | "linear" | "exponential";
-		channel.pannerNode.maxDistance = 500;
-		channel.pannerNode.refDistance = 500;
+		channel.pannerNode.maxDistance = 800;
+		channel.pannerNode.refDistance = 100;
 		channel.pannerNode.rolloffFactor = 3;
-		channel.pannerNode.coneInnerAngle = 60; // Full volume within 60 degrees
-		channel.pannerNode.coneOuterAngle = 180; // Reduced volume outside 180 degrees
-		channel.pannerNode.coneOuterGain = 0.2; // 20% volume outside the outer cone
+		// channel.pannerNode.coneInnerAngle = 360; // Full volume within 60 degrees
+		// channel.pannerNode.coneOuterAngle = 360; // Reduced volume outside 180 degrees
+		// channel.pannerNode.coneOuterGain = 0.5; // 20% volume outside the outer cone
 		channel.pannerNode.connect(this.audioContext.destination);
 
 		this.channels[name] = channel;
@@ -91,18 +91,18 @@ export class Speaker extends EventEmitter {
 			position.z,
 			this.audioContext.currentTime,
 		);
-		// channel.pannerNode.orientationX.setValueAtTime(
-		// 	0,
-		// 	this.audioContext.currentTime,
-		// );
-		// channel.pannerNode.orientationY.setValueAtTime(
-		// 	0,
-		// 	this.audioContext.currentTime,
-		// );
-		// channel.pannerNode.orientationZ.setValueAtTime(
-		// 	-1,
-		// 	this.audioContext.currentTime,
-		// );
+		channel.pannerNode.orientationX.setValueAtTime(
+			Math.cos(angle.yaw) * Math.cos(angle.pitch),
+			this.audioContext.currentTime,
+		);
+		channel.pannerNode.orientationY.setValueAtTime(
+			Math.sin(angle.pitch),
+			this.audioContext.currentTime,
+		);
+		channel.pannerNode.orientationZ.setValueAtTime(
+			Math.sin(angle.yaw) * Math.cos(angle.pitch),
+			this.audioContext.currentTime,
+		);
 	}
 
 	async setPosition(
@@ -150,15 +150,15 @@ export class Speaker extends EventEmitter {
 		const float32Array = new Float32Array(buffer.buffer);
 
 		// Apply fade-in and fade-out to smooth transitions
-		for (let i = 0; i < float32Array.length; i++) {
-			const fadeFactor =
-				i < 100
-					? i / 100
-					: i > float32Array.length - 100
-						? (float32Array.length - i) / 100
-						: 1;
-			float32Array[i] *= fadeFactor;
-		}
+		// for (let i = 0; i < float32Array.length; i++) {
+		// 	const fadeFactor =
+		// 		i < 100
+		// 			? i / 100
+		// 			: i > float32Array.length - 100
+		// 				? (float32Array.length - i) / 100
+		// 				: 1;
+		// 	float32Array[i] *= fadeFactor;
+		// }
 
 		const audioBuffer = this.audioContext.createBuffer(
 			1,
@@ -168,7 +168,8 @@ export class Speaker extends EventEmitter {
 		audioBuffer.copyToChannel(float32Array, 0); // Ensure proper channel alignment
 		const bufferSource = this.audioContext.createBufferSource();
 		bufferSource.buffer = audioBuffer;
-		bufferSource.connect(channel.pannerNode);
+		bufferSource.connect(this.audioContext.destination);
+		// bufferSource.connect(channel.pannerNode);
 		bufferSource.start();
 	}
 }

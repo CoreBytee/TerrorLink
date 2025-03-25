@@ -18,7 +18,7 @@ export default class Microphone extends EventEmitter {
 		this.audioAnalyser.minDecibels = -90;
 		this.audioAnalyser.smoothingTimeConstant = 0.8;
 		this.gainNode = this.audioContext.createGain();
-		this.processor = this.audioContext.createScriptProcessor(2048, 1, 1);
+		this.processor = this.audioContext.createScriptProcessor(1024, 1, 1);
 		this.processor.addEventListener("audioprocess", ({ inputBuffer }) => {
 			if (this.isMuted) return;
 			const channelData = inputBuffer.getChannelData(0);
@@ -28,7 +28,7 @@ export default class Microphone extends EventEmitter {
 				Math.max(-0.9, Math.min(0.9, sample)),
 			);
 
-			const float32Array = new Float32Array(limitedData); // Ensure proper format
+			const float32Array = new Float32Array(channelData); // Ensure proper format
 			this.emit("frame", Buffer.from(float32Array.buffer));
 		});
 

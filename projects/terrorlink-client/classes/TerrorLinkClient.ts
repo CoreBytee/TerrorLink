@@ -9,6 +9,7 @@ import { Speaker } from "./devices/Speaker";
 import Networking from "./networking/Networking";
 import type { GameStateData } from "gamestate";
 import Datastore from "./Datastore";
+import { OpusEncoder } from "@discordjs/opus";
 
 export class TerrorLinkClient {
 	/**
@@ -21,6 +22,7 @@ export class TerrorLinkClient {
 	 */
 	wsUrl: string;
 
+	opus: OpusEncoder;
 	datastore: Datastore;
 	steamAccount: SteamAccount;
 	networking: Networking;
@@ -43,6 +45,7 @@ export class TerrorLinkClient {
 			env.NETWORK_HOST as string | undefined,
 		);
 
+		this.opus = new OpusEncoder(48000, 1);
 		this.datastore = new Datastore("terrorlink.data");
 		this.steamAccount = new SteamAccount(
 			this.datastore.get("steam_token") as string,
@@ -73,7 +76,11 @@ export class TerrorLinkClient {
 		this.microphone.on("frame", (frame) => {
 			try {
 				if (!this.networking.connected) return;
-				this.networking.sendVoice(frame);
+				// const encoded = this.opus.encode(frame);
+				const encoded = frame;
+				this.speaker.createChannel("local");
+				this.speaker.play("local", encoded);
+				this.networking.sendVoice(encoded);
 			} catch (error) {
 				console.log(error);
 			}
@@ -85,10 +92,13 @@ export class TerrorLinkClient {
 
 		this.networking.on("voice", async (voice) => {
 			const stringUserId = voice.userId.toString();
-			const channelExists = await this.speaker.existsChannel(stringUserId);
-			if (!channelExists) return;
+			// const channelExists = await this.speaker.existsChannel(stringUserId);
+			// if (!channelExists) return;
 
-			this.speaker.play(voice.userId, voice.data);
+			// const decoded = this.opus.decode(voice.data);
+			const decoded = voice.data;
+			this.speaker.createChannel(voice.userId);
+			// this.speaker.play(voice.userId, decoded);
 		});
 
 		this.networking.on("gamestate", (gamestate: GameStateData) => {
