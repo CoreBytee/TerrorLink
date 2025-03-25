@@ -1,33 +1,34 @@
 {
-    "name": "terrorlink",
-    "version": "1.0.0",
-    "devDependencies": {
-        "@biomejs/biome": "1.9.4",
-        "@types/bun": "latest"
-    },
-    "peerDependencies": {
-        "typescript": "^5.7.3"
-    },
-    "workspaces": [
-        "packages/*",
-        "projects/*"
-    ],
-    "scripts": {
-        "install:steamcmd": "sh ./scripts/install-steamcmd.sh",
-        "install:counterstrike": "sh ./scripts/install-counterstrike.sh",
-        "install:cssharp": "sh ./scripts/install-cssharp.sh",
-        "dev:client": "bun run --watch ./projects/terrorlink-client",
-        "dev:server": "bun run --watch ./projects/terrorlink-server",
-        "dev:game": "./game/counterstrike/game/bin/win64/cs2.exe -dedicated +map de_dust2 +sv_setsteamaccount $(bun --print process.env.CS2_SERVER_ACCOUNT) +tl_apitoken $(bun --print process.env.GAMESTATE_TOKEN)",
-        "dev:plugin": "sh ./scripts/dev-plugin.sh",
-        "build:client": "bun build --compile ./projects/terrorlink-client/index.ts --outfile ./terrorlink.exe",
-        "build:plugin": "dotnet build",
-        "prod:server": "bun run ./projects/terrorlink-server"
-    },
-    "trustedDependencies": [
-        "@biomejs/biome"
-    ],
-    "patchedDependencies": {
-        "node-web-audio-api@1.0.1": "patches/node-web-audio-api@1.0.1.patch"
-    }
+  "name": "terrorlink",
+  "version": "1.0.0",
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.7.3"
+  },
+  "workspaces": [
+    "packages/*",
+    "projects/*"
+  ],
+  "scripts": {
+    "install:steamcmd": "sh ./scripts/install-steamcmd.sh",
+    "install:counterstrike": "sh ./scripts/install-counterstrike.sh",
+    "install:cssharp": "sh ./scripts/install-cssharp.sh",
+    "dev:client": "bun run --watch ./projects/terrorlink-client",
+    "dev:server": "bun run --watch ./projects/terrorlink-server",
+    "dev:game": "./game/counterstrike/game/bin/win64/cs2.exe -dedicated +map de_dust2 +sv_setsteamaccount $(bun --print process.env.CS2_SERVER_ACCOUNT) +tl_apitoken $(bun --print process.env.GAMESTATE_TOKEN)",
+    "dev:plugin": "sh ./scripts/dev-plugin.sh",
+    "build:client": "bun build --compile ./projects/terrorlink-client/index.ts --outfile ./terrorlink.exe",
+    "build:plugin": "dotnet build",
+    "prod:server": "bun run ./projects/terrorlink-server"
+  },
+  "trustedDependencies": [
+    "@biomejs/biome",
+    "@discordjs/opus"
+  ],
+  "patchedDependencies": {
+    "node-web-audio-api@1.0.1": "patches/node-web-audio-api@1.0.1.patch"
+  }
 }
