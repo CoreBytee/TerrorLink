@@ -3,6 +3,8 @@ import { EventEmitter } from "node:events";
 
 type SpeakerChannel = {
 	pannerNode: PannerNode;
+	buffer: AudioBuffer | null;
+	active: boolean;
 };
 
 export class Speaker extends EventEmitter {
@@ -33,6 +35,8 @@ export class Speaker extends EventEmitter {
 		console.log(`Speaker: Creating channel ${name}`);
 		const channel: SpeakerChannel = {
 			pannerNode: this.audioContext.createPanner(),
+			buffer: null,
+			active: false,
 		};
 
 		channel.pannerNode.panningModel = "HRTF";
@@ -147,29 +151,45 @@ export class Speaker extends EventEmitter {
 			return;
 		}
 
+		if (channel.active === false && channel.buffer) {
+			channel.active = true;
+			this.playNext(channelName);
+		}
+
 		const float32Array = new Float32Array(buffer.buffer);
-
-		// Apply fade-in and fade-out to smooth transitions
-		// for (let i = 0; i < float32Array.length; i++) {
-		// 	const fadeFactor =
-		// 		i < 100
-		// 			? i / 100
-		// 			: i > float32Array.length - 100
-		// 				? (float32Array.length - i) / 100
-		// 				: 1;
-		// 	float32Array[i] *= fadeFactor;
-		// }
-
 		const audioBuffer = this.audioContext.createBuffer(
 			1,
 			float32Array.length,
 			this.audioContext.sampleRate,
 		);
-		audioBuffer.copyToChannel(float32Array, 0); // Ensure proper channel alignment
+
+		audioBuffer.copyToChannel(float32Array, 0);
+		channel.buffer = audioBuffer;
+	}
+
+	playNext(channelName: string) {
+		const channel = this.channels[channelName];
+
+		if (!channel) {
+			console.error(`Speaker: Channel ${channelName} does not exist`);
+			return;
+		}
+
+		const buffer = channel.buffer;
+		channel.buffer = null;
+
+		if (!buffer) {
+			channel.active = false;
+			console.error(`Speaker: Channel ${channelName} has no buffer`);
+			return;
+		}
+
 		const bufferSource = this.audioContext.createBufferSource();
-		bufferSource.buffer = audioBuffer;
-		bufferSource.connect(this.audioContext.destination);
-		// bufferSource.connect(channel.pannerNode);
+		bufferSource.buffer = buffer;
+		bufferSource.connect(channel.pannerNode);
 		bufferSource.start();
+		bufferSource.onended = () => {
+			this.playNext(channelName);
+		};
 	}
 }
