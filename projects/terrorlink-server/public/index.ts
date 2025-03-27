@@ -1,4 +1,4 @@
-import { pEvent, type AddRemoveListener, type Emitter } from "p-event";
+import { pEvent } from "p-event";
 import Peer from "peerjs";
 import { setScreen } from "./assets/screens";
 
