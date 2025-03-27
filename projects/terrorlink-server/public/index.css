@@ -32,6 +32,8 @@ body {
 	.microphone-graph {
 		background-color: var(--button-color);
 		border-radius: 20px;
+		width: 100%;
+		height: 100px;
 	}
 
 	.actionrow {
