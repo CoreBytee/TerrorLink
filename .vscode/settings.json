@@ -4,5 +4,8 @@
 	"editor.formatOnPaste": true,
 	"files.eol": "\n",
 	"editor.formatOnSave": true,
-	"npm.packageManager": "bun"
+	"npm.packageManager": "bun",
+	"[typescript]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	}
 }
