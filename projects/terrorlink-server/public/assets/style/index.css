@@ -1,0 +1,40 @@
+:root {
+	--background-color: #1b1b1b;
+	--container-color: #2b2b2b;
+	--text-color: white;
+	--button-color: #3b3b3b;
+	--button-hover-color: #4b4b4b;
+}
+
+html {
+	margin: 0;
+	padding: 0;
+	min-height: 100vh;
+}
+
+body {
+	height: 100vh;
+	margin: 0;
+	font-family: Arial, Helvetica, sans-serif;
+	background-color: var(--background-color);
+}
+
+button {
+	appearance: none;
+	border: none;
+	background-color: var(--button-color);
+	transition: background-color 0.3s;
+	border-radius: 8px;
+	padding: 10px;
+
+	&:hover {
+		background-color: var(--button-hover-color);
+	}
+}
+
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	color: var(--text-color);
+}
