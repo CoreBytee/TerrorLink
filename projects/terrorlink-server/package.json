@@ -3,8 +3,10 @@
     "module": "index.ts",
     "type": "module",
     "dependencies": {
-        "elysia": "^1.2.15",
+        "async-mutex": "^0.5.0",
         "jwt-simple": "^0.5.6",
+        "p-event": "^6.0.1",
+        "peerjs": "^1.5.4",
         "steam-signin": "^1.0.5"
     },
     "devDependencies": {}
