@@ -119,6 +119,20 @@ class Socket extends EventEmitter {
 		await pEvent(this.socket, "open");
 		console.info("Socket: Connected to server");
 	}
+
+	sendMessage<Payload = JSONValue>(type: MessageType, payload: Payload) {
+		const rawMessage = JSON.stringify({
+			type,
+			payload,
+		} as Message<Payload>);
+
+		if (!this.socket || this.socket.readyState !== WebSocket.OPEN) {
+			console.error("Socket: Not connected to server");
+			return;
+		}
+
+		this.socket.send(rawMessage);
+	}
 }
 
 class TerrorLink {
