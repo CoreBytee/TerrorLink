@@ -32,7 +32,7 @@ class Microphone {
 		this.analyzerNode = this.audioContext.createAnalyser();
 		this.outputStream = this.audioContext.createMediaStreamDestination();
 
-		this.analyzerNode.fftSize = 2048;
+		this.analyzerNode.fftSize = 32;
 		this.frequencyData = new Uint8Array(this.analyzerNode.frequencyBinCount);
 
 		this.gainNode.connect(this.analyzerNode);
