@@ -1,6 +1,6 @@
 import type { GameStateData } from "gamestate";
 import GameState from "./GameState";
-import WebServer from "./WebServer";
+import WebServer from "./networking/WebServer";
 
 export default class TerrorLinkServer {
 	webServer: WebServer;

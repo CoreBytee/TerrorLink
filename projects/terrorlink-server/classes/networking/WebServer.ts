@@ -1,15 +1,24 @@
 import { env } from "bun";
 import { EventEmitter } from "node:events";
-import SteamAuthentication, { type SteamUserData } from "./SteamAuthentication";
+import SteamAuthentication, {
+	type SteamUserData,
+} from "../SteamAuthentication";
 import buildUrl from "build-url";
 import type { BunRequest, Server, ServerWebSocket } from "bun";
-import indexHtml from "../public/index.html";
+import indexHtml from "../../public/index.html";
 import type { JSONPrimitive, JSONValue } from "jsonvalue";
 import jwt from "jwt-simple";
-import favicon from "../public/favicon.ico";
+import favicon from "../../public/favicon.ico";
 import { Mutex } from "async-mutex";
+import Client from "./Client";
+import {
+	type MessageActivePeersPayload,
+	type MessageConnectPeerPayload,
+	type MessageDisconnectPeerPayload,
+	MessageType,
+} from "networking";
 
-type WSData = {
+export type ServerWebSocketData = {
 	user: SteamUserData;
 	peerId: string;
 };
@@ -26,7 +35,7 @@ export default class WebServer extends EventEmitter {
 	private steamToken: string;
 	private jwtToken: string;
 
-	clients: Record<string, ServerWebSocket<WSData>>;
+	clients: Record<string, Client>;
 	connectionMutex: Mutex;
 	constructor() {
 		super();
@@ -96,39 +105,48 @@ export default class WebServer extends EventEmitter {
 				},
 			},
 			websocket: {
-				open: async (ws: ServerWebSocket<WSData>) => {
+				open: async (ws: ServerWebSocket<ServerWebSocketData>) => {
 					// console.log(ws)
 					const token = ws.data.user;
 					const peerId = ws.data.peerId;
 					console.log(token, peerId);
 
-					const release = await this.connectionMutex.acquire();
+					const client = new Client(ws);
+					this.clients[peerId] = client;
 
-					// Send the newly connected client the peer IDs of already connected clients
-					ws.send(
-						JSON.stringify({
-							type: "existingClients",
-							peerIds: Object.keys(this.clients),
-						}),
+					client.sendMessage<MessageActivePeersPayload>(
+						MessageType.ActivePeers,
+						{
+							peers: this.listClients()
+								.map((client) => client.peerId)
+								.filter((clientPeerId) => clientPeerId !== peerId),
+						},
 					);
 
-					// Notify all already connected clients about the new client
-					Object.values(this.clients).forEach((client) => {
-						client.send(
-							JSON.stringify({
-								type: "newClient",
-								peerId: peerId,
-							}),
-						);
-					});
-
-					this.clients[peerId] = ws;
-					release();
+					this.listClients()
+						.filter((client) => client.peerId !== peerId)
+						.forEach((client) => {
+							client.sendMessage<MessageConnectPeerPayload>(
+								MessageType.ConnectPeer,
+								{
+									peerId: client.peerId,
+								},
+							);
+						});
 				},
 				message: async () => {},
-				close: async (ws: ServerWebSocket<WSData>) => {
+				close: async (ws: ServerWebSocket<ServerWebSocketData>) => {
 					const peerId = ws.data.peerId;
 					delete this.clients[peerId];
+
+					this.listClients().forEach((client) => {
+						client.sendMessage<MessageDisconnectPeerPayload>(
+							MessageType.DisconnectPeer,
+							{
+								peerId: peerId,
+							},
+						);
+					});
 				},
 			},
 		});
@@ -163,5 +181,9 @@ export default class WebServer extends EventEmitter {
 			sameSite: "strict",
 		});
 		return encoded;
+	}
+
+	listClients() {
+		return Object.values(this.clients);
 	}
 }
