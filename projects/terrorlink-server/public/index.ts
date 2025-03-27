@@ -2,7 +2,8 @@ import { pEvent } from "p-event";
 import Peer from "peerjs";
 import { setScreen } from "./assets/screens";
 import { EventEmitter } from "node:events";
-import type { Message } from "networking";
+import type { Message, MessageType } from "networking";
+import type { JSONValue } from "jsonvalue";
 
 const authenticationStatusRequest = await fetch("/authentication/status");
 const authenticationStatus = await authenticationStatusRequest.json();
@@ -113,6 +114,7 @@ class Socket extends EventEmitter {
 		this.socket.addEventListener("message", (rawMessage) => {
 			const message = JSON.parse(rawMessage.data) as Message;
 			this.emit(message.type, message.payload);
+			console.log("Received message:", message);
 		});
 
 		console.info("Socket: Connecting to server");
