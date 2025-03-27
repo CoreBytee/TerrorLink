@@ -24,9 +24,16 @@ body {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	flex-direction: column;
+	gap: 10px;
 }
 
 [screen="main"] {
+	.microphone-graph {
+		background-color: var(--button-color);
+		border-radius: 20px;
+	}
+
 	.actionrow {
 		display: flex;
 		flex-direction: row;

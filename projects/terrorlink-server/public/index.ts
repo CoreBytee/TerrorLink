@@ -15,23 +15,63 @@ if (!authenticationStatus.authenticated) {
 
 class Microphone {
 	muted: boolean;
+	private frequencyData: Uint8Array<ArrayBuffer>;
 	private audioContext: AudioContext;
 	private mediaStreamSource?: MediaStreamAudioSourceNode;
 	private gainNode: GainNode;
+	private analyzerNode: AnalyserNode;
 	private outputStream: MediaStreamAudioDestinationNode;
 	constructor() {
-		this.muted = false
+		this.muted = false;
 
 		this.audioContext = new AudioContext({
-			latencyHint: "interactive"
+			latencyHint: "interactive",
 		});
 
 		this.gainNode = this.audioContext.createGain();
+		this.analyzerNode = this.audioContext.createAnalyser();
 		this.outputStream = this.audioContext.createMediaStreamDestination();
 
-		this.gainNode.connect(this.outputStream);
+		this.analyzerNode.fftSize = 2048;
+		this.frequencyData = new Uint8Array(this.analyzerNode.frequencyBinCount);
 
-		this.setDevice("")
+		this.gainNode.connect(this.analyzerNode);
+		this.analyzerNode.connect(this.outputStream);
+
+		this.setDevice("");
+		this.updateGraph();
+	}
+
+	private updateGraph() {
+		requestAnimationFrame(() => {
+			this.updateGraph();
+		});
+
+		this.analyzerNode.getByteFrequencyData(this.frequencyData);
+
+		const canvas = document.querySelector(
+			"#microphone-graph",
+		) as HTMLCanvasElement;
+		const context = canvas.getContext("2d");
+		if (!context) return;
+		const width = canvas.clientWidth;
+		const height = canvas.clientHeight;
+
+		canvas.width = width;
+		canvas.height = height;
+
+		const barWidth = width / this.frequencyData.length;
+		const barHeight = height / 255;
+
+		context.clearRect(0, 0, width, height);
+		context.fillStyle = "white";
+
+		this.frequencyData.forEach((value, i) => {
+			const x = i * barWidth;
+			const y = height - value * barHeight;
+
+			context.fillRect(x, y, barWidth, height - y);
+		});
 	}
 
 	async listDevices() {
@@ -39,13 +79,16 @@ class Microphone {
 	}
 
 	async setDevice(deviceId: string) {
-		const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+		const stream = await navigator.mediaDevices.getUserMedia({
+			audio: true,
+			video: false,
+		});
 		this.mediaStreamSource = this.audioContext.createMediaStreamSource(stream);
 		this.mediaStreamSource.connect(this.gainNode);
 	}
 
 	setMute(state: boolean) {
-
+		this.gainNode.gain.value = state ? 1 : 0;
 	}
 
 	toggleMute() {
@@ -60,7 +103,7 @@ class Microphone {
 class Socket extends EventEmitter {
 	socket: WebSocket | null;
 	constructor() {
-		super()
+		super();
 		this.socket = null;
 	}
 
@@ -70,7 +113,7 @@ class Socket extends EventEmitter {
 		this.socket.addEventListener("message", (rawMessage) => {
 			const message = JSON.parse(rawMessage.data) as Message;
 			this.emit(message.type, message.payload);
-		})
+		});
 
 		console.info("Socket: Connecting to server");
 		await pEvent(this.socket, "open");
@@ -89,11 +132,11 @@ class TerrorLink {
 
 		this.peer.once("open", () => {
 			this.socket.connect(this.peer.id);
-		})
+		});
 	}
 }
 
-new TerrorLink()
+new TerrorLink();
 
 // const peer = new Peer();
 
