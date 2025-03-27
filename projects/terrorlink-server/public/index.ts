@@ -2,6 +2,7 @@ import { pEvent } from "p-event";
 import Peer from "peerjs";
 import { setScreen } from "./assets/screens";
 import { EventEmitter } from "node:events";
+import type { Message } from "networking";
 
 const authenticationStatusRequest = await fetch("/authentication/status");
 const authenticationStatus = await authenticationStatusRequest.json();
@@ -56,26 +57,32 @@ class Microphone {
 	}
 }
 
-class Socket {
+class Socket extends EventEmitter {
 	socket: WebSocket | null;
 	constructor() {
+		super()
 		this.socket = null;
 	}
 
 	async connect(peerId: string) {
 		this.socket = new WebSocket(`/events?id=${peerId}`);
+
+		this.socket.addEventListener("message", (rawMessage) => {
+			const message = JSON.parse(rawMessage.data) as Message;
+			this.emit(message.type, message.payload);
+		})
+
 		console.info("Socket: Connecting to server");
 		await pEvent(this.socket, "open");
 		console.info("Socket: Connected to server");
 	}
 }
 
-class TerrorLink extends EventEmitter {
+class TerrorLink {
 	peer: Peer;
 	socket: Socket;
 	microphone: Microphone;
 	constructor() {
-		super()
 		this.peer = new Peer();
 		this.socket = new Socket();
 		this.microphone = new Microphone();
