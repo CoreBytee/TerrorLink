@@ -1,0 +1,46 @@
+body {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+
+	& > h1 {
+		margin: 0;
+		margin-bottom: 8px;
+	}
+
+	& > div {
+		background-color: var(--container-color);
+		padding: 20px;
+		border-radius: 10px;
+
+		width: 400px;
+		height: 400px;
+	}
+}
+
+[screen="loading"],
+[screen="main"] {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+[screen="main"] {
+	.actionrow {
+		display: flex;
+		flex-direction: row;
+		gap: 8px;
+
+		button {
+			width: 60px;
+			height: 60px;
+
+			img {
+				width: 100%;
+				height: 100%;
+				filter: invert(100%);
+			}
+		}
+	}
+}
