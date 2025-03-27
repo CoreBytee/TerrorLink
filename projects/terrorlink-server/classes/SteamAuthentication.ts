@@ -1,5 +1,11 @@
 import SteamSignIn from "steam-signin";
 
+export type SteamUserData = {
+	id: string;
+	displayName: string;
+	avatarUrl: string
+}
+
 class SteamUser {
 	id: string;
 	displayName: string;
@@ -46,9 +52,13 @@ export default class SteamAuthentication {
 	 * @returns Steam User
 	 */
 	async resolveUrl(url: string) {
-		const steamId = await this.steam.verifyLogin(url);
-		const data = await this.getUserData(steamId.getSteamID64());
-		return new SteamUser(data);
+		try {
+			const steamId = await this.steam.verifyLogin(url);
+			const data = await this.getUserData(steamId.getSteamID64());
+			return new SteamUser(data);
+		} catch (error) {
+			return false
+		}
 	}
 
 	private async getUserData(steamId: string) {
