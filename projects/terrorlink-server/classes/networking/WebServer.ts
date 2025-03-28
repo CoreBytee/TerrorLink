@@ -33,6 +33,7 @@ export default class WebServer extends EventEmitter {
 	private ssl: boolean;
 	private proxy: boolean;
 	private steamToken: string;
+	private gamestateToken: string;
 	private jwtToken: string;
 
 	clients: Record<string, Client>;
@@ -46,6 +47,7 @@ export default class WebServer extends EventEmitter {
 		this.proxy = env.NETWORK_PROXY === "true" || env.NETWORK_PROXY === "1";
 
 		this.steamToken = env.STEAM_TOKEN as string;
+		this.gamestateToken = env.GAMESTATE_TOKEN as string;
 		this.jwtToken = env.JWT_SECRET as string;
 
 		this.httpUrl = buildUrl(
@@ -101,6 +103,13 @@ export default class WebServer extends EventEmitter {
 							peerId: peerId,
 						},
 					});
+					return new Response("ok");
+				},
+				"/api/gamestate": async (request) => {
+					if (request.headers.get("x-token") !== this.gamestateToken)
+						return new Response("Unauthorized", { status: 401 });
+
+					this.emit("gamestate", await request.json());
 					return new Response("ok");
 				},
 			},
