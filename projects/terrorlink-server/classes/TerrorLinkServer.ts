@@ -1,4 +1,3 @@
-import type { GameStateData } from "gamestate";
 import GameState from "./GameState";
 import WebServer from "./networking/WebServer";
 
