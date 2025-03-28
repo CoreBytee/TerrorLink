@@ -221,17 +221,17 @@ class TerrorLink {
 		this.speaker = new Speaker();
 
 		this.peer.once("open", async (id) => {
-			console.log("My peer ID:", id);
+			console.info("My peer ID:", id);
 			await this.socket.connect(this.peer.id);
 			setScreen("main");
 		});
 
 		this.peer.on("call", async (call) => {
-			console.log("Incoming call", call);
+			console.info("Incoming call", call);
 			call.answer();
 
 			call.on("stream", (stream) => {
-				console.log("Received stream from incoming call:", stream);
+				console.info("Received stream from incoming call:", stream);
 				this.speaker.addStream(stream);
 			});
 		});
@@ -239,7 +239,7 @@ class TerrorLink {
 		this.socket.on(
 			MessageType.ConnectPeer,
 			async (payload: MessageConnectPeerPayload) => {
-				console.log("Calling peer ID:", payload.peerId);
+				console.info("Calling peer ID:", payload.peerId);
 				const call = this.peer.call(payload.peerId, this.microphone.stream);
 			},
 		);
@@ -248,7 +248,7 @@ class TerrorLink {
 			MessageType.ActivePeers,
 			(payload: MessageActivePeersPayload) => {
 				payload.peers.forEach((peerId) => {
-					console.log("Calling peer ID:", peerId);
+					console.info("Calling peer ID:", peerId);
 					const call = this.peer.call(peerId, this.microphone.stream);
 				});
 			},
