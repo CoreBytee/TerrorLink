@@ -101,6 +101,63 @@ class Microphone {
 	}
 }
 
+class Speaker {
+	channels: Record<string, unknown>;
+	deafen: boolean;
+	private audioContext: AudioContext;
+	private gainNode: GainNode;
+	private analyzerNode: AnalyserNode;
+	private frequencyData: Uint8Array<ArrayBuffer>;
+	constructor() {
+		this.channels = {};
+		this.deafen = false;
+
+		this.audioContext = new AudioContext({
+			latencyHint: "interactive",
+		});
+
+		this.gainNode = this.audioContext.createGain();
+
+		this.analyzerNode = this.audioContext.createAnalyser();
+		this.analyzerNode.fftSize = 32;
+		this.frequencyData = new Uint8Array(this.analyzerNode.frequencyBinCount);
+
+		this.gainNode.connect(this.analyzerNode);
+		this.analyzerNode.connect(this.audioContext.destination);
+
+		this.updateGraph();
+	}
+
+	private updateGraph() {
+		requestAnimationFrame(() => {
+			this.updateGraph();
+		});
+
+		this.analyzerNode.getByteFrequencyData(this.frequencyData);
+
+		writeFrequencyData(
+			document.querySelector("#speaker-graph") as HTMLCanvasElement,
+			this.frequencyData,
+		);
+	}
+
+	addStream(stream: MediaStream) {
+		console.log("Speaker: Adding stream", stream);
+
+		const mediaStreamSource = this.audioContext.createMediaStreamSource(stream);
+		mediaStreamSource.connect(this.gainNode);
+	}
+
+	setDeafen(state: boolean) {
+		this.gainNode.gain.value = state ? 0 : 1;
+		this.deafen = state;
+	}
+
+	toggleDeafen() {
+		this.setDeafen(!this.deafen);
+	}
+}
+
 class Socket extends EventEmitter {
 	socket: WebSocket | null;
 	constructor() {
@@ -141,16 +198,46 @@ class TerrorLink {
 	peer: Peer;
 	socket: Socket;
 	microphone: Microphone;
+	speaker: Speaker;
 	constructor() {
 		this.peer = new Peer();
 		this.socket = new Socket();
 		this.microphone = new Microphone();
+		this.speaker = new Speaker();
 
 		this.peer.once("open", async (id) => {
 			console.log("Peer ID:", id);
 			await this.socket.connect(this.peer.id);
 			setScreen("main");
 		});
+
+		this.peer.on("call", async (call) => {
+			console.log("call", call);
+
+			call.answer();
+
+			call.on("stream", (stream) => {
+				console.log("Received stream:", stream);
+				this.speaker.addStream(stream);
+			});
+		});
+
+		this.socket.on(
+			MessageType.ConnectPeer,
+			async (payload: MessageConnectPeerPayload) => {
+				const call = this.peer.call(payload.peerId, this.microphone.stream);
+			},
+		);
+
+		this.socket.on(
+			MessageType.ActivePeers,
+			(payload: MessageActivePeersPayload) => {
+				payload.peers.forEach((peerId) => {
+					console.log("Peer ID:", peerId);
+					const call = this.peer.call(peerId, this.microphone.stream);
+				});
+			},
+		);
 	}
 }
 
