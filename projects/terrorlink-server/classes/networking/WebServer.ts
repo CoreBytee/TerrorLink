@@ -120,10 +120,10 @@ export default class WebServer extends EventEmitter {
 					const peerId = ws.data.peerId;
 					console.log(token, peerId);
 
-					const client = new Client(ws);
-					this.clients[peerId] = client;
+					const newClient = new Client(ws);
+					this.clients[peerId] = newClient;
 
-					client.sendMessage<MessageActivePeersPayload>(
+					newClient.sendMessage<MessageActivePeersPayload>(
 						MessageType.ActivePeers,
 						{
 							peers: this.listClients()
@@ -138,7 +138,7 @@ export default class WebServer extends EventEmitter {
 							client.sendMessage<MessageConnectPeerPayload>(
 								MessageType.ConnectPeer,
 								{
-									peerId: client.peerId,
+									peerId: newClient.peerId,
 								},
 							);
 						});
