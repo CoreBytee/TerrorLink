@@ -12,7 +12,7 @@ export default class GameState extends EventEmitter {
 		this.players = {};
 	}
 
-	get playersList() {
+	listPlayers() {
 		return Object.values(this.players);
 	}
 

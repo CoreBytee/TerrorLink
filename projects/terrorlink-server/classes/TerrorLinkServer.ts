@@ -1,3 +1,4 @@
+import { MessageType, type MessageUpdatePositionsPayload } from "networking";
 import GameState from "./GameState";
 import WebServer from "./networking/WebServer";
 
@@ -11,5 +12,24 @@ export default class TerrorLinkServer {
 		this.webServer.on("gamestate", (data) => {
 			this.gameState.update(data);
 		});
+
+		setInterval(() => {
+			const players = this.gameState.listPlayers();
+			const clients = this.webServer
+				.listClients()
+				.filter((client) => players.find((p) => p.steam_id === client.user.id));
+
+			clients.forEach((client) => {
+				client.sendMessage<MessageUpdatePositionsPayload>(
+					MessageType.UpdatePositions,
+					{
+						positions: players.map((player) => ({
+							...player,
+							peer_id: client.peerId,
+						})),
+					},
+				);
+			});
+		}, 20);
 	}
 }

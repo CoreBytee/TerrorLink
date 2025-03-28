@@ -1,3 +1,4 @@
+import type { GameStatePlayer } from "gamestate";
 import type { JSONValue } from "jsonvalue";
 
 export enum MessageType {
@@ -15,6 +16,11 @@ export enum MessageType {
 	 * Sent when the client should disconnect from a peer.
 	 */
 	DisconnectPeer = "disconnectPeer",
+
+	/**
+	 * Sent when the client should update the audio positions.
+	 */
+	UpdatePositions = "updatePositions",
 }
 
 export type Message<Payload = JSONValue> = {
@@ -32,4 +38,13 @@ export type MessageConnectPeerPayload = {
 
 export type MessageDisconnectPeerPayload = {
 	peerId: string;
+};
+
+interface GameStatePlayerWithPeerId extends GameStatePlayer {
+	peer_id: string;
+}
+
+export type MessageUpdatePositionsPayload = {
+	positions: GameStatePlayerWithPeerId[];
+	// positions: Record<string, GameStatePlayer[]>;
 };

@@ -206,7 +206,6 @@ class Socket extends EventEmitter {
 		this.socket.addEventListener("message", (rawMessage) => {
 			const message = JSON.parse(rawMessage.data) as Message;
 			this.emit(message.type, message.payload);
-			console.info("Received message:", message);
 		});
 
 		console.info("Socket: Connecting to server");
