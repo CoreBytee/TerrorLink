@@ -71,6 +71,12 @@ class Microphone {
 		this.gainNode.connect(this.analyzerNode);
 		this.analyzerNode.connect(this.outputStream);
 
+		document.body.addEventListener("click", () => {
+			if (this.audioContext.state === "suspended") {
+				this.audioContext.resume();
+			}
+		});
+
 		this.setDevice("");
 		this.updateGraph();
 	}
@@ -139,6 +145,12 @@ class Speaker {
 
 		this.gainNode.connect(this.analyzerNode);
 		this.analyzerNode.connect(this.audioContext.destination);
+
+		document.body.addEventListener("click", () => {
+			if (this.audioContext.state === "suspended") {
+				this.audioContext.resume();
+			}
+		});
 
 		this.updateGraph();
 	}
