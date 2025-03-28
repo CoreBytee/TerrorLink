@@ -3,7 +3,6 @@
     "module": "index.ts",
     "type": "module",
     "dependencies": {
-        "@discordjs/opus": "^0.10.0",
         "bytes": "^3.1.2",
         "elysia": "^1.2.21",
         "fs-extra": "^11.3.0",
