@@ -92,7 +92,7 @@ export default class WebServer extends EventEmitter {
 					this.setToken(request, user.toJSON());
 					return Response.redirect("/", 302);
 				},
-				"/events": (request, server) => {
+				"/api/events": (request, server) => {
 					const token = this.getToken(request);
 					const peerId = new URL(request.url).searchParams.get("id");
 					if (!token) return new Response("Unauthorized", { status: 401 });

@@ -109,7 +109,7 @@ class Socket extends EventEmitter {
 	}
 
 	async connect(peerId: string) {
-		this.socket = new WebSocket(`/events?id=${peerId}`);
+		this.socket = new WebSocket(`/api/events?id=${peerId}`);
 
 		this.socket.addEventListener("message", (rawMessage) => {
 			const message = JSON.parse(rawMessage.data) as Message;
