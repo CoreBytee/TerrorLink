@@ -258,18 +258,29 @@ class TerrorLink {
 			"button#mute",
 		) as HTMLButtonElement | null;
 
-		muteButton?.addEventListener("click", (event) => {
-			this.microphone.toggleMute();
-			muteButton.classList.toggle("active");
-		});
-
 		const deafenButton = document.querySelector(
 			"button#deafen",
 		) as HTMLButtonElement | null;
 
+		function updateButtons(microphone: Microphone, speaker: Speaker) {
+			microphone.muted
+				? muteButton?.classList.add("active")
+				: muteButton?.classList.remove("active");
+			speaker.deafen
+				? deafenButton?.classList.add("active")
+				: deafenButton?.classList.remove("active");
+		}
+
+		muteButton?.addEventListener("click", (event) => {
+			this.microphone.toggleMute();
+			this.microphone.muted ? null : this.speaker.setDeafen(false);
+			updateButtons(this.microphone, this.speaker);
+		});
+
 		deafenButton?.addEventListener("click", (event) => {
 			this.speaker.toggleDeafen();
-			deafenButton.classList.toggle("active");
+			this.microphone.setMute(this.speaker.deafen);
+			updateButtons(this.microphone, this.speaker);
 		});
 	}
 }
