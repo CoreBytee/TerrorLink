@@ -70,6 +70,7 @@ export default class WebServer extends EventEmitter {
 		this.connectionMutex = new Mutex();
 
 		this.server = Bun.serve({
+			development: env.NODE_ENV !== "production",
 			port: this.port,
 			routes: {
 				"/": indexHtml,
