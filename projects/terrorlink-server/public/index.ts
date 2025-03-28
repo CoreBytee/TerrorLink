@@ -22,6 +22,7 @@ class Microphone {
 	private gainNode: GainNode;
 	private analyzerNode: AnalyserNode;
 	private outputStream: MediaStreamAudioDestinationNode;
+	rawStream?: MediaStream;
 	constructor() {
 		this.muted = false;
 
@@ -49,30 +50,10 @@ class Microphone {
 		});
 
 		this.analyzerNode.getByteFrequencyData(this.frequencyData);
-
-		const canvas = document.querySelector(
-			"#microphone-graph",
-		) as HTMLCanvasElement;
-		const context = canvas.getContext("2d");
-		if (!context) return;
-		const width = canvas.clientWidth;
-		const height = canvas.clientHeight;
-
-		canvas.width = width;
-		canvas.height = height;
-
-		const barWidth = width / this.frequencyData.length;
-		const barHeight = height / 255;
-
-		context.clearRect(0, 0, width, height);
-		context.fillStyle = "white";
-
-		this.frequencyData.forEach((value, i) => {
-			const x = i * barWidth;
-			const y = height - value * barHeight;
-
-			context.fillRect(x, y, barWidth, height - y);
-		});
+		writeFrequencyData(
+			document.querySelector("#microphone-graph") as HTMLCanvasElement,
+			this.frequencyData,
+		);
 	}
 
 	async listDevices() {
@@ -84,12 +65,14 @@ class Microphone {
 			audio: true,
 			video: false,
 		});
+		this.rawStream = stream;
 		this.mediaStreamSource = this.audioContext.createMediaStreamSource(stream);
 		this.mediaStreamSource.connect(this.gainNode);
 	}
 
 	setMute(state: boolean) {
-		this.gainNode.gain.value = state ? 1 : 0;
+		this.gainNode.gain.value = state ? 0 : 1;
+		this.muted = state;
 	}
 
 	toggleMute() {
