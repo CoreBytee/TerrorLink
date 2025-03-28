@@ -247,6 +247,24 @@ class TerrorLink {
 				});
 			},
 		);
+
+		const muteButton = document.querySelector(
+			"button#mute",
+		) as HTMLButtonElement | null;
+
+		muteButton?.addEventListener("click", (event) => {
+			this.microphone.toggleMute();
+			muteButton.classList.toggle("active");
+		});
+
+		const deafenButton = document.querySelector(
+			"button#deafen",
+		) as HTMLButtonElement | null;
+
+		deafenButton?.addEventListener("click", (event) => {
+			this.speaker.toggleDeafen();
+			deafenButton.classList.toggle("active");
+		});
 	}
 }
 
