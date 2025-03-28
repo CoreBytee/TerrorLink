@@ -2,7 +2,12 @@ import { pEvent } from "p-event";
 import Peer from "peerjs";
 import { setScreen } from "./assets/screens";
 import { EventEmitter } from "node:events";
-import type { Message, MessageType } from "networking";
+import {
+	MessageType,
+	type Message,
+	type MessageActivePeersPayload,
+	type MessageConnectPeerPayload,
+} from "networking";
 import type { JSONValue } from "jsonvalue";
 
 const authenticationStatusRequest = await fetch("/authentication/status");
