@@ -48,6 +48,10 @@ body {
 			height: var(--button-size);
 			position: relative;
 
+			&.active img {
+				animation: shake 0.5s ease-in-out normal;
+			}
+
 			&:after {
 				content: "";
 				background-color: rgb(255, 0, 0);
@@ -71,5 +75,23 @@ body {
 				filter: invert(100%);
 			}
 		}
+	}
+}
+
+@keyframes shake {
+	0% {
+		transform: rotate(0);
+	}
+	25% {
+		transform: rotate(5deg);
+	}
+	50% {
+		transform: rotate(-5deg);
+	}
+	75% {
+		transform: rotate(5deg);
+	}
+	100% {
+		transform: rotate(0);
 	}
 }
