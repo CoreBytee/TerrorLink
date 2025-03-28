@@ -77,7 +77,15 @@ class Microphone {
 			}
 		});
 
-		this.loadDevice("");
+		const urlParams = new URLSearchParams(window.location.search);
+		const muteParam = urlParams.get("mute");
+		if (muteParam === "true") {
+			this.setMute(true);
+		} else if (muteParam === "false") {
+			this.setMute(false);
+		}
+
+		this.loadDevice();
 		this.updateGraph();
 	}
 
