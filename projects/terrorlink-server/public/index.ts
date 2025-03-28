@@ -96,6 +96,7 @@ class Microphone {
 			audio: true,
 			video: false,
 		});
+		console.info("Got microphone stream");
 		this.rawStream = stream;
 		this.mediaStreamSource = this.audioContext.createMediaStreamSource(stream);
 		this.mediaStreamSource.connect(this.gainNode);
