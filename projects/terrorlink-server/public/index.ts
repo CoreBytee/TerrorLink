@@ -146,7 +146,8 @@ class TerrorLink {
 		this.socket = new Socket();
 		this.microphone = new Microphone();
 
-		this.peer.once("open", async () => {
+		this.peer.once("open", async (id) => {
+			console.log("Peer ID:", id);
 			await this.socket.connect(this.peer.id);
 			setScreen("main");
 		});
