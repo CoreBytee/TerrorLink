@@ -29,7 +29,8 @@ body {
 }
 
 [screen="main"] {
-	.microphone-graph {
+	.microphone-graph,
+	.speaker-graph {
 		background-color: var(--button-color);
 		border-radius: 20px;
 		width: 100%;
@@ -42,8 +43,27 @@ body {
 		gap: 8px;
 
 		button {
-			width: 60px;
-			height: 60px;
+			--button-size: 60px;
+			width: var(--button-size);
+			height: var(--button-size);
+			position: relative;
+
+			&:after {
+				content: "";
+				background-color: rgb(255, 0, 0);
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%) rotate(45deg);
+				border-radius: 100px;
+				height: 5px;
+				width: 0px;
+				transition: width 0.2s;
+			}
+
+			&.active::after {
+				width: calc(var(--button-size) / 8 * 6);
+			}
 
 			img {
 				width: 100%;
