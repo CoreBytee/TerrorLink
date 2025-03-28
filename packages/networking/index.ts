@@ -41,6 +41,7 @@ export type MessageDisconnectPeerPayload = {
 };
 
 interface GameStatePlayerWithPeerId extends GameStatePlayer {
+	me: boolean;
 	peer_id: string;
 }
 

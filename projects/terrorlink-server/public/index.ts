@@ -7,6 +7,7 @@ import {
 	type Message,
 	type MessageActivePeersPayload,
 	type MessageConnectPeerPayload,
+	type MessageUpdatePositionsPayload,
 } from "networking";
 import type { JSONValue } from "jsonvalue";
 
@@ -73,6 +74,7 @@ class Microphone {
 
 		document.body.addEventListener("click", () => {
 			if (this.audioContext.state === "suspended") {
+				console.warn("Resuming microphone audio context");
 				this.audioContext.resume();
 			}
 		});
@@ -107,8 +109,10 @@ class Microphone {
 
 	async loadDevice() {
 		const stream = await navigator.mediaDevices.getUserMedia({
-			audio: true,
-			video: false,
+			audio: {
+				echoCancellation: false,
+				noiseSuppression: false,
+			},
 		});
 		console.info("Got microphone stream");
 		this.rawStream = stream;
@@ -131,7 +135,14 @@ class Microphone {
 }
 
 class Speaker {
-	channels: Record<string, unknown>;
+	channels: Record<
+		string,
+		{
+			mediaStreamSource: MediaStreamAudioSourceNode;
+			gainNode: GainNode;
+			pannerNode: PannerNode;
+		}
+	>;
 	deafen: boolean;
 	private audioContext: AudioContext;
 	private gainNode: GainNode;
@@ -156,6 +167,7 @@ class Speaker {
 
 		document.body.addEventListener("click", () => {
 			if (this.audioContext.state === "suspended") {
+				console.warn("Resuming speaker audio context");
 				this.audioContext.resume();
 			}
 		});
@@ -176,11 +188,89 @@ class Speaker {
 		);
 	}
 
-	addStream(stream: MediaStream) {
-		console.info("Speaker: Adding stream", stream);
+	createChannel(id: string, stream: MediaStream) {
+		console.info("Speaker: Adding stream", id, stream);
 
-		const mediaStreamSource = this.audioContext.createMediaStreamSource(stream);
-		mediaStreamSource.connect(this.gainNode);
+		const channel = {
+			mediaStreamSource: this.audioContext.createMediaStreamSource(stream),
+			gainNode: this.audioContext.createGain(),
+			pannerNode: this.audioContext.createPanner(),
+		};
+
+		channel.pannerNode.panningModel = "HRTF";
+		channel.pannerNode.distanceModel = "inverse";
+		channel.pannerNode.maxDistance = 500;
+		channel.pannerNode.refDistance = 200;
+		channel.pannerNode.rolloffFactor = 3;
+		channel.pannerNode.coneInnerAngle = 360;
+		channel.pannerNode.coneOuterAngle = 360;
+		channel.pannerNode.coneOuterGain = 0.5;
+		channel.pannerNode.setPosition(0, 0, 0);
+		channel.pannerNode.setOrientation(0, 0, 0);
+
+		channel.mediaStreamSource.connect(channel.gainNode);
+		channel.gainNode.connect(channel.pannerNode);
+		channel.pannerNode.connect(this.gainNode);
+
+		this.channels[id] = channel;
+	}
+
+	removeChannel(id: string) {}
+
+	setChannelPosition(
+		id: string,
+		position: {
+			x: number;
+			y: number;
+			z: number;
+		},
+		angle: {
+			yaw: number;
+			pitch: number;
+		},
+	) {
+		// const channel = this.channels[id];
+		const channel = Object.values(this.channels)[0];
+		if (!channel) return;
+
+		channel.pannerNode.setPosition(position.x, position.y, position.z);
+		const yawInRadians = (angle.yaw * Math.PI) / 180;
+		const pitchInRadians = (angle.pitch * Math.PI) / 180;
+
+		channel.pannerNode.orientationX.value =
+			Math.cos(pitchInRadians) * Math.cos(yawInRadians);
+		channel.pannerNode.orientationY.value = Math.sin(pitchInRadians);
+		channel.pannerNode.orientationZ.value =
+			Math.cos(pitchInRadians) * Math.sin(yawInRadians);
+	}
+
+	setPosition(
+		position: {
+			x: number;
+			y: number;
+			z: number;
+		},
+		angle: {
+			yaw: number;
+			pitch: number;
+		},
+	) {
+		this.audioContext.listener.setPosition(position.x, position.y, position.z);
+		const yawInRadians = (angle.yaw * Math.PI) / 180;
+		const pitchInRadians = (angle.pitch * Math.PI) / 180;
+
+		this.audioContext.listener.setOrientation(
+			Math.cos(pitchInRadians) * Math.cos(yawInRadians),
+			Math.sin(pitchInRadians),
+			Math.cos(pitchInRadians) * Math.sin(yawInRadians),
+			0,
+			-1,
+			0,
+		);
+	}
+
+	channelExists(id: string) {
+		return id in this.channels;
 	}
 
 	setDeafen(state: boolean) {
@@ -251,7 +341,7 @@ class TerrorLink {
 
 			call.on("stream", (stream) => {
 				console.info("Received stream from incoming call:", stream);
-				this.speaker.addStream(stream);
+				this.speaker.createChannel(call.peer, stream);
 			});
 		});
 
@@ -269,6 +359,28 @@ class TerrorLink {
 				payload.peers.forEach((peerId) => {
 					console.info("Calling peer ID:", peerId);
 					const call = this.peer.call(peerId, this.microphone.stream);
+				});
+			},
+		);
+
+		this.socket.on(
+			MessageType.UpdatePositions,
+			(payload: MessageUpdatePositionsPayload) => {
+				const positions = payload.positions;
+				const me = positions.find((p) => p.me);
+
+				if (!me) throw new Error("No me in positions");
+
+				this.speaker.setPosition(me?.position, me?.angle);
+
+				positions.forEach((player) => {
+					// if (!this.speaker.channelExists(player.peer_id)) return;
+					if (player.me) return;
+					this.speaker.setChannelPosition(
+						player.peer_id,
+						player.position,
+						player.angle,
+					);
 				});
 			},
 		);

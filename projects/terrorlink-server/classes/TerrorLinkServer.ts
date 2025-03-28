@@ -26,6 +26,7 @@ export default class TerrorLinkServer {
 						positions: players.map((player) => ({
 							...player,
 							peer_id: client.peerId,
+							me: client.user.id === player.steam_id,
 						})),
 					},
 				);
