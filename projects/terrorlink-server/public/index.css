@@ -49,7 +49,7 @@ body {
 			position: relative;
 
 			&.active img {
-				animation: shake 0.5s ease-in-out normal;
+				animation: mute 0.5s ease-in-out normal;
 			}
 
 			&:after {
@@ -78,7 +78,7 @@ body {
 	}
 }
 
-@keyframes shake {
+@keyframes mute {
 	0% {
 		transform: rotate(0);
 	}
