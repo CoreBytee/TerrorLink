@@ -14,6 +14,32 @@ if (!authenticationStatus.authenticated) {
 	location.href = redirectUrl;
 }
 
+function writeFrequencyData(
+	canvas: HTMLCanvasElement,
+	frequencyData: Uint8Array<ArrayBuffer>,
+) {
+	const context = canvas.getContext("2d");
+	if (!context) return;
+	const width = canvas.clientWidth;
+	const height = canvas.clientHeight;
+
+	canvas.width = width;
+	canvas.height = height;
+
+	const barWidth = width / frequencyData.length;
+	const barHeight = height / 255;
+
+	context.clearRect(0, 0, width, height);
+	context.fillStyle = "white";
+
+	frequencyData.forEach((value, i) => {
+		const x = i * barWidth;
+		const y = height - value * barHeight;
+
+		context.fillRect(x, y, barWidth, height - y);
+	});
+}
+
 class Microphone {
 	muted: boolean;
 	private frequencyData: Uint8Array<ArrayBuffer>;
