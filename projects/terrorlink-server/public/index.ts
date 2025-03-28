@@ -77,7 +77,7 @@ class Microphone {
 			}
 		});
 
-		this.setDevice("");
+		this.loadDevice("");
 		this.updateGraph();
 	}
 
@@ -97,7 +97,7 @@ class Microphone {
 		return await navigator.mediaDevices.enumerateDevices();
 	}
 
-	async setDevice(deviceId: string) {
+	async loadDevice() {
 		const stream = await navigator.mediaDevices.getUserMedia({
 			audio: true,
 			video: false,
