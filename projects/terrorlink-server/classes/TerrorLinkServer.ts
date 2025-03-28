@@ -6,10 +6,10 @@ export default class TerrorLinkServer {
 	webServer: WebServer;
 	gameState: GameState;
 	constructor() {
-		this.webServer = new WebServer()
+		this.webServer = new WebServer();
 		this.gameState = new GameState(this);
 
-		this.webServer.on("gamestate_update", (data) => {
+		this.webServer.on("gamestate", (data) => {
 			this.gameState.update(data);
 		});
 	}
