@@ -221,7 +221,7 @@ class TerrorLink {
 		this.speaker = new Speaker();
 
 		this.peer.once("open", async (id) => {
-			console.log("Peer ID:", id);
+			console.log("My peer ID:", id);
 			await this.socket.connect(this.peer.id);
 			setScreen("main");
 		});
