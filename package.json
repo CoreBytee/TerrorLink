@@ -25,8 +25,7 @@
     "prod:server": "bun run ./projects/terrorlink-server"
   },
   "trustedDependencies": [
-    "@biomejs/biome",
-    "@discordjs/opus"
+    "@biomejs/biome"
   ],
   "patchedDependencies": {
     "node-web-audio-api@1.0.1": "patches/node-web-audio-api@1.0.1.patch"
