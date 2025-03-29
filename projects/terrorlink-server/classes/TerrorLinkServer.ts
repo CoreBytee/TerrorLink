@@ -26,7 +26,9 @@ export default class TerrorLinkServer {
 						time: this.gameState.time,
 						positions: players.map((player) => ({
 							...player,
-							peer_id: client.peerId,
+							peer_id:
+								clients.find((client) => client.user.id === player.steam_id)
+									?.peerId ?? "",
 							me: client.user.id === player.steam_id,
 						})),
 					},
