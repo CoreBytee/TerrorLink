@@ -1,2 +1,3 @@
 - Figure out ping issues
 - Add volume controls
+- Be able to hear other spectators
