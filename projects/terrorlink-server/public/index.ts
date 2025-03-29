@@ -230,8 +230,8 @@ class Speaker {
 			pitch: number;
 		},
 	) {
-		// const channel = this.channels[id];
-		const channel = Object.values(this.channels)[0];
+		const channel = this.channels[id];
+		// const channel = Object.values(this.channels)[0];
 		if (!channel) return;
 
 		channel.pannerNode.setPosition(position.x, position.y, position.z);
