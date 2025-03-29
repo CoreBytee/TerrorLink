@@ -111,8 +111,8 @@ class Microphone {
 	async loadDevice() {
 		const stream = await navigator.mediaDevices.getUserMedia({
 			audio: {
-				echoCancellation: false,
-				noiseSuppression: false,
+				echoCancellation: true,
+				noiseSuppression: true,
 			},
 		});
 		console.info("Got microphone stream");
