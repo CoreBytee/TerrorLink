@@ -201,7 +201,7 @@ class Speaker {
 		channel.pannerNode.panningModel = "HRTF";
 		channel.pannerNode.distanceModel = "inverse";
 		channel.pannerNode.maxDistance = 500;
-		channel.pannerNode.refDistance = 200;
+		channel.pannerNode.refDistance = 100;
 		channel.pannerNode.rolloffFactor = 3;
 		channel.pannerNode.coneInnerAngle = 360;
 		channel.pannerNode.coneOuterAngle = 360;
