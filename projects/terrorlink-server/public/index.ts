@@ -209,9 +209,9 @@ class Speaker {
 		channel.pannerNode.setPosition(0, 0, 0);
 		channel.pannerNode.setOrientation(0, 0, 0);
 
-		channel.mediaStreamSource.connect(channel.gainNode);
-		channel.gainNode.connect(channel.pannerNode);
-		channel.pannerNode.connect(this.gainNode);
+		channel.mediaStreamSource.connect(this.gainNode);
+		// channel.gainNode.connect(channel.pannerNode);
+		// channel.pannerNode.connect(this.gainNode);
 
 		this.channels[id] = channel;
 	}
