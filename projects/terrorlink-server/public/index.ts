@@ -232,7 +232,10 @@ class Speaker {
 	) {
 		const channel = this.channels[id];
 		// const channel = Object.values(this.channels)[0];
-		if (!channel) return;
+		if (!channel) {
+			console.warn("Speaker: Channel not found", id);
+			return;
+		}
 
 		channel.pannerNode.setPosition(position.x, position.y, position.z);
 		const yawInRadians = (angle.yaw * Math.PI) / 180;
