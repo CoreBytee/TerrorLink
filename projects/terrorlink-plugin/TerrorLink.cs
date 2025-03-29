@@ -15,6 +15,7 @@ public class TerrorLink : BasePlugin
 
     public override string ModuleVersion => "0.0.1";
 
+    public FakeConVar<string> APIHost = new("tl_apihost", "Host to use when making api requests to the backend server", "unset");
     public FakeConVar<string> APIToken = new("tl_apitoken", "Token to use when making api requests to the backend server", "unset");
 
     public override void Load(bool hotReload)
@@ -79,7 +80,7 @@ public class TerrorLink : BasePlugin
             content.Headers.Add("x-token", APIToken.Value);
             try
             {
-                var response = await client.PostAsync("http://localhost:3000/api/gamestate", content);
+                var response = await client.PostAsync($"{APIHost.Value}/api/gamestate", content);
 
                 if (!response.IsSuccessStatusCode)
                 {
