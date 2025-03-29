@@ -5,11 +5,13 @@ import type TerrorLinkServer from "./TerrorLinkServer";
 export default class GameState extends EventEmitter {
 	terrorLink: TerrorLinkServer;
 	players: Record<GameStatePlayer["steam_id"], GameStatePlayer>;
+	time: number;
 	constructor(terrorLink: TerrorLinkServer) {
 		super();
 		this.terrorLink = terrorLink;
 
 		this.players = {};
+		this.time = 0;
 	}
 
 	listPlayers() {
@@ -18,6 +20,8 @@ export default class GameState extends EventEmitter {
 
 	update(body: GameStateBody) {
 		const data = body.data;
+
+		this.time = new Date(body.time).getTime();
 
 		for (const player of data.players) {
 			if (!this.players[player.steam_id]) {

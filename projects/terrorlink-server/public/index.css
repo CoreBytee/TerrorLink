@@ -29,6 +29,8 @@ body {
 }
 
 [screen="main"] {
+	position: relative;
+
 	.microphone-graph,
 	.speaker-graph {
 		background-color: var(--button-color);
@@ -75,6 +77,14 @@ body {
 				filter: invert(100%);
 			}
 		}
+	}
+
+	.debug {
+		position: absolute;
+		bottom: -18px;
+		margin: 0;
+		font-size: 14px;
+		color: var(--text-dimmed-color);
 	}
 }
 

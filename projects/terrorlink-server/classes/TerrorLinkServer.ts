@@ -23,6 +23,7 @@ export default class TerrorLinkServer {
 				client.sendMessage<MessageUpdatePositionsPayload>(
 					MessageType.UpdatePositions,
 					{
+						time: this.gameState.time,
 						positions: players.map((player) => ({
 							...player,
 							peer_id: client.peerId,

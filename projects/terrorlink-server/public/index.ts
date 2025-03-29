@@ -10,6 +10,7 @@ import {
 	type MessageUpdatePositionsPayload,
 } from "networking";
 import type { JSONValue } from "jsonvalue";
+import bytes from "bytes";
 
 const authenticationStatusRequest = await fetch("/authentication/status");
 const authenticationStatus = await authenticationStatusRequest.json();
@@ -285,16 +286,32 @@ class Speaker {
 
 class Socket extends EventEmitter {
 	socket: WebSocket | null;
+	messagesReceived: number;
+	bytesReceived: number;
+	messagesSent: number;
+	bytesSent: number;
 	constructor() {
 		super();
 		this.socket = null;
+
+		this.messagesReceived = 0;
+		this.bytesReceived = 0;
+		this.messagesSent = 0;
+		this.bytesSent = 0;
 	}
 
 	async connect(peerId: string) {
+		this.messagesReceived = 0;
+		this.bytesReceived = 0;
+		this.messagesSent = 0;
+		this.bytesSent = 0;
+
 		this.socket = new WebSocket(`/api/events?id=${peerId}`);
 
 		this.socket.addEventListener("message", (rawMessage) => {
 			const message = JSON.parse(rawMessage.data) as Message;
+			this.messagesReceived++;
+			this.bytesReceived += rawMessage.data.length;
 			this.emit(message.type, message.payload);
 		});
 
@@ -314,6 +331,9 @@ class Socket extends EventEmitter {
 			return;
 		}
 
+		this.messagesSent++;
+		this.bytesSent += rawMessage.length;
+
 		this.socket.send(rawMessage);
 	}
 }
@@ -323,11 +343,13 @@ class TerrorLink {
 	socket: Socket;
 	microphone: Microphone;
 	speaker: Speaker;
+	gamestatePing: number;
 	constructor() {
 		this.peer = new Peer();
 		this.socket = new Socket();
 		this.microphone = new Microphone();
 		this.speaker = new Speaker();
+		this.gamestatePing = 0;
 
 		this.peer.once("open", async (id) => {
 			console.info("My peer ID:", id);
@@ -366,6 +388,7 @@ class TerrorLink {
 		this.socket.on(
 			MessageType.UpdatePositions,
 			(payload: MessageUpdatePositionsPayload) => {
+				this.gamestatePing = Date.now() - payload.time;
 				const positions = payload.positions;
 				const me = positions.find((p) => p.me);
 
@@ -413,6 +436,14 @@ class TerrorLink {
 			this.microphone.setMute(this.speaker.deafen);
 			updateButtons(this.microphone, this.speaker);
 		});
+
+		const renderDebug = () => {
+			requestAnimationFrame(renderDebug);
+			const debug = document.querySelector("#debug") as HTMLDivElement;
+			debug.innerText = `P: ${this.gamestatePing}ms S: ${this.socket.messagesSent}/${bytes(this.socket.bytesSent)} R: ${this.socket.messagesReceived}/${bytes(this.socket.bytesReceived)}`;
+		};
+
+		renderDebug();
 	}
 }
 
