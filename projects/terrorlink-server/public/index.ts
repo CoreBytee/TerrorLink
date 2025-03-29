@@ -210,8 +210,8 @@ class Speaker {
 		channel.pannerNode.setOrientation(0, 0, 0);
 
 		channel.mediaStreamSource.connect(this.gainNode);
-		// channel.gainNode.connect(channel.pannerNode);
-		// channel.pannerNode.connect(this.gainNode);
+		channel.gainNode.connect(channel.pannerNode);
+		channel.pannerNode.connect(this.gainNode);
 
 		this.channels[id] = channel;
 	}
@@ -273,7 +273,8 @@ class Speaker {
 		);
 	}
 
-	channelExists(id: string) {
+	channelExists(id: string | undefined) {
+		if (!id) return false;
 		return id in this.channels;
 	}
 
@@ -400,8 +401,9 @@ class TerrorLink {
 				this.speaker.setPosition(me?.position, me?.angle);
 
 				positions.forEach((player) => {
-					// if (!this.speaker.channelExists(player.peer_id)) return;
+					if (!this.speaker.channelExists(player.peer_id)) return;
 					if (player.me) return;
+					if (!player.peer_id) return;
 					this.speaker.setChannelPosition(
 						player.peer_id,
 						player.position,
