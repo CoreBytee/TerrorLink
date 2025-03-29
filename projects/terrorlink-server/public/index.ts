@@ -348,12 +348,16 @@ class TerrorLink {
 	microphone: Microphone;
 	speaker: Speaker;
 	gamestatePing: number;
+	serverPing: number;
+	clientPing: number;
 	constructor() {
 		this.peer = new Peer();
 		this.socket = new Socket();
 		this.microphone = new Microphone();
 		this.speaker = new Speaker();
 		this.gamestatePing = 0;
+		this.serverPing = 0;
+		this.clientPing = 0;
 
 		this.peer.once("open", async (id) => {
 			console.info("My peer ID:", id);
@@ -393,6 +397,8 @@ class TerrorLink {
 			MessageType.UpdatePositions,
 			(payload: MessageUpdatePositionsPayload) => {
 				this.gamestatePing = Date.now() - payload.time;
+				this.serverPing = payload.serverPing;
+				this.clientPing = Date.now() - payload.serverTime;
 				const positions = payload.positions;
 				const me = positions.find((p) => p.me);
 
@@ -445,7 +451,7 @@ class TerrorLink {
 		const renderDebug = () => {
 			requestAnimationFrame(renderDebug);
 			const debug = document.querySelector("#debug") as HTMLDivElement;
-			debug.innerText = `P: ${this.gamestatePing}ms S: ${this.socket.messagesSent}/${bytes(this.socket.bytesSent)} R: ${this.socket.messagesReceived}/${bytes(this.socket.bytesReceived)}`;
+			debug.innerText = `FP: ${this.gamestatePing}ms CP: ${this.clientPing}ms SP: ${this.serverPing}ms S: ${this.socket.messagesSent}/${bytes(this.socket.bytesSent)} R: ${this.socket.messagesReceived}/${bytes(this.socket.bytesReceived)}`;
 		};
 
 		renderDebug();

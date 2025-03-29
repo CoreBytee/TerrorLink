@@ -24,6 +24,8 @@ export default class TerrorLinkServer {
 					MessageType.UpdatePositions,
 					{
 						time: this.gameState.time,
+						serverTime: Date.now(),
+						serverPing: Date.now() - this.gameState.time,
 						positions: players.map((player) => ({
 							...player,
 							peer_id: clients.find(

@@ -47,6 +47,7 @@ interface GameStatePlayerWithPeerId extends GameStatePlayer {
 
 export type MessageUpdatePositionsPayload = {
 	time: number;
+	serverTime: number;
+	serverPing: number;
 	positions: GameStatePlayerWithPeerId[];
-	// positions: Record<string, GameStatePlayer[]>;
 };
