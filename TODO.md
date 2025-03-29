@@ -1,0 +1,2 @@
+- Figure out ping issues
+- Add volume controls
