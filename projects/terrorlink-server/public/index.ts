@@ -401,9 +401,11 @@ class TerrorLink {
 				this.speaker.setPosition(me?.position, me?.angle);
 
 				positions.forEach((player) => {
+					console.log(player.me, player.peer_id);
 					if (!this.speaker.channelExists(player.peer_id)) return;
 					if (player.me) return;
 					if (!player.peer_id) return;
+					console.log("passed");
 					this.speaker.setChannelPosition(
 						player.peer_id,
 						player.position,
