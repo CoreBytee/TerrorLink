@@ -219,7 +219,7 @@ class Speaker {
 		channel.pannerNode.rolloffFactor = 3;
 		channel.pannerNode.coneInnerAngle = 360;
 		channel.pannerNode.coneOuterAngle = 360;
-		channel.pannerNode.coneOuterGain = 0.5;
+		channel.pannerNode.coneOuterGain = 1;
 		channel.pannerNode.setPosition(0, 0, 0);
 		channel.pannerNode.setOrientation(0, 0, 0);
 
