@@ -411,9 +411,10 @@ class TerrorLink {
 				players.forEach((player) => {
 					player.peer_id =
 						player.peer_id ?? players.find((p) => p.peer_id)?.peer_id;
-					if (!this.speaker.channelExists(player.peer_id)) return;
-					if (player.me) return;
-					if (!player.peer_id) return;
+					if (!this.speaker.channelExists(player.peer_id))
+						return console.log("Channel not found", player.peer_id);
+					if (player.me) return console.log("Me", player.peer_id);
+					if (!player.peer_id) return console.log("No peer id", player.peer_id);
 					this.speaker.setChannelPosition(
 						player.peer_id,
 						player.position,
