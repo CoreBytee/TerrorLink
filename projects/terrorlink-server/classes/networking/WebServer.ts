@@ -113,6 +113,11 @@ export default class WebServer extends EventEmitter {
 					this.emit("gamestate", await request.json());
 					return new Response("ok");
 				},
+				"/api/env": async (request) => {
+					return Response.json({
+						env: env.NODE_ENV === "production" ? "production" : "development",
+					});
+				},
 			},
 			websocket: {
 				open: async (ws: ServerWebSocket<ServerWebSocketData>) => {

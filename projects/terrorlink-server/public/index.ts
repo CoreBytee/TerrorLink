@@ -12,6 +12,10 @@ import {
 import type { JSONValue } from "jsonvalue";
 import bytes from "bytes";
 
+const envRequest = await fetch("/api/env");
+const env = await envRequest.json();
+const isProduction = env.env === "production";
+
 const authenticationStatusRequest = await fetch("/authentication/status");
 const authenticationStatus = await authenticationStatusRequest.json();
 console.log(authenticationStatus);
@@ -110,10 +114,15 @@ class Microphone {
 
 	async loadDevice() {
 		const stream = await navigator.mediaDevices.getUserMedia({
-			audio: {
-				echoCancellation: true,
-				noiseSuppression: true,
-			},
+			audio: isProduction
+				? {
+						echoCancellation: true,
+						noiseSuppression: true,
+					}
+				: {
+						echoCancellation: false,
+						noiseSuppression: false,
+					},
 		});
 		console.info("Got microphone stream");
 		this.rawStream = stream;
@@ -230,8 +239,9 @@ class Speaker {
 			pitch: number;
 		},
 	) {
-		const channel = this.channels[id];
-		// const channel = Object.values(this.channels)[0];
+		const channel = isProduction
+			? this.channels[id]
+			: Object.values(this.channels)[0];
 		if (!channel) {
 			console.warn("Speaker: Channel not found", id);
 			return;
