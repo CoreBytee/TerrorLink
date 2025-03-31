@@ -402,9 +402,14 @@ class TerrorLink {
 				this.serverPing = payload.serverPing;
 				this.clientPing = Date.now() - payload.serverTime;
 				const players = payload.players;
-				const me = players.find((p) => p.me);
+				let me = players.find((p) => p.me);
 
 				if (!me) throw new Error("No me in positions");
+
+				if (me.spectate_target) {
+					me = players.find((p) => p.user_id === me!.spectate_target);
+					if (!me) throw new Error("No target in positions");
+				}
 
 				this.speaker.setPosition(me?.position, me?.angle);
 
