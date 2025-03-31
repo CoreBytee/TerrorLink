@@ -62,8 +62,9 @@ public class TerrorLink : BasePlugin
                         },
                         angle = new
                         {
-                            pitch = player.PlayerPawn?.Value?.EyeAngles.X ?? 0,
-                            yaw = player.PlayerPawn?.Value?.EyeAngles.Y ?? 0,
+                            x = player.PlayerPawn?.Value?.EyeAngles.X ?? 0,
+                            y = player.PlayerPawn?.Value?.EyeAngles.Y ?? 0,
+                            z = player.PlayerPawn?.Value?.EyeAngles.Z ?? 0,
                         }
                     }).ToList()
                 }

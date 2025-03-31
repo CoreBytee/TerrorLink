@@ -1,3 +1,13 @@
+export type vector = {
+	x: number;
+	y: number;
+	z: number;
+};
+
+export type position = vector;
+export type velocity = vector;
+export type angle = vector;
+
 export type GameStateBody = {
 	type: string;
 	time: string;
@@ -23,20 +33,9 @@ export type GameStatePlayer = {
 	is_walking: boolean;
 	spectate_target: string;
 	team: CSTeam;
-	velocity: {
-		x: number;
-		y: number;
-		z: number;
-	};
-	position: {
-		x: number;
-		y: number;
-		z: number;
-	};
-	angle: {
-		pitch: number;
-		yaw: number;
-	};
+	velocity: velocity;
+	position: position;
+	angle: angle;
 };
 
 export enum CSTeam {

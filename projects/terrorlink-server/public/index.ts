@@ -11,6 +11,7 @@ import {
 } from "networking";
 import type { JSONValue } from "jsonvalue";
 import bytes from "bytes";
+import type { angle, position } from "gamestate";
 
 const envRequest = await fetch("/api/env");
 const env = await envRequest.json();
@@ -231,18 +232,7 @@ class Speaker {
 
 	removeChannel(id: string) {}
 
-	setChannelPosition(
-		id: string,
-		position: {
-			x: number;
-			y: number;
-			z: number;
-		},
-		angle: {
-			yaw: number;
-			pitch: number;
-		},
-	) {
+	setChannelPosition(id: string, position: position, angle: angle) {
 		const channel = isProduction
 			? this.channels[id]
 			: Object.values(this.channels)[0];
@@ -256,34 +246,27 @@ class Speaker {
 		channel.pannerNode.positionY.value = position.y;
 		channel.pannerNode.positionZ.value = position.z;
 
-		const yawInRadians = degreesToRadians(angle.yaw);
-		const pitchInRadians = degreesToRadians(angle.pitch);
+		const yawInRadians = degreesToRadians(angle.y);
+		const pitchInRadians = degreesToRadians(angle.x);
+		const rollInRadians = degreesToRadians(angle.z);
 
 		channel.pannerNode.orientationX.value =
 			Math.cos(pitchInRadians) * Math.cos(yawInRadians);
-		channel.pannerNode.orientationY.value = Math.sin(pitchInRadians);
+		channel.pannerNode.orientationY.value =
+			Math.sin(pitchInRadians) * Math.cos(rollInRadians);
 		channel.pannerNode.orientationZ.value =
 			Math.cos(pitchInRadians) * Math.sin(yawInRadians);
 	}
 
-	setPosition(
-		position: {
-			x: number;
-			y: number;
-			z: number;
-		},
-		angle: {
-			yaw: number;
-			pitch: number;
-		},
-	) {
+	setPosition(position: position, angle: angle) {
 		this.audioContext.listener.setPosition(position.x, position.y, position.z);
-		const yawInRadians = degreesToRadians(angle.yaw);
-		const pitchInRadians = degreesToRadians(angle.pitch);
+		const yawInRadians = degreesToRadians(angle.y);
+		const pitchInRadians = degreesToRadians(angle.x);
+		const rollInRadians = degreesToRadians(angle.z);
 
 		this.audioContext.listener.setOrientation(
 			Math.cos(pitchInRadians) * Math.cos(yawInRadians),
-			Math.sin(pitchInRadians),
+			Math.sin(pitchInRadians) * Math.cos(rollInRadians),
 			Math.cos(pitchInRadians) * Math.sin(yawInRadians),
 			0,
 			-1,
