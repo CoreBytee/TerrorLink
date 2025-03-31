@@ -51,6 +51,10 @@ function writeFrequencyData(
 	});
 }
 
+function degreesToRadians(degrees: number): number {
+	return (degrees * Math.PI) / 180;
+}
+
 class Microphone {
 	muted: boolean;
 	private frequencyData: Uint8Array<ArrayBuffer>;
@@ -248,9 +252,12 @@ class Speaker {
 			return;
 		}
 
-		channel.pannerNode.setPosition(position.x, position.y, position.z);
-		const yawInRadians = (angle.yaw * Math.PI) / 180;
-		const pitchInRadians = (angle.pitch * Math.PI) / 180;
+		channel.pannerNode.positionX.value = position.x;
+		channel.pannerNode.positionY.value = position.y;
+		channel.pannerNode.positionZ.value = position.z;
+
+		const yawInRadians = degreesToRadians(angle.yaw);
+		const pitchInRadians = degreesToRadians(angle.pitch);
 
 		channel.pannerNode.orientationX.value =
 			Math.cos(pitchInRadians) * Math.cos(yawInRadians);
@@ -271,8 +278,8 @@ class Speaker {
 		},
 	) {
 		this.audioContext.listener.setPosition(position.x, position.y, position.z);
-		const yawInRadians = (angle.yaw * Math.PI) / 180;
-		const pitchInRadians = (angle.pitch * Math.PI) / 180;
+		const yawInRadians = degreesToRadians(angle.yaw);
+		const pitchInRadians = degreesToRadians(angle.pitch);
 
 		this.audioContext.listener.setOrientation(
 			Math.cos(pitchInRadians) * Math.cos(yawInRadians),
