@@ -1,3 +1,4 @@
+git config pull.rebase false
 git reset --hard
 git fetch
 git checkout $GIT_BRANCH
