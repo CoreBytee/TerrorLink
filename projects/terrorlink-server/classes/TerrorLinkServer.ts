@@ -26,13 +26,17 @@ export default class TerrorLinkServer {
 						time: this.gameState.time,
 						serverTime: Date.now(),
 						serverPing: Date.now() - this.gameState.time,
-						positions: players.map((player) => ({
-							...player,
-							peer_id: clients.find(
+						players: players.map((player) => {
+							const thisClient = clients.find(
 								(client) => client.user.id === player.steam_id,
-							)?.peerId,
-							me: client.user.id === player.steam_id,
-						})),
+							);
+							return {
+								...player,
+								peer_id: thisClient?.peerId,
+								avatar_url: thisClient?.user.avatarUrl,
+								me: client.user.id === player.steam_id,
+							};
+						}),
 					},
 				);
 			});

@@ -49,5 +49,5 @@ export type MessageUpdatePositionsPayload = {
 	time: number;
 	serverTime: number;
 	serverPing: number;
-	positions: GameStatePlayerWithPeerId[];
+	players: GameStatePlayerWithPeerId[];
 };

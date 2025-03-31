@@ -242,6 +242,7 @@ class Speaker {
 		const channel = isProduction
 			? this.channels[id]
 			: Object.values(this.channels)[0];
+
 		if (!channel) {
 			console.warn("Speaker: Channel not found", id);
 			return;
@@ -365,6 +366,7 @@ class TerrorLink {
 		this.socket = new Socket();
 		this.microphone = new Microphone();
 		this.speaker = new Speaker();
+
 		this.gamestatePing = 0;
 		this.serverPing = 0;
 		this.clientPing = 0;
@@ -409,14 +411,16 @@ class TerrorLink {
 				this.gamestatePing = Date.now() - payload.time;
 				this.serverPing = payload.serverPing;
 				this.clientPing = Date.now() - payload.serverTime;
-				const positions = payload.positions;
-				const me = positions.find((p) => p.me);
+				const players = payload.players;
+				const me = players.find((p) => p.me);
 
 				if (!me) throw new Error("No me in positions");
 
 				this.speaker.setPosition(me?.position, me?.angle);
 
-				positions.forEach((player) => {
+				players.forEach((player) => {
+					player.peer_id =
+						player.peer_id ?? players.find((p) => p.peer_id)?.peer_id;
 					if (!this.speaker.channelExists(player.peer_id)) return;
 					if (player.me) return;
 					if (!player.peer_id) return;
