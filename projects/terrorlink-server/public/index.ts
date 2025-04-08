@@ -433,7 +433,6 @@ class TerrorLink {
 		);
 
 		const peersContainer = document.querySelector(".peers") as HTMLDivElement;
-
 		this.socket.on(
 			MessageType.UpdatePositions,
 			(payload: MessageUpdatePositionsPayload) => {
@@ -476,6 +475,10 @@ class TerrorLink {
 			"button#deafen",
 		) as HTMLButtonElement | null;
 
+		const settingsButton = document.querySelector(
+			"button#settings",
+		) as HTMLButtonElement | null;
+
 		function updateButtons(microphone: Microphone, speaker: Speaker) {
 			microphone.muted
 				? muteButton?.classList.add("active")
@@ -495,6 +498,10 @@ class TerrorLink {
 			this.speaker.toggleDeafen();
 			this.microphone.setMute(this.speaker.deafen);
 			updateButtons(this.microphone, this.speaker);
+		});
+
+		settingsButton?.addEventListener("click", (event) => {
+			setScreen("settings");
 		});
 
 		const renderDebug = () => {
