@@ -32,7 +32,9 @@ export default class TerrorLinkServer {
 							);
 							return {
 								...player,
-								peer_id: thisClient?.peerId,
+								peer_id:
+									thisClient?.peerId ??
+									clients.find((c) => c !== client)?.peerId,
 								avatar_url: thisClient?.user.avatarUrl,
 								me: client.user.id === player.steam_id,
 							};

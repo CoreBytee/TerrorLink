@@ -1,12 +1,10 @@
 import { pEvent } from "p-event";
-import Peer from "peerjs";
+import Peer, { type DataConnection, type MediaConnection } from "peerjs";
 import { setScreen } from "./assets/screens";
 import { EventEmitter } from "node:events";
 import {
 	MessageType,
 	type Message,
-	type MessageActivePeersPayload,
-	type MessageConnectPeerPayload,
 	type MessageUpdatePositionsPayload,
 } from "networking";
 import type { JSONValue } from "jsonvalue";
@@ -233,12 +231,24 @@ class Speaker {
 		this.channels[id] = channel;
 	}
 
-	removeChannel(id: string) {}
+	removeChannel(id: string) {
+		console.info("Speaker: Removing channel", id);
+		const channel = this.channels[id];
+
+		if (!channel) {
+			console.warn("Speaker: Channel not found", id);
+			return;
+		}
+
+		channel.mediaStreamSource.disconnect(channel.pannerNode);
+		channel.gainNode.disconnect(channel.pannerNode);
+		channel.pannerNode.disconnect(this.gainNode);
+
+		delete this.channels[id];
+	}
 
 	setChannelPosition(id: string, position: position, angle: angle) {
-		const channel = isProduction
-			? this.channels[id]
-			: Object.values(this.channels)[0];
+		const channel = this.channels[id];
 
 		if (!channel) {
 			console.warn("Speaker: Channel not found", id);
@@ -354,6 +364,7 @@ class TerrorLink {
 	gamestatePing: number;
 	serverPing: number;
 	clientPing: number;
+	gamestatePeers: string[];
 	constructor() {
 		this.peer = new Peer();
 		this.socket = new Socket();
@@ -364,6 +375,8 @@ class TerrorLink {
 		this.serverPing = 0;
 		this.clientPing = 0;
 
+		this.gamestatePeers = [];
+
 		this.peer.once("open", async (id) => {
 			console.info("My peer ID:", id);
 			await this.socket.connect(this.peer.id);
@@ -372,31 +385,20 @@ class TerrorLink {
 
 		this.peer.on("call", async (call) => {
 			console.info("Incoming call", call);
-			call.answer();
+			console.log(this.gamestatePeers);
+			if (this.gamestatePeers.includes(call.peer)) {
+				console.info("Accepting call", call.peer);
+				call.answer();
+			} else {
+				console.warn("Rejecting call", call.peer);
+				call.close();
+			}
 
 			call.on("stream", (stream) => {
 				console.info("Received stream from incoming call:", stream);
 				this.speaker.createChannel(call.peer, stream);
 			});
 		});
-
-		this.socket.on(
-			MessageType.ConnectPeer,
-			async (payload: MessageConnectPeerPayload) => {
-				console.info("Calling peer ID:", payload.peerId);
-				const call = this.peer.call(payload.peerId, this.microphone.stream);
-			},
-		);
-
-		this.socket.on(
-			MessageType.ActivePeers,
-			(payload: MessageActivePeersPayload) => {
-				payload.peers.forEach((peerId) => {
-					console.info("Calling peer ID:", peerId);
-					const call = this.peer.call(peerId, this.microphone.stream);
-				});
-			},
-		);
 
 		this.socket.on(
 			MessageType.UpdatePositions,
@@ -417,18 +419,51 @@ class TerrorLink {
 				this.speaker.setPosition(me?.position, me?.angle);
 
 				players.forEach((player) => {
-					player.peer_id =
-						player.peer_id ?? players.find((p) => p.peer_id)?.peer_id;
+					if (player.me) return;
+					if (!player.peer_id) return;
+
 					if (!this.speaker.channelExists(player.peer_id))
 						return console.log("Channel not found", player.peer_id);
-					if (player.me) return console.log("Me", player.peer_id);
-					if (!player.peer_id) return console.log("No peer id", player.peer_id);
 					this.speaker.setChannelPosition(
 						player.peer_id,
 						player.position,
 						player.angle,
 					);
 				});
+			},
+		);
+
+		this.socket.on(
+			MessageType.UpdatePositions,
+			(payload: MessageUpdatePositionsPayload) => {
+				const players = payload.players;
+				const connections = this.peer.connections;
+
+				this.gamestatePeers = players
+					.map((p) => p.peer_id)
+					.filter((peerId): peerId is string => peerId !== undefined);
+
+				for (const player of players) {
+					if (player.me) continue;
+					if (!player.peer_id) continue;
+					// @ts-ignore
+					if (!connections[player.peer_id!]) {
+						console.info("Creating new call", player.peer_id);
+						this.peer.call(player.peer_id!, this.microphone.stream);
+					}
+				}
+
+				for (const connectionEntry of Object.entries(connections)) {
+					const [peerId, connections] = connectionEntry;
+					const player = players.find((p) => p.peer_id === peerId);
+					if (player) continue;
+					connections.forEach(
+						(connection: MediaConnection | DataConnection) => {
+							connection.close();
+						},
+					);
+					this.speaker.removeChannel(peerId);
+				}
 			},
 		);
 

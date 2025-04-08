@@ -11,12 +11,6 @@ import jwt from "jwt-simple";
 import favicon from "../../public/favicon.ico";
 import { Mutex } from "async-mutex";
 import Client from "./Client";
-import {
-	type MessageActivePeersPayload,
-	type MessageConnectPeerPayload,
-	type MessageDisconnectPeerPayload,
-	MessageType,
-} from "networking";
 
 export type ServerWebSocketData = {
 	user: SteamUserData;
@@ -128,40 +122,11 @@ export default class WebServer extends EventEmitter {
 
 					const newClient = new Client(ws);
 					this.clients[peerId] = newClient;
-
-					newClient.sendMessage<MessageActivePeersPayload>(
-						MessageType.ActivePeers,
-						{
-							peers: this.listClients()
-								.map((client) => client.peerId)
-								.filter((clientPeerId) => clientPeerId !== peerId),
-						},
-					);
-
-					this.listClients()
-						.filter((client) => client.peerId !== peerId)
-						.forEach((client) => {
-							client.sendMessage<MessageConnectPeerPayload>(
-								MessageType.ConnectPeer,
-								{
-									peerId: newClient.peerId,
-								},
-							);
-						});
 				},
 				message: async () => {},
 				close: async (ws: ServerWebSocket<ServerWebSocketData>) => {
 					const peerId = ws.data.peerId;
 					delete this.clients[peerId];
-
-					this.listClients().forEach((client) => {
-						client.sendMessage<MessageDisconnectPeerPayload>(
-							MessageType.DisconnectPeer,
-							{
-								peerId: peerId,
-							},
-						);
-					});
 				},
 			},
 		});
