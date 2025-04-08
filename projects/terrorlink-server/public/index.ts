@@ -558,7 +558,15 @@ class TerrorLink {
 		// #endregion
 	}
 
-	private setupSettingsScreenHandlers() {}
+	private setupSettingsScreenHandlers() {
+		const returnButton = document.querySelector(
+			'[screen="settings"] button#settings-return-button',
+		) as HTMLButtonElement | null;
+
+		returnButton?.addEventListener("click", (event) => {
+			setScreen("main");
+		});
+	}
 }
 
 new TerrorLink();
