@@ -432,41 +432,21 @@ class TerrorLink {
 			},
 		);
 
-		const peersContainer = document.querySelector(".peers") as HTMLDivElement;
-		this.socket.on(
-			MessageType.UpdatePositions,
-			(payload: MessageUpdatePositionsPayload) => {
-				const players = payload.players;
+		this.renderDebug();
+		this.setupMainScreenHandlers();
+		this.setupSettingsScreenHandlers();
+	}
 
-				const childNodes = Array.from(peersContainer.childNodes).filter(
-					(node) => node instanceof HTMLButtonElement,
-				);
-				childNodes.forEach((node) => {
-					const userId = node.getAttribute("data-user-id");
-					const player = players.find((p) => p.user_id === userId);
-					if (player) return;
-					peersContainer.removeChild(node);
-				});
+	private renderDebug() {
+		requestAnimationFrame(() => {
+			this.renderDebug();
+		});
+		const debug = document.querySelector("#debug") as HTMLDivElement;
+		debug.innerText = `FP: ${this.gamestatePing}ms CP: ${this.clientPing}ms SP: ${this.serverPing}ms S: ${this.socket.messagesSent}/${bytes(this.socket.bytesSent)} R: ${this.socket.messagesReceived}/${bytes(this.socket.bytesReceived)}`;
+	}
 
-				players.forEach((player) => {
-					const nodeExists = childNodes.find(
-						(node) =>
-							node.getAttribute("data-user-id") === player.user_id.toString(),
-					);
-					if (nodeExists) return;
-					const node = document.createElement("button");
-					node.classList.add("peer");
-					node.setAttribute("data-user-id", player.user_id);
-					node.style.setProperty(
-						"--avatar-url",
-						`url(${player.avatar_url ?? (player.team === CSTeam.CounterTerrorist ? counterAvatarImage : terroristAvatarImage)})`,
-					);
-					node.setAttribute("data-name", player.name);
-					peersContainer.appendChild(node);
-				});
-			},
-		);
-
+	private setupMainScreenHandlers() {
+		// #region Buttons
 		const muteButton = document.querySelector(
 			"button#mute",
 		) as HTMLButtonElement | null;
@@ -503,15 +483,47 @@ class TerrorLink {
 		settingsButton?.addEventListener("click", (event) => {
 			setScreen("settings");
 		});
+		// #endregion
 
-		const renderDebug = () => {
-			requestAnimationFrame(renderDebug);
-			const debug = document.querySelector("#debug") as HTMLDivElement;
-			debug.innerText = `FP: ${this.gamestatePing}ms CP: ${this.clientPing}ms SP: ${this.serverPing}ms S: ${this.socket.messagesSent}/${bytes(this.socket.bytesSent)} R: ${this.socket.messagesReceived}/${bytes(this.socket.bytesReceived)}`;
-		};
+		// #region Microphone
+		const peersContainer = document.querySelector(".peers") as HTMLDivElement;
+		this.socket.on(
+			MessageType.UpdatePositions,
+			(payload: MessageUpdatePositionsPayload) => {
+				const players = payload.players;
 
-		renderDebug();
+				const childNodes = Array.from(peersContainer.childNodes).filter(
+					(node) => node instanceof HTMLButtonElement,
+				);
+				childNodes.forEach((node) => {
+					const userId = node.getAttribute("data-user-id");
+					const player = players.find((p) => p.user_id === userId);
+					if (player) return;
+					peersContainer.removeChild(node);
+				});
+
+				players.forEach((player) => {
+					const nodeExists = childNodes.find(
+						(node) =>
+							node.getAttribute("data-user-id") === player.user_id.toString(),
+					);
+					if (nodeExists) return;
+					const node = document.createElement("button");
+					node.classList.add("peer");
+					node.setAttribute("data-user-id", player.user_id);
+					node.style.setProperty(
+						"--avatar-url",
+						`url(${player.avatar_url ?? (player.team === CSTeam.CounterTerrorist ? counterAvatarImage : terroristAvatarImage)})`,
+					);
+					node.setAttribute("data-name", player.name);
+					peersContainer.appendChild(node);
+				});
+			},
+		);
+		// #endregion
 	}
+
+	private setupSettingsScreenHandlers() {}
 }
 
 new TerrorLink();
