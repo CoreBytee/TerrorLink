@@ -11,7 +11,10 @@ import {
 } from "networking";
 import type { JSONValue } from "jsonvalue";
 import bytes from "bytes";
-import type { angle, position } from "gamestate";
+import { CSTeam, type angle, type position } from "gamestate";
+
+import terroristAvatarImage from "./assets/image/terrorist.png";
+import counterAvatarImage from "./assets/image/counter.png";
 
 const envRequest = await fetch("/api/env");
 const env = await envRequest.json();
@@ -425,6 +428,42 @@ class TerrorLink {
 						player.position,
 						player.angle,
 					);
+				});
+			},
+		);
+
+		const peersContainer = document.querySelector(".peers") as HTMLDivElement;
+
+		this.socket.on(
+			MessageType.UpdatePositions,
+			(payload: MessageUpdatePositionsPayload) => {
+				const players = payload.players;
+
+				const childNodes = Array.from(peersContainer.childNodes).filter(
+					(node) => node instanceof HTMLButtonElement,
+				);
+				childNodes.forEach((node) => {
+					const userId = node.getAttribute("data-user-id");
+					const player = players.find((p) => p.user_id === userId);
+					if (player) return;
+					peersContainer.removeChild(node);
+				});
+
+				players.forEach((player) => {
+					const nodeExists = childNodes.find(
+						(node) =>
+							node.getAttribute("data-user-id") === player.user_id.toString(),
+					);
+					if (nodeExists) return;
+					const node = document.createElement("button");
+					node.classList.add("peer");
+					node.setAttribute("data-user-id", player.user_id);
+					node.style.setProperty(
+						"--avatar-url",
+						`url(${player.avatar_url ?? (player.team === CSTeam.CounterTerrorist ? counterAvatarImage : terroristAvatarImage)})`,
+					);
+					node.setAttribute("data-name", player.name);
+					peersContainer.appendChild(node);
 				});
 			},
 		);
