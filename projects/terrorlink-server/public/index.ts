@@ -213,8 +213,8 @@ class Speaker {
 		};
 
 		channel.pannerNode.panningModel = "HRTF";
-		channel.pannerNode.distanceModel = "inverse";
-		channel.pannerNode.maxDistance = 500;
+		channel.pannerNode.distanceModel = "linear";
+		channel.pannerNode.maxDistance = 1000;
 		channel.pannerNode.refDistance = 100;
 		channel.pannerNode.rolloffFactor = 3;
 		// channel.pannerNode.coneInnerAngle = 45;
