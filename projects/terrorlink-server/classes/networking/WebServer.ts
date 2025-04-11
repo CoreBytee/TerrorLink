@@ -55,7 +55,7 @@ export default class WebServer extends EventEmitter {
 		this.steamAuthentication = new SteamAuthentication(
 			this.httpUrl,
 			this.steamToken,
-			`${this.httpUrl}/authentication/return`,
+			`${this.httpUrl}/`,
 		);
 
 		console.log("Starting webserver on", this.httpUrl);
@@ -69,16 +69,21 @@ export default class WebServer extends EventEmitter {
 			routes: {
 				"/": indexHtml,
 				"/favicon.ico": () => new Response(Bun.file(favicon)),
-				"/authentication/status": (request) => {
+
+				"/api/authentication/status": (request) => {
 					const token = this.getToken(request);
 
 					return Response.json({
 						user: token,
 						authenticated: !!token,
+					});
+				},
+				"/api/authentication/url": async (request) => {
+					return Response.json({
 						url: this.steamAuthentication.getAuthorizationURL(),
 					});
 				},
-				"/authentication/return": async (request) => {
+				"/api/authentication/return": async (request) => {
 					const user = await this.steamAuthentication.resolveUrl(request.url);
 
 					if (!user)
