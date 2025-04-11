@@ -4,5 +4,11 @@ import "../../assets/style/index.css";
 import "./App.css";
 
 export default function App() {
-	return <Loading />;
+	return (
+		<div className="App">
+			<div>
+				<Loading />
+			</div>
+		</div>
+	);
 }

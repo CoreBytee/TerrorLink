@@ -4,4 +4,23 @@
 	justify-content: center;
 	align-items: center;
 	gap: 10px;
+
+	width: 100%;
+	height: 100%;
+
+	& > img {
+		animation: LoadingPulse 1s infinite;
+	}
+}
+
+@keyframes LoadingPulse {
+	0% {
+		filter: brightness(1);
+	}
+	50% {
+		filter: brightness(0.8);
+	}
+	100% {
+		filter: brightness(1);
+	}
 }
