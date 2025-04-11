@@ -2,15 +2,67 @@ import { GearFill, Headphones, MicFill } from "react-bootstrap-icons";
 import Button from "../../components/Button/Button";
 import "./Voice.css";
 import Stripe from "../../components/Stripe/Stripe";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import useSpeaker from "../../hooks/useSpeaker";
+import useMicrophone from "../../hooks/useMicrophone";
+
+function drawFrequencyData(
+	canvas: HTMLCanvasElement,
+	frequencyData: Uint8Array<ArrayBuffer>,
+) {
+	const context = canvas.getContext("2d");
+	if (!context) return;
+	const width = canvas.clientWidth;
+	const height = canvas.clientHeight;
+
+	canvas.width = width;
+	canvas.height = height;
+
+	const barWidth = width / frequencyData.length;
+	const barHeight = height / 255;
+
+	context.clearRect(0, 0, width, height);
+	context.fillStyle = "white";
+
+	frequencyData.forEach((value, i) => {
+		const x = i * barWidth;
+		const y = height - value * barHeight;
+
+		context.fillRect(x, y, barWidth, height - y);
+	});
+}
 
 export function Voice() {
 	const [muted, setMuted] = useState(false);
 
+	const speakerCanvasRef = useRef<HTMLCanvasElement>(null);
+	const microphoneCanvasRef = useRef<HTMLCanvasElement>(null);
+
+	const speaker = useSpeaker();
+	const microphone = useMicrophone();
+
+	useEffect(() => {
+		let frameId: number;
+		function draw() {
+			const speakerFrequencyData = speaker.getFrequencyData();
+			drawFrequencyData(speakerCanvasRef.current!, speakerFrequencyData);
+			const microphoneFrequencyData = microphone.getFrequencyData();
+			drawFrequencyData(microphoneCanvasRef.current!, microphoneFrequencyData);
+			frameId = requestAnimationFrame(draw);
+		}
+
+		draw();
+
+		return () => {
+			if (!frameId) return;
+			cancelAnimationFrame(frameId);
+		};
+	});
+
 	return (
 		<div className={"Voice"}>
-			<canvas />
-			<canvas />
+			<canvas ref={microphoneCanvasRef} />
+			<canvas ref={speakerCanvasRef} />
 
 			<div className="actionrow">
 				<Button onClick={() => setMuted(!muted)}>

@@ -64,6 +64,7 @@ export default class Speaker extends TypedEmitter<SpeakerEvents> {
 
 	getFrequencyData() {
 		this.analyzerNode.getByteFrequencyData(this.frequencyData);
+		return this.frequencyData;
 	}
 
 	createChannel(id: string, stream: MediaStream) {

@@ -66,6 +66,7 @@ export default class Microphone extends TypedEmitter<MicrophoneEvents> {
 
 	getFrequencyData() {
 		this.analyzerNode.getByteFrequencyData(this.frequencyData);
+		return this.frequencyData;
 	}
 
 	async listDevices() {
