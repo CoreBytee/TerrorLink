@@ -29,5 +29,8 @@
   ],
   "patchedDependencies": {
     "node-web-audio-api@1.0.1": "patches/node-web-audio-api@1.0.1.patch"
+  },
+  "dependencies": {
+    "@fontsource/inter": "^5.2.5"
   }
 }
