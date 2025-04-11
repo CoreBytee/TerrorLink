@@ -19,6 +19,10 @@ export default class Events extends EventEmitter {
 		this.bytesSent = 0;
 	}
 
+	get isConnected() {
+		return this.socket && this.socket.readyState === WebSocket.OPEN;
+	}
+
 	async connect(peerId: string) {
 		this.messagesReceived = 0;
 		this.bytesReceived = 0;
@@ -37,6 +41,7 @@ export default class Events extends EventEmitter {
 		console.info("Socket: Connecting to server");
 		await pEvent(this.socket, "open");
 		console.info("Socket: Connected to server");
+		this.emit("connect");
 	}
 
 	sendMessage<Payload = JSONValue>(type: MessageType, payload: Payload) {

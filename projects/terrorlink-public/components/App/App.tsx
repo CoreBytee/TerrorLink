@@ -9,6 +9,7 @@ import usePeer from "../../hooks/usePeer";
 import useSpeaker from "../../hooks/useSpeaker";
 import useMicrophone from "../../hooks/useMicrophone";
 import ClickAttention from "../ClickAttention/ClickAttention";
+import useEvents from "../../hooks/useEvents";
 
 type AuthenticationStatus = {
 	authenticated: boolean;
@@ -24,11 +25,33 @@ export default function App() {
 		useState<AuthenticationStatus | null>(null);
 
 	const [needsAttention, setNeedsAttention] = useState(false);
+	const [isConnected, setIsConnected] = useState(false);
 
+	const events = useEvents();
 	const peer = usePeer();
 	const speaker = useSpeaker();
 	const microphone = useMicrophone();
 
+	// Connect to events socket
+	useEffect(() => {
+		function onOpen() {
+			events.connect(peer.id);
+		}
+
+		function onConnect() {
+			setIsConnected(true);
+		}
+
+		peer.on("open", onOpen);
+		events.on("connect", onConnect);
+
+		return () => {
+			peer.off("open", onOpen);
+			events.off("connect", onConnect);
+		};
+	});
+
+	// Show ClickAttention if the speaker or microphone is suspended
 	useEffect(() => {
 		if (speaker.isSuspended || microphone.isSuspended) setNeedsAttention(true);
 
@@ -45,6 +68,7 @@ export default function App() {
 		};
 	}, [speaker, microphone]);
 
+	// Fetch authentication status
 	useEffect(() => {
 		if (authenticationStatus) return;
 		fetch("/api/authentication/status").then(async (response) => {
@@ -54,7 +78,7 @@ export default function App() {
 	});
 
 	function handleScreen() {
-		if (!authenticationStatus) return <Loading />;
+		if (!authenticationStatus || !isConnected) return <Loading />;
 		if (authenticationStatus.authenticated) return <Voice />;
 		return <Login />;
 	}
