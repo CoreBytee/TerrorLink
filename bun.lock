@@ -3,10 +3,6 @@
   "workspaces": {
     "": {
       "name": "terrorlink",
-      "dependencies": {
-        "@fontsource/inter": "^5.2.5",
-        "react-bootstrap-icons": "^1.11.5",
-      },
       "devDependencies": {
         "@biomejs/biome": "1.9.4",
         "@types/bun": "latest",
@@ -62,12 +58,15 @@
     "projects/terrorlink-public": {
       "name": "terrorlink-public",
       "dependencies": {
+        "@fontsource/inter": "^5.2.5",
         "async-mutex": "^0.5.0",
         "bytes": "^3.1.2",
         "p-event": "^6.0.1",
         "peerjs": "^1.5.4",
         "react": "^19.1.0",
+        "react-bootstrap-icons": "^1.11.5",
         "react-dom": "^19.1.0",
+        "tiny-typed-emitter": "^2.1.0",
       },
       "devDependencies": {
         "@types/react": "^19.1.0",
@@ -241,6 +240,8 @@
     "terrorlink-public": ["terrorlink-public@workspace:projects/terrorlink-public"],
 
     "terrorlink-server": ["terrorlink-server@workspace:projects/terrorlink-server"],
+
+    "tiny-typed-emitter": ["tiny-typed-emitter@2.1.0", "", {}, "sha512-qVtvMxeXbVej0cQWKqVSSAHmKZEHAvxdF8HEUBFWts8h+xEo5m/lEiPakuyZ3BnCBjOD8i24kzNOiOLLgsSxhA=="],
 
     "tslib": ["tslib@2.8.1", "", {}, "sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w=="],
 

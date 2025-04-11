@@ -3,14 +3,15 @@
     "module": "index.html",
     "type": "module",
     "dependencies": {
+        "@fontsource/inter": "^5.2.5",
         "async-mutex": "^0.5.0",
         "bytes": "^3.1.2",
         "p-event": "^6.0.1",
         "peerjs": "^1.5.4",
         "react": "^19.1.0",
+        "react-bootstrap-icons": "^1.11.5",
         "react-dom": "^19.1.0",
-        "@fontsource/inter": "^5.2.5",
-        "react-bootstrap-icons": "^1.11.5"
+        "tiny-typed-emitter": "^2.1.0"
     },
     "devDependencies": {
         "@types/react": "^19.1.0",
