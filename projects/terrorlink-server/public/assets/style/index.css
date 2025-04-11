@@ -7,20 +7,27 @@
 	--button-hover-color: #4b4b4b;
 }
 
-html {
+html,
+body,
+#root {
 	margin: 0;
 	padding: 0;
-	min-height: 100vh;
-}
 
-body {
 	height: 100vh;
-	margin: 0;
+	min-height: 100vh;
+
 	font-family: Arial, Helvetica, sans-serif;
 	background-color: var(--background-color);
 }
 
-button {
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	color: var(--text-color);
+}
+
+/* button {
 	appearance: none;
 	border: none;
 	background-color: var(--button-color);
@@ -31,11 +38,5 @@ button {
 	&:hover {
 		background-color: var(--button-hover-color);
 	}
-}
+} */
 
-* {
-	box-sizing: border-box;
-	margin: 0;
-	padding: 0;
-	color: var(--text-color);
-}

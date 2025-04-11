@@ -5,52 +5,11 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>TerrorLink</title>
-
-        <link rel="stylesheet" href="./assets/style/index.css">
-
-        <link rel="stylesheet" href="./index.css">
-        <script src="./index.js" defer></script>
     </head>
 
     <body>
-        <h1>TerrorLink</h1>
-        <div class="container">
-            <div screen="loading">
-                <h1>Loading</h1>
-            </div>
-            <div screen="main">
-                <canvas class="microphone-graph" id="microphone-graph"></canvas>
-                <canvas class="speaker-graph" id="speaker-graph"></canvas>
-                <div class="actionrow">
-                    <button id="mute"><img src="./assets/icon/microphone.svg" /></button>
-                    <button id="deafen"><img src="./assets/icon/headphones.svg" /></button>
-                    <button id="settings"><img src="./assets/icon/gear.svg" /></button>
-                </div>
-                <div class="peers"></div>
-                <p class="debug" id="debug"></p>
-            </div>
-            <div screen="settings">
-                <h1>Settings</h1>
-                <div class="login-state">
-                    <p>Logged in as:</p>
-                    <p id="login-username">unknown</p>
-                    <div>
-                        <button id="logout">Logout</button>
-                    </div>
-                </div>
-                <div class="master-volume">
-                    <label for="master-volume-slider">Master Volume</label>
-                    <input type="range" id="master-volume-slider">
-                </div>
-
-                <div class="microphone-volume">
-                    <label for="microphone-volume-slider">Microphone Volume</label>
-                    <input type="range" id="microphone-volume-slider">
-                </div>
-
-                <button class="settings-return-button" id="settings-return-button">Save & Return</button>
-            </div>
-        </div>
+        <div id="root"></div>
+        <script src="./index.tsx" defer></script>
     </body>
 
 </html>
