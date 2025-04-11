@@ -5,6 +5,7 @@
       "name": "terrorlink",
       "dependencies": {
         "@fontsource/inter": "^5.2.5",
+        "react-bootstrap-icons": "^1.11.5",
       },
       "devDependencies": {
         "@biomejs/biome": "1.9.4",
@@ -58,21 +59,29 @@
         "@types/fs-extra": "^11.0.4",
       },
     },
+    "projects/terrorlink-public": {
+      "name": "terrorlink-public",
+      "dependencies": {
+        "async-mutex": "^0.5.0",
+        "bytes": "^3.1.2",
+        "p-event": "^6.0.1",
+        "peerjs": "^1.5.4",
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0",
+      },
+      "devDependencies": {
+        "@types/react": "^19.1.0",
+        "@types/react-dom": "^19.1.2",
+      },
+    },
     "projects/terrorlink-server": {
-      "name": "terrorlink",
+      "name": "terrorlink-server",
       "dependencies": {
         "async-mutex": "^0.5.0",
         "bytes": "^3.1.2",
         "jwt-simple": "^0.5.6",
         "p-event": "^6.0.1",
-        "peerjs": "^1.5.4",
-        "react": "^19.1.0",
-        "react-dom": "^19.1.0",
         "steam-signin": "^1.0.5",
-      },
-      "devDependencies": {
-        "@types/react": "^19.1.0",
-        "@types/react-dom": "^19.1.2",
       },
     },
   },
@@ -171,11 +180,15 @@
 
     "is-wsl": ["is-wsl@3.1.0", "", { "dependencies": { "is-inside-container": "^1.0.0" } }, "sha512-UcVfVfaK4Sc4m7X3dUSoHoozQGBEFeDC+zVo06t98xe8CzHSZZBekNXH+tu0NalHolcJ/QAGqS46Hef7QXBIMw=="],
 
+    "js-tokens": ["js-tokens@4.0.0", "", {}, "sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ=="],
+
     "jsonfile": ["jsonfile@6.1.0", "", { "dependencies": { "universalify": "^2.0.0" }, "optionalDependencies": { "graceful-fs": "^4.1.6" } }, "sha512-5dgndWOriYSm5cnYaJNhalLNDKOqFwyDB/rr1E9ZsGciGvKPs8R2xYGCacuf3z6K1YKDz182fd+fY3cn3pMqXQ=="],
 
     "jsonvalue": ["jsonvalue@workspace:packages/jsonvalue"],
 
     "jwt-simple": ["jwt-simple@0.5.6", "", {}, "sha512-40aUybvhH9t2h71ncA1/1SbtTNCVZHgsTsTgqPUxGWDmUDrXyDf2wMNQKEbdBjbf4AI+fQhbECNTV6lWxQKUzg=="],
+
+    "loose-envify": ["loose-envify@1.4.0", "", { "dependencies": { "js-tokens": "^3.0.0 || ^4.0.0" }, "bin": { "loose-envify": "cli.js" } }, "sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q=="],
 
     "memoirist": ["memoirist@0.3.0", "", {}, "sha512-wR+4chMgVPq+T6OOsk40u9Wlpw1Pjx66NMNiYxCQQ4EUJ7jDs3D9kTCeKdBOkvAiqXlHLVJlvYL01PvIJ1MPNg=="],
 
@@ -189,6 +202,8 @@
 
     "noop": ["noop@workspace:packages/noop"],
 
+    "object-assign": ["object-assign@4.1.1", "", {}, "sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg=="],
+
     "open": ["open@10.1.0", "", { "dependencies": { "default-browser": "^5.2.1", "define-lazy-prop": "^3.0.0", "is-inside-container": "^1.0.0", "is-wsl": "^3.1.0" } }, "sha512-mnkeQ1qP5Ue2wd+aivTD3NHd/lZ96Lu0jgf0pwktLPtx6cTZiH7tyeGRRHs0zX0rbrahXPnXlUnbeXyaBBuIaw=="],
 
     "openapi-types": ["openapi-types@12.1.3", "", {}, "sha512-N4YtSYJqghVu4iek2ZUvcN/0aqH1kRDuNqzcycDxhOUpg7GdvLa2F3DgS6yBNhInhv2r/6I0Flkn7CqL8+nIcw=="],
@@ -201,9 +216,15 @@
 
     "peerjs-js-binarypack": ["peerjs-js-binarypack@2.1.0", "", {}, "sha512-YIwCC+pTzp3Bi8jPI9UFKO0t0SLo6xALnHkiNt/iUFmUUZG0fEEmEyFKvjsDKweiFitzHRyhuh6NvyJZ4nNxMg=="],
 
+    "prop-types": ["prop-types@15.8.1", "", { "dependencies": { "loose-envify": "^1.4.0", "object-assign": "^4.1.1", "react-is": "^16.13.1" } }, "sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg=="],
+
     "react": ["react@19.1.0", "", {}, "sha512-FS+XFBNvn3GTAWq26joslQgWNoFu08F4kl0J4CgdNKADkdSGXQyTCnKteIAJy96Br6YbpEU1LSzV5dYtjMkMDg=="],
 
+    "react-bootstrap-icons": ["react-bootstrap-icons@1.11.5", "", { "dependencies": { "prop-types": "^15.7.2" }, "peerDependencies": { "react": ">=16.8.6" } }, "sha512-eOhtFJMUqw98IJcfKJsSMZkFHCeNPTTwXZAe9V9d4mT22ARmbrISxPO9GmtWWuf72zQctLeZMGodX/q6wrbYYg=="],
+
     "react-dom": ["react-dom@19.1.0", "", { "dependencies": { "scheduler": "^0.26.0" }, "peerDependencies": { "react": "^19.1.0" } }, "sha512-Xs1hdnE+DyKgeHJeJznQmYMIBG3TKIHJJT95Q58nHLSrElKlGQqDTR2HQ9fx5CN/Gk6Vh/kupBTDLU11/nDk/g=="],
+
+    "react-is": ["react-is@16.13.1", "", {}, "sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ=="],
 
     "run-applescript": ["run-applescript@7.0.0", "", {}, "sha512-9by4Ij99JUr/MCFBUkDKLWK3G9HVXmabKz9U5MlIAIuvuzkiOicRYs8XJLxX+xahD+mLiiCYDqF9dKAgtzKP1A=="],
 
@@ -215,9 +236,11 @@
 
     "steamid": ["steamid@2.1.0", "", {}, "sha512-ndt1cvuuSC+i8fcxVsmeyRlgGsR1QsoAuIXz+eabj8/Y4GIWE2+mgHA7Hys61JDHOxttfWtXHtN2m5TNYTlORg=="],
 
-    "terrorlink": ["terrorlink@workspace:projects/terrorlink-server"],
-
     "terrorlink-client": ["terrorlink-client@workspace:projects/terrorlink-client"],
+
+    "terrorlink-public": ["terrorlink-public@workspace:projects/terrorlink-public"],
+
+    "terrorlink-server": ["terrorlink-server@workspace:projects/terrorlink-server"],
 
     "tslib": ["tslib@2.8.1", "", {}, "sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w=="],
 

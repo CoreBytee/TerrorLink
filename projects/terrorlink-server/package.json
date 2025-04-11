@@ -1,5 +1,5 @@
 {
-    "name": "terrorlink",
+    "name": "terrorlink-server",
     "module": "index.ts",
     "type": "module",
     "dependencies": {
@@ -7,13 +7,6 @@
         "bytes": "^3.1.2",
         "jwt-simple": "^0.5.6",
         "p-event": "^6.0.1",
-        "peerjs": "^1.5.4",
-        "react": "^19.1.0",
-        "react-dom": "^19.1.0",
         "steam-signin": "^1.0.5"
-    },
-    "devDependencies": {
-        "@types/react": "^19.1.0",
-        "@types/react-dom": "^19.1.2"
     }
 }
