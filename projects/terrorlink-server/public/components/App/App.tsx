@@ -31,17 +31,17 @@ export default function App() {
 			});
 	});
 
-	const Screen = authenticationStatus
-		? authenticationStatus.authenticated
-			? Voice
-			: Login
-		: Loading;
+	function handleScreen() {
+		if (!authenticationStatus) return <Loading />;
+		if (authenticationStatus.authenticated) return <Voice />;
+		return <Login />;
+	}
+
+	const screen = handleScreen();
 
 	return (
 		<div className="App">
-			<div>
-				<Screen />
-			</div>
+			<div>{screen}</div>
 		</div>
 	);
 }
