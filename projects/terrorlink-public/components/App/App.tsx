@@ -22,13 +22,10 @@ export default function App() {
 
 	useEffect(() => {
 		if (authenticationStatus) return;
-		fetch("/api/authentication/status")
-			.then((response) => {
-				return response.json();
-			})
-			.then((data) => {
-				setAuthenticationStatus(data);
-			});
+		fetch("/api/authentication/status").then(async (response) => {
+			const data = await response.json();
+			setAuthenticationStatus(data);
+		});
 	});
 
 	function handleScreen() {
