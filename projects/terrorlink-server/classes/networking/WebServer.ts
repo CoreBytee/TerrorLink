@@ -5,12 +5,13 @@ import SteamAuthentication, {
 } from "../SteamAuthentication";
 import buildUrl from "build-url";
 import type { BunRequest, Server, ServerWebSocket } from "bun";
-import indexHtml from "../../public/index.html";
 import type { JSONPrimitive, JSONValue } from "jsonvalue";
 import jwt from "jwt-simple";
-import favicon from "../../public/favicon.ico";
 import { Mutex } from "async-mutex";
 import Client from "./Client";
+
+import indexHtml from "../../../terrorlink-public/index.html";
+import favicon from "../../../terrorlink-public/favicon.ico";
 
 export type ServerWebSocketData = {
 	user: SteamUserData;
