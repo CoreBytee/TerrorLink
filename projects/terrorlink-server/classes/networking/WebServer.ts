@@ -56,7 +56,7 @@ export default class WebServer extends EventEmitter {
 		this.steamAuthentication = new SteamAuthentication(
 			this.httpUrl,
 			this.steamToken,
-			`${this.httpUrl}/`,
+			`${this.httpUrl}/api/authentication/return`,
 		);
 
 		console.log("Starting webserver on", this.httpUrl);
