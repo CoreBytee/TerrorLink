@@ -1,0 +1,15 @@
+.Stripe {
+	position: absolute;
+	width: 0%;
+	height: 5px;
+
+	background-color: red;
+	border-radius: 9999px;
+	transform: rotate(45deg);
+
+	transition: width 0.1s ease-in-out;
+
+	&[data-active="true"] {
+		width: 80%;
+	}
+}

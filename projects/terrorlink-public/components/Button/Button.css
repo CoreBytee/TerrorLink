@@ -5,6 +5,7 @@
 	background-color: var(--button-color);
 	font-size: 100%;
 
+	position: relative;
 	cursor: pointer;
 
 	transition: background-color 0.3s;
