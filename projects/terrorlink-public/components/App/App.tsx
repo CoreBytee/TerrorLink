@@ -5,6 +5,10 @@ import "./App.css";
 import { useEffect, useState } from "react";
 import { Login } from "../../screens/Login/Login";
 import { Voice } from "../../screens/Voice/Voice";
+import usePeer from "../../hooks/usePeer";
+import useSpeaker from "../../hooks/useSpeaker";
+import useMicrophone from "../../hooks/useMicrophone";
+import ClickAttention from "../ClickAttention/ClickAttention";
 
 type AuthenticationStatus = {
 	authenticated: boolean;
@@ -18,7 +22,28 @@ type AuthenticationStatus = {
 export default function App() {
 	const [authenticationStatus, setAuthenticationStatus] =
 		useState<AuthenticationStatus | null>(null);
-	console.log(authenticationStatus);
+
+	const [needsAttention, setNeedsAttention] = useState(false);
+
+	const peer = usePeer();
+	const speaker = useSpeaker();
+	const microphone = useMicrophone();
+
+	useEffect(() => {
+		if (speaker.isSuspended || microphone.isSuspended) setNeedsAttention(true);
+
+		function onResumed() {
+			setNeedsAttention(false);
+		}
+
+		speaker.on("resumed", onResumed);
+		microphone.on("resumed", onResumed);
+
+		return () => {
+			speaker.off("resumed", onResumed);
+			microphone.off("resumed", onResumed);
+		};
+	}, [speaker, microphone]);
 
 	useEffect(() => {
 		if (authenticationStatus) return;
@@ -37,8 +62,11 @@ export default function App() {
 	const screen = handleScreen();
 
 	return (
-		<div className="App">
-			<div>{screen}</div>
-		</div>
+		<>
+			<ClickAttention active={needsAttention} />
+			<div className="App">
+				<div>{screen}</div>
+			</div>
+		</>
 	);
 }
