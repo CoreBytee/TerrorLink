@@ -97,6 +97,33 @@ export default function App() {
 		};
 	});
 
+	// Handle peer postions
+	useEffect(() => {
+		function onGamestate(payload: MessageUpdatePositionsPayload) {
+			const players = payload.players;
+
+			for (const player of players) {
+				if (!player.peer_id) continue;
+				if (!speaker.channelExists(player.peer_id)) continue;
+
+				if (player.me) {
+					speaker.setPosition(player.position, player.angle);
+				} else {
+					speaker.setChannelPosition(
+						player.peer_id,
+						player.position,
+						player.angle,
+					);
+				}
+			}
+		}
+
+		events.on(MessageType.UpdatePositions, onGamestate);
+		return () => {
+			events.off(MessageType.UpdatePositions, onGamestate);
+		};
+	});
+
 	// Show ClickAttention if the speaker or microphone is suspended
 	useEffect(() => {
 		if (speaker.isSuspended || microphone.isSuspended) setNeedsAttention(true);
