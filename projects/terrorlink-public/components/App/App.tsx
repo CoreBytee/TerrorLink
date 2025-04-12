@@ -103,6 +103,7 @@ export default function App() {
 		if (speaker.isSuspended || microphone.isSuspended) setNeedsAttention(true);
 
 		function onResumed() {
+			if (speaker.isSuspended || microphone.isSuspended) return;
 			setNeedsAttention(false);
 		}
 
