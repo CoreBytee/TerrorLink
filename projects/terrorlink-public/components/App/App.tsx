@@ -66,7 +66,6 @@ export default function App() {
 				if (peer.connections[player.peer_id]) continue;
 				console.info("Calling peer", player.peer_id);
 				peer.call(player.peer_id, microphone.stream);
-				console.log(player);
 			}
 
 			for (const connectionEntry of Object.entries(peer.connections)) {
