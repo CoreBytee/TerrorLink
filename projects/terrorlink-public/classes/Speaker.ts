@@ -42,7 +42,7 @@ export default class Speaker extends TypedEmitter<SpeakerEvents> {
 		this.gainNode.connect(this.analyzerNode);
 		this.analyzerNode.connect(this.audioContext.destination);
 
-		document.body.addEventListener("click", () => {
+		document.addEventListener("click", () => {
 			if (this.audioContext.state === "suspended") {
 				console.warn("Resuming speaker audio context");
 				this.audioContext.resume();

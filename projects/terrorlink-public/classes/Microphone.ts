@@ -34,7 +34,7 @@ export default class Microphone extends TypedEmitter<MicrophoneEvents> {
 		this.gainNode.connect(this.analyzerNode);
 		this.analyzerNode.connect(this.outputStream);
 
-		document.body.addEventListener("click", () => {
+		document.addEventListener("click", () => {
 			if (this.audioContext.state === "suspended") {
 				console.warn("Resuming microphone audio context");
 				this.audioContext.resume();
