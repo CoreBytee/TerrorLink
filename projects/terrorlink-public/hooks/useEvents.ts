@@ -1,12 +1,12 @@
 import { useRef } from "react";
 import Events from "../classes/Events";
 
-export default function useEvents() {
-	const events = useRef<Events | null>(null);
+let events: Events | null = null;
 
-	if (!events.current) {
-		events.current = new Events();
+export default function useEvents() {
+	if (!events) {
+		events = new Events();
 	}
 
-	return events.current;
+	return events;
 }

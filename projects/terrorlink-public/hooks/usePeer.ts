@@ -1,12 +1,12 @@
 import Peer from "peerjs";
 import { useRef } from "react";
 
-export default function usePeer() {
-	const peer = useRef<Peer | null>(null);
+let peer: Peer | null = null;
 
-	if (!peer.current) {
-		peer.current = new Peer();
+export default function usePeer() {
+	if (!peer) {
+		peer = new Peer();
 	}
 
-	return peer.current;
+	return peer;
 }

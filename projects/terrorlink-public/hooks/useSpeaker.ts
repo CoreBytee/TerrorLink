@@ -1,12 +1,13 @@
 import { useRef } from "react";
 import Speaker from "../classes/Speaker";
 
-export default function useSpeaker() {
-	const speaker = useRef<Speaker | null>(null);
+let speaker: Speaker | null = null;
 
-	if (!speaker.current) {
-		speaker.current = new Speaker();
+export default function useSpeaker() {
+	if (!speaker) {
+		console.log("Creating new speaker");
+		speaker = new Speaker();
 	}
 
-	return speaker.current;
+	return speaker;
 }

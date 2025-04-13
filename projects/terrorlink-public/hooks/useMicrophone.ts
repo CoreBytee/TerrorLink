@@ -1,12 +1,12 @@
 import { useRef } from "react";
 import Microphone from "../classes/Microphone";
 
-export default function useMicrophone() {
-	const microphone = useRef<Microphone | null>(null);
+let microphone: Microphone | null = null;
 
-	if (!microphone.current) {
-		microphone.current = new Microphone();
+export default function useMicrophone() {
+	if (!microphone) {
+		microphone = new Microphone();
 	}
 
-	return microphone.current;
+	return microphone;
 }
