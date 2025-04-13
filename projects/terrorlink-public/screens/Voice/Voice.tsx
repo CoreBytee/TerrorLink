@@ -45,6 +45,7 @@ export function Voice() {
 	useEffect(() => {
 		function onDeafened() {
 			setDeafened(true);
+			microphone.setMute(true);
 		}
 
 		function onUndeafened() {
@@ -57,6 +58,7 @@ export function Voice() {
 
 		function onUnmuted() {
 			setMuted(false);
+			speaker.setDeafen(false);
 		}
 
 		speaker.on("deafened", onDeafened);
