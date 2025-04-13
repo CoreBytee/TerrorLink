@@ -62,7 +62,7 @@ export default function App() {
 			for (const player of players) {
 				if (player.me) continue;
 				if (!player.peer_id) continue;
-				// @ts-ignore
+				// @ts-ignore peerjs did something weird with the types
 				if (peer.connections[player.peer_id]) continue;
 				console.info("Calling peer", player.peer_id);
 				peer.call(player.peer_id, microphone.stream);

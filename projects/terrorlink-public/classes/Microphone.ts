@@ -5,6 +5,8 @@ const isProduction = false;
 interface MicrophoneEvents {
 	suspended: () => void;
 	resumed: () => void;
+	muted: () => void;
+	unmuted: () => void;
 }
 
 export default class Microphone extends TypedEmitter<MicrophoneEvents> {
@@ -94,6 +96,7 @@ export default class Microphone extends TypedEmitter<MicrophoneEvents> {
 	setMute(state: boolean) {
 		this.gainNode.gain.value = state ? 0 : 1;
 		this.muted = state;
+		this.muted ? this.emit("muted") : this.emit("unmuted");
 	}
 
 	toggleMute() {

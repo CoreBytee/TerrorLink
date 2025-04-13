@@ -33,14 +33,46 @@ function drawFrequencyData(
 }
 
 export function Voice() {
-	const [muted, setMuted] = useState(false);
-
 	const speakerCanvasRef = useRef<HTMLCanvasElement>(null);
 	const microphoneCanvasRef = useRef<HTMLCanvasElement>(null);
 
 	const speaker = useSpeaker();
 	const microphone = useMicrophone();
 
+	const [deafened, setDeafened] = useState(speaker.deafen);
+	const [muted, setMuted] = useState(microphone.muted);
+
+	useEffect(() => {
+		function onDeafened() {
+			setDeafened(true);
+		}
+
+		function onUndeafened() {
+			setDeafened(false);
+		}
+
+		function onMuted() {
+			setMuted(true);
+		}
+
+		function onUnmuted() {
+			setMuted(false);
+		}
+
+		speaker.on("deafened", onDeafened);
+		speaker.on("undeafened", onUndeafened);
+		microphone.on("muted", onMuted);
+		microphone.on("unmuted", onUnmuted);
+
+		return () => {
+			speaker.off("deafened", onDeafened);
+			speaker.off("undeafened", onUndeafened);
+			microphone.off("muted", onMuted);
+			microphone.off("unmuted", onUnmuted);
+		};
+	});
+
+	// Draw the frequency data on the canvas
 	useEffect(() => {
 		let frameId: number;
 		function draw() {
@@ -65,12 +97,12 @@ export function Voice() {
 			<canvas ref={speakerCanvasRef} />
 
 			<div className="actionrow">
-				<Button onClick={() => setMuted(!muted)}>
+				<Button onClick={() => microphone.toggleMute()}>
 					<Stripe active={muted} />
 					<MicFill size={40} />
 				</Button>
-				<Button>
-					<Stripe active={muted} />
+				<Button onClick={() => speaker.toggleDeafen()}>
+					<Stripe active={deafened} />
 					<Headphones size={40} />
 				</Button>
 				<Button>

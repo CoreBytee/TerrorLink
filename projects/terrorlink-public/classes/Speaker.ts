@@ -8,6 +8,8 @@ function degreesToRadians(degrees: number): number {
 interface SpeakerEvents {
 	suspended: () => void;
 	resumed: () => void;
+	deafened: () => void;
+	undeafened: () => void;
 }
 
 export default class Speaker extends TypedEmitter<SpeakerEvents> {
@@ -87,7 +89,7 @@ export default class Speaker extends TypedEmitter<SpeakerEvents> {
 		channel.pannerNode.setPosition(0, 0, 0);
 		channel.pannerNode.setOrientation(0, 0, 0);
 
-		channel.mediaStreamSource.connect(channel.pannerNode);
+		channel.mediaStreamSource.connect(channel.gainNode);
 		channel.gainNode.connect(channel.pannerNode);
 		channel.pannerNode.connect(this.gainNode);
 
@@ -103,7 +105,7 @@ export default class Speaker extends TypedEmitter<SpeakerEvents> {
 			return;
 		}
 
-		channel.mediaStreamSource.disconnect(channel.pannerNode);
+		channel.mediaStreamSource.disconnect(channel.gainNode);
 		channel.gainNode.disconnect(channel.pannerNode);
 		channel.pannerNode.disconnect(this.gainNode);
 
@@ -158,6 +160,7 @@ export default class Speaker extends TypedEmitter<SpeakerEvents> {
 	setDeafen(state: boolean) {
 		this.gainNode.gain.value = state ? 0 : 1;
 		this.deafen = state;
+		this.deafen ? this.emit("deafened") : this.emit("undeafened");
 	}
 
 	toggleDeafen() {
