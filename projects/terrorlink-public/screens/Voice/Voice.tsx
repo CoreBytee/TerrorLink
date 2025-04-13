@@ -5,6 +5,22 @@ import Stripe from "../../components/Stripe/Stripe";
 import { useEffect, useRef, useState } from "react";
 import useSpeaker from "../../hooks/useSpeaker";
 import useMicrophone from "../../hooks/useMicrophone";
+import { MessageType, type MessageUpdatePositionsPayload } from "networking";
+import useEvents from "../../hooks/useEvents";
+import compare from "just-compare";
+import { CSTeam } from "gamestate";
+import terroristAvatarImage from "../../assets/image/terrorist.png" with {
+	type: "file",
+};
+import counterAvatarImage from "../../assets/image/counter.png" with {
+	type: "file",
+};
+
+type RenderPlayer = {
+	steamId: string;
+	name: string;
+	avatarUrl: string | undefined;
+};
 
 function drawFrequencyData(
 	canvas: HTMLCanvasElement,
@@ -38,10 +54,37 @@ export function Voice() {
 
 	const speaker = useSpeaker();
 	const microphone = useMicrophone();
+	const events = useEvents();
 
 	const [deafened, setDeafened] = useState(speaker.deafen);
 	const [muted, setMuted] = useState(microphone.muted);
+	const [players, setPlayers] = useState<RenderPlayer[]>([]);
 
+	// Store players
+	useEffect(() => {
+		function onGamestate(payload: MessageUpdatePositionsPayload) {
+			const updated = payload.players.map((player) => ({
+				steamId: player.steam_id,
+				name: player.name,
+				avatarUrl: player.avatar_url
+					? player.avatar_url
+					: player.team === CSTeam.Terrorist
+						? terroristAvatarImage
+						: counterAvatarImage,
+			}));
+
+			if (compare(updated, players)) return;
+			setPlayers(updated);
+		}
+
+		events.on(MessageType.UpdatePositions, onGamestate);
+
+		return () => {
+			events.off(MessageType.UpdatePositions, onGamestate);
+		};
+	});
+
+	// Handle the speaker and microphone events
 	useEffect(() => {
 		function onDeafened() {
 			setDeafened(true);
@@ -110,6 +153,15 @@ export function Voice() {
 				<Button>
 					<GearFill size={40} />
 				</Button>
+			</div>
+
+			<div className="players">
+				{players.map((player) => (
+					<div key={player.steamId} className="player">
+						<img src={player.avatarUrl} alt={player.name} className="avatar" />
+						<div className="name">{player.name}</div>
+					</div>
+				))}
 			</div>
 		</div>
 	);
