@@ -1,9 +1,20 @@
 import type { JSONValue } from "jsonvalue";
-import type { Message, MessageType } from "networking";
-import { EventEmitter } from "node:events";
+import {
+	MessageType,
+	type Message,
+	type MessageUpdatePositionsPayload,
+} from "networking";
 import { pEvent } from "p-event";
+import { TypedEmitter } from "tiny-typed-emitter";
 
-export default class Events extends EventEmitter {
+interface EventsEvents {
+	connect: () => void;
+	[MessageType.UpdatePositions]: (
+		payload: MessageUpdatePositionsPayload,
+	) => void;
+}
+
+export default class Events extends TypedEmitter<EventsEvents> {
 	socket: WebSocket | null;
 	messagesReceived: number;
 	bytesReceived: number;
@@ -35,7 +46,14 @@ export default class Events extends EventEmitter {
 			const message = JSON.parse(rawMessage.data) as Message;
 			this.messagesReceived++;
 			this.bytesReceived += rawMessage.data.length;
-			this.emit(message.type, message.payload);
+			if (message.type === MessageType.UpdatePositions) {
+				this.emit(
+					message.type,
+					message.payload as unknown as MessageUpdatePositionsPayload,
+				);
+			} else {
+				console.warn(`Unhandled message type: ${message.type}`);
+			}
 		});
 
 		console.info("Socket: Connecting to server");
