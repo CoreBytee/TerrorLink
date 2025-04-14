@@ -70,6 +70,7 @@ export default function App() {
 
 			for (const connectionEntry of Object.entries(peer.connections)) {
 				const [peerId, connections] = connectionEntry;
+				if (connections.length === 0) continue;
 				const player = players.find((p) => p.peer_id === peerId);
 				if (player) continue;
 				console.info("Closing connection to peer", peerId);
