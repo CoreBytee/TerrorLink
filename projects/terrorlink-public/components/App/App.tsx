@@ -2,7 +2,7 @@ import { Loading } from "../../screens/Loading/Loading";
 
 import "../../assets/style/index.css";
 import "./App.css";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { Login } from "../../screens/Login/Login";
 import { Voice } from "../../screens/Voice/Voice";
 import usePeer from "../../hooks/usePeer";
@@ -12,6 +12,7 @@ import ClickAttention from "../ClickAttention/ClickAttention";
 import useEvents from "../../hooks/useEvents";
 import { MessageType, type MessageUpdatePositionsPayload } from "networking";
 import type { DataConnection, MediaConnection } from "peerjs";
+import compare from "just-compare";
 
 type AuthenticationStatus = {
 	authenticated: boolean;
@@ -20,6 +21,10 @@ type AuthenticationStatus = {
 		displayName: string;
 		avatarUrl: string;
 	};
+};
+
+type Peers = {
+	[key: string]: string;
 };
 
 export default function App() {
@@ -33,6 +38,8 @@ export default function App() {
 	const peer = usePeer();
 	const speaker = useSpeaker();
 	const microphone = useMicrophone();
+
+	const [peers, setPeers] = useState<Peers>({});
 
 	// Connect to events socket
 	useEffect(() => {
@@ -51,6 +58,27 @@ export default function App() {
 		return () => {
 			peer.off("open", onOpen);
 			events.off("connect", onConnect);
+		};
+	});
+
+	// Store peers
+	useEffect(() => {
+		function onGamestate(payload: MessageUpdatePositionsPayload) {
+			const players = payload.players;
+			const newPeers: Peers = {};
+
+			for (const player of players) {
+				if (!player.peer_id) continue;
+				newPeers[player.steam_id] = player.peer_id;
+			}
+
+			if (compare(newPeers, peers)) return;
+			setPeers(newPeers);
+		}
+
+		events.on(MessageType.UpdatePositions, onGamestate);
+		return () => {
+			events.off(MessageType.UpdatePositions, onGamestate);
 		};
 	});
 
@@ -83,10 +111,25 @@ export default function App() {
 
 		function onCall(call: MediaConnection) {
 			console.info("Incoming call from", call.peer);
+
+			console.log(peers);
+
+			if (!peers[call.peer]) {
+				console.warn("Peer not found in peers list", call.peer);
+				call.close();
+				return;
+			}
+
 			call.answer();
 
 			call.once("stream", (stream) => {
 				speaker.createChannel(call.peer, stream);
+				speaker.setChannelVolume(
+					call.peer,
+					Number.parseInt(
+						localStorage.getItem(`playervolume-${peers[call.peer]}`) ?? "1",
+					),
+				);
 			});
 		}
 

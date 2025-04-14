@@ -15,10 +15,14 @@ import terroristAvatarImage from "../../assets/image/terrorist.png" with {
 import counterAvatarImage from "../../assets/image/counter.png" with {
 	type: "file",
 };
+import { PlayerSettings } from "../PlayerSettings/PlayerSettings";
 
 type RenderPlayer = {
 	steamId: string;
+	peerId: string;
 	name: string;
+	me: boolean;
+	bot: boolean;
 	avatarUrl: string | undefined;
 };
 
@@ -59,13 +63,17 @@ export function Voice() {
 	const [deafened, setDeafened] = useState(speaker.deafen);
 	const [muted, setMuted] = useState(microphone.muted);
 	const [players, setPlayers] = useState<RenderPlayer[]>([]);
+	const [selectedPlayer, setSelectedPlayer] = useState<string | null>(null);
 
 	// Store players
 	useEffect(() => {
 		function onGamestate(payload: MessageUpdatePositionsPayload) {
 			const updated = payload.players.map((player) => ({
 				steamId: player.steam_id,
+				peerId: player.peer_id ?? "",
 				name: player.name,
+				me: player.me,
+				bot: player.is_bot,
 				avatarUrl: player.avatar_url
 					? player.avatar_url
 					: player.team === CSTeam.Terrorist
@@ -128,6 +136,7 @@ export function Voice() {
 			frameId = requestAnimationFrame(draw);
 		}
 
+		if (!speakerCanvasRef.current || !microphoneCanvasRef.current) return;
 		draw();
 
 		return () => {
@@ -135,6 +144,24 @@ export function Voice() {
 			cancelAnimationFrame(frameId);
 		};
 	});
+
+	if (selectedPlayer) {
+		return (
+			<PlayerSettings
+				peerId={selectedPlayer}
+				steamId={
+					players.find((player) => player.peerId === selectedPlayer)?.steamId ??
+					""
+				}
+				name={
+					players.find((player) => player.peerId === selectedPlayer)?.name ?? ""
+				}
+				onReturn={() => {
+					setSelectedPlayer(null);
+				}}
+			/>
+		);
+	}
 
 	return (
 		<div className={"Voice"}>
@@ -157,10 +184,18 @@ export function Voice() {
 
 			<div className="players">
 				{players.map((player) => (
-					<div key={player.steamId} className="player">
+					<button
+						key={player.steamId}
+						className="player"
+						type="button"
+						onClick={() => {
+							if (player.me) return;
+							setSelectedPlayer(player.peerId);
+						}}
+					>
 						<img src={player.avatarUrl} alt={player.name} className="avatar" />
 						<div className="name">{player.name}</div>
-					</div>
+					</button>
 				))}
 			</div>
 		</div>

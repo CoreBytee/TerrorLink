@@ -112,6 +112,20 @@ export default class Speaker extends TypedEmitter<SpeakerEvents> {
 		delete this.channels[id];
 	}
 
+	setChannelVolume(id: string, volume: number) {
+		const channel = this.channels[id];
+
+		if (!channel) {
+			console.warn("Speaker: Channel not found", id);
+			return;
+		}
+
+		if (volume > 3) volume = 3;
+		if (volume < 0) volume = 0;
+		console.info("Speaker: Setting channel volume", id, volume);
+		channel.gainNode.gain.value = volume;
+	}
+
 	setChannelPosition(id: string, position: position, angle: angle) {
 		const channel = this.channels[id];
 
