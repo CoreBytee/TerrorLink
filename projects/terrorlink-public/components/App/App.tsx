@@ -197,7 +197,9 @@ export default function App() {
 	});
 
 	function handleScreen() {
-		if (!authenticationStatus || !isConnected) return <Loading />;
+		if (!authenticationStatus) return <Loading />;
+		if (!authenticationStatus.authenticated) return <Login />;
+		if (!isConnected) return <Loading />;
 		if (authenticationStatus.authenticated) return <Voice />;
 		return <Login />;
 	}
