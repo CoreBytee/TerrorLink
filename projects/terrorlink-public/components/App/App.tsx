@@ -44,6 +44,7 @@ export default function App() {
 	// Connect to events socket
 	useEffect(() => {
 		function onOpen() {
+			if (!authenticationStatus?.authenticated) return;
 			console.info("My peer ID is", peer.id);
 			events.connect(peer.id);
 		}
