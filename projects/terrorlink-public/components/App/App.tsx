@@ -116,7 +116,6 @@ export default function App() {
 			console.log(peers);
 
 			if (!Object.values(peers).includes(call.peer)) {
-				// if (!peers[call.peer]) {
 				console.warn("Peer not found in peers list", call.peer);
 				call.close();
 				return;
