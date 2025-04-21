@@ -12,6 +12,7 @@ export default function DebugText() {
 		let lastGamestate: MessageUpdatePositionsPayload | null = null;
 		let frameId = 0;
 		let lastFrameTime = 0;
+		
 		function onGamestate(payload: MessageUpdatePositionsPayload) {
 			lastGamestate = payload;
 		}
