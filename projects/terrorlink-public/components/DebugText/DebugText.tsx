@@ -24,8 +24,6 @@ export default function DebugText() {
 			if (now - lastFrameTime < 50) return;
 			lastFrameTime = now;
 
-			console.log("Drawing debug text");
-
 			const fullPing = Date.now() - lastGamestate.time;
 			const clientPing = Date.now() - lastGamestate.serverTime;
 			const serverPing = lastGamestate.serverPing;
