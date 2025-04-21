@@ -16,6 +16,7 @@ import counterAvatarImage from "../../assets/image/counter.png" with {
 	type: "file",
 };
 import { PlayerSettings } from "../PlayerSettings/PlayerSettings";
+import DebugText from "../../components/DebugText/DebugText";
 
 type RenderPlayer = {
 	steamId: string;
@@ -198,6 +199,8 @@ export function Voice() {
 					</button>
 				))}
 			</div>
+
+			<DebugText />
 		</div>
 	);
 }

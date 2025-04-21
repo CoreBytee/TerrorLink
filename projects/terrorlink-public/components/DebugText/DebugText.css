@@ -1,0 +1,7 @@
+.DebugText {
+	width: 100%;
+	text-align: center;
+	font-size: 14px;
+	color: var(--text-dimmed-color);
+	font-family: monospace;
+}
