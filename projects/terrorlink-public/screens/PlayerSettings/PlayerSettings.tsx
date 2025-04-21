@@ -41,7 +41,7 @@ export function PlayerSettings({
 				type="range"
 				min={0}
 				max={300}
-				value={volume ?? 0}
+				value={volume ?? 100}
 				onChange={onVolumeChange}
 			/>
 			<Button onClick={onReturn}>Return</Button>
