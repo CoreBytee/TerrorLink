@@ -30,7 +30,8 @@ export default function DebugText() {
 			const serverPing = lastGamestate.serverPing;
 
 			textRef.current.innerText = `Full Ping: ${fullPing.toString().padStart(4, "0")}ms Client Ping: ${clientPing.toString().padStart(4, "0")}ms Server Ping: ${serverPing.toString().padStart(4, "0")}ms
-				Sent: ${events.messagesSent}/${bytes(events.bytesSent)} Received: ${events.messagesReceived}/${bytes(events.bytesReceived)}`;
+				Sent: ${events.messagesSent}/${bytes(events.bytesSent)} Received: ${events.messagesReceived}/${bytes(events.bytesReceived)}
+				${JSON.stringify(lastGamestate, null, 2)}`;
 		}
 
 		events.on(MessageType.UpdatePositions, onGamestate);
