@@ -126,10 +126,13 @@ export default function App() {
 
 			call.once("stream", (stream) => {
 				console.info("Got stream from peer", call.peer);
+
+				// Hackiest fix ever
 				const audio = new Audio();
 				audio.autoplay = true;
 				audio.srcObject = stream;
 				audio.volume = 0;
+				
 				speaker.createChannel(call.peer, stream);
 				speaker.setChannelVolume(
 					call.peer,
