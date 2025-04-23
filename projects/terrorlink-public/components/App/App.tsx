@@ -132,7 +132,7 @@ export default function App() {
 				audio.autoplay = true;
 				audio.srcObject = stream;
 				audio.volume = 0;
-				
+
 				speaker.createChannel(call.peer, stream);
 				speaker.setChannelVolume(
 					call.peer,
@@ -158,11 +158,11 @@ export default function App() {
 
 			for (const player of players) {
 				if (!player.peer_id) continue;
-				if (!speaker.channelExists(player.peer_id)) continue;
 
 				if (player.me) {
 					speaker.setPosition(player.position, player.angle);
 				} else {
+					if (!speaker.channelExists(player.peer_id)) continue;
 					speaker.setChannelPosition(
 						player.peer_id,
 						player.position,
