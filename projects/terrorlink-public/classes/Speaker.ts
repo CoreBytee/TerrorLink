@@ -76,6 +76,7 @@ export default class Speaker extends TypedEmitter<SpeakerEvents> {
 			mediaStreamSource: this.audioContext.createMediaStreamSource(stream),
 			gainNode: this.audioContext.createGain(),
 			pannerNode: this.audioContext.createPanner(),
+			analyzerNode: this.audioContext.createAnalyser(),
 		};
 
 		channel.pannerNode.panningModel = "HRTF";
@@ -90,8 +91,19 @@ export default class Speaker extends TypedEmitter<SpeakerEvents> {
 		channel.pannerNode.setOrientation(0, 0, 0);
 
 		channel.mediaStreamSource.connect(channel.gainNode);
-		channel.gainNode.connect(channel.pannerNode);
+		channel.gainNode.connect(channel.analyzerNode);
+		channel.analyzerNode.connect(channel.pannerNode);
 		channel.pannerNode.connect(this.gainNode);
+
+		const frequencyData = new Uint8Array(
+			channel.analyzerNode.frequencyBinCount,
+		);
+
+		setInterval(() => {
+			channel.analyzerNode.getByteFrequencyData(frequencyData);
+			console.log(frequencyData);
+			// drawFrequencyData(canvas, frequencyData);
+		}, 100);
 
 		this.channels[id] = channel;
 	}
