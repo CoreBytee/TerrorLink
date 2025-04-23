@@ -100,8 +100,22 @@ export default class Speaker extends TypedEmitter<SpeakerEvents> {
 		const frequencyData = new Uint8Array(channel.analyzerNode.frequencyBinCount);
 
 		setInterval(() => {
-			channel.analyzerNode.getByteFrequencyData(frequencyData);
-			console.log(frequencyData);
+			// channel.analyzerNode.getByteFrequencyData(frequencyData);
+			// console.log(frequencyData);
+			console.log(
+				"AudioContext Listener Position:",
+				{
+					x: this.audioContext.listener.positionX.value,
+					y: this.audioContext.listener.positionY.value,
+					z: this.audioContext.listener.positionZ.value,
+				},
+				"PannerNode Position:",
+				{
+					x: channel.pannerNode.positionX.value,
+					y: channel.pannerNode.positionY.value,
+					z: channel.pannerNode.positionZ.value,
+				},
+			);
 		}, 100);
 
 		this.channels[id] = channel;
