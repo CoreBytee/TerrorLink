@@ -121,9 +121,11 @@ export default function App() {
 				return;
 			}
 
+			console.info("Answering call from", call.peer);
 			call.answer();
 
 			call.once("stream", (stream) => {
+				console.info("Got stream from peer", call.peer);
 				speaker.createChannel(call.peer, stream);
 				speaker.setChannelVolume(
 					call.peer,
