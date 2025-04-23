@@ -172,7 +172,18 @@ export default class Speaker extends TypedEmitter<SpeakerEvents> {
 	}
 
 	setPosition(position: position, angle: angle) {
-		this.audioContext.listener.setPosition(position.x, position.y, position.z);
+		if (this.audioContext.listener.positionX) {
+			this.audioContext.listener.positionX.value = position.x;
+			this.audioContext.listener.positionY.value = position.y;
+			this.audioContext.listener.positionZ.value = position.z;
+		} else {
+			this.audioContext.listener.setPosition(
+				position.x,
+				position.y,
+				position.z,
+			);
+		}
+
 		const yawInRadians = degreesToRadians(angle.y);
 		const pitchInRadians = degreesToRadians(angle.x);
 		const rollInRadians = degreesToRadians(angle.z);
