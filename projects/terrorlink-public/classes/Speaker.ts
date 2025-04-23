@@ -97,14 +97,11 @@ export default class Speaker extends TypedEmitter<SpeakerEvents> {
 		channel.analyzerNode.connect(channel.pannerNode);
 		channel.pannerNode.connect(this.gainNode);
 
-
-
 		const frequencyData = new Uint8Array(channel.analyzerNode.frequencyBinCount);
 
 		setInterval(() => {
 			channel.analyzerNode.getByteFrequencyData(frequencyData);
 			console.log(frequencyData);
-			// drawFrequencyData(canvas, frequencyData);
 		}, 100);
 
 		this.channels[id] = channel;
