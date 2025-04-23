@@ -1,6 +1,6 @@
 import { TypedEmitter } from "tiny-typed-emitter";
 
-const isProduction = false;
+const isProduction = true;
 
 interface MicrophoneEvents {
 	suspended: () => void;
