@@ -104,11 +104,7 @@ export default class Speaker extends TypedEmitter<SpeakerEvents> {
 			// console.log(frequencyData);
 			console.log(
 				"AudioContext Listener Position:",
-				{
-					x: this.audioContext.listener.positionX.value,
-					y: this.audioContext.listener.positionY.value,
-					z: this.audioContext.listener.positionZ.value,
-				},
+				this.audioContext,
 				"PannerNode Position:",
 				{
 					x: channel.pannerNode.positionX.value,
