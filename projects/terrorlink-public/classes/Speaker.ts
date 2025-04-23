@@ -173,9 +173,18 @@ export default class Speaker extends TypedEmitter<SpeakerEvents> {
 
 	setPosition(position: position, angle: angle) {
 		if (this.audioContext.listener.positionX) {
-			this.audioContext.listener.positionX.value = position.x;
-			this.audioContext.listener.positionY.value = position.y;
-			this.audioContext.listener.positionZ.value = position.z;
+			this.audioContext.listener.positionX.setValueAtTime(
+				position.x,
+				this.audioContext.currentTime,
+			);
+			this.audioContext.listener.positionY.setValueAtTime(
+				position.y,
+				this.audioContext.currentTime,
+			);
+			this.audioContext.listener.positionZ.setValueAtTime(
+				position.z,
+				this.audioContext.currentTime,
+			);
 		} else {
 			this.audioContext.listener.setPosition(
 				position.x,
