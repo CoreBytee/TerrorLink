@@ -90,7 +90,7 @@ export default class Speaker extends TypedEmitter<SpeakerEvents> {
 		channel.pannerNode.setOrientation(0, 0, 0);
 
 		channel.mediaStreamSource.connect(channel.gainNode);
-		channel.gainNode.connect(channel.pannerNode);
+		channel.gainNode.connect(this.gainNode);
 		channel.pannerNode.connect(this.gainNode);
 
 		this.channels[id] = channel;
