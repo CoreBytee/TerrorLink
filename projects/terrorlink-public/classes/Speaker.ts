@@ -89,7 +89,6 @@ export default class Speaker extends TypedEmitter<SpeakerEvents> {
 		channel.pannerNode.setPosition(0, 0, 0);
 		channel.pannerNode.setOrientation(0, 0, 0);
 
-
 		channel.mediaStreamSource.connect(channel.gainNode);
 		channel.gainNode.connect(channel.pannerNode);
 		channel.pannerNode.connect(this.gainNode);
@@ -152,7 +151,6 @@ export default class Speaker extends TypedEmitter<SpeakerEvents> {
 	}
 
 	setPosition(position: position, angle: angle) {
-		console.log("Speaker: Setting listener position", position, angle);
 		if (this.audioContext.listener.positionX) {
 			this.audioContext.listener.positionX.setValueAtTime(
 				position.x,
