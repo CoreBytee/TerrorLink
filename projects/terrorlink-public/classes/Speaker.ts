@@ -90,14 +90,16 @@ export default class Speaker extends TypedEmitter<SpeakerEvents> {
 		channel.pannerNode.setPosition(0, 0, 0);
 		channel.pannerNode.setOrientation(0, 0, 0);
 
+		channel.analyzerNode.fftSize = 32;
+
 		channel.mediaStreamSource.connect(channel.gainNode);
 		channel.gainNode.connect(channel.analyzerNode);
 		channel.analyzerNode.connect(channel.pannerNode);
 		channel.pannerNode.connect(this.gainNode);
 
-		const frequencyData = new Uint8Array(
-			channel.analyzerNode.frequencyBinCount,
-		);
+
+
+		const frequencyData = new Uint8Array(channel.analyzerNode.frequencyBinCount);
 
 		setInterval(() => {
 			channel.analyzerNode.getByteFrequencyData(frequencyData);
