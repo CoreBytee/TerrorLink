@@ -94,20 +94,6 @@ export default class Speaker extends TypedEmitter<SpeakerEvents> {
 		channel.gainNode.connect(channel.pannerNode);
 		channel.pannerNode.connect(this.gainNode);
 
-
-		setInterval(() => {
-			console.log(
-				"AudioContext Listener Position:",
-				this.audioContext.listener,
-				"PannerNode Position:",
-				{
-					x: channel.pannerNode.positionX.value,
-					y: channel.pannerNode.positionY.value,
-					z: channel.pannerNode.positionZ.value,
-				},
-			);
-		}, 100);
-
 		this.channels[id] = channel;
 	}
 
