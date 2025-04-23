@@ -176,14 +176,41 @@ export default class Speaker extends TypedEmitter<SpeakerEvents> {
 		const pitchInRadians = degreesToRadians(angle.x);
 		const rollInRadians = degreesToRadians(angle.z);
 
-		this.audioContext.listener.setOrientation(
-			Math.cos(pitchInRadians) * Math.cos(yawInRadians),
-			Math.sin(pitchInRadians) * Math.cos(rollInRadians),
-			Math.cos(pitchInRadians) * Math.sin(yawInRadians),
-			0,
-			-1,
-			0,
-		);
+		if (this.audioContext.listener.forwardX) {
+			this.audioContext.listener.forwardX.setValueAtTime(
+				Math.cos(pitchInRadians) * Math.cos(yawInRadians),
+				this.audioContext.currentTime,
+			);
+			this.audioContext.listener.forwardY.setValueAtTime(
+				Math.sin(pitchInRadians) * Math.cos(rollInRadians),
+				this.audioContext.currentTime,
+			);
+			this.audioContext.listener.forwardZ.setValueAtTime(
+				Math.cos(pitchInRadians) * Math.sin(yawInRadians),
+				this.audioContext.currentTime,
+			);
+			this.audioContext.listener.upX.setValueAtTime(
+				0,
+				this.audioContext.currentTime,
+			);
+			this.audioContext.listener.upY.setValueAtTime(
+				-1,
+				this.audioContext.currentTime,
+			);
+			this.audioContext.listener.upZ.setValueAtTime(
+				0,
+				this.audioContext.currentTime,
+			);
+		} else {
+			this.audioContext.listener.setOrientation(
+				Math.cos(pitchInRadians) * Math.cos(yawInRadians),
+				Math.sin(pitchInRadians) * Math.cos(rollInRadians),
+				Math.cos(pitchInRadians) * Math.sin(yawInRadians),
+				0,
+				-1,
+				0,
+			);
+		}
 	}
 
 	channelExists(id: string | undefined) {
